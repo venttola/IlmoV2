@@ -1,0 +1,12 @@
+Database:
+
+MySQL
+
+Backend: 
+
+Node.js, Express etc etc 
+
+Frontend:
+
+Angular2
+
