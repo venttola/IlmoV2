@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/venttola/IlmoV2/issues"
   },
-  "homepage": "https://github.com/venttola/IlmoV2#readme"
+  "homepage": "https://github.com/venttola/IlmoV2#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.1.2",
+    "typescript": "^2.0.6"
+  }
 }
