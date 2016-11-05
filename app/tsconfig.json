@@ -1,0 +1,12 @@
+{
+    "files": [
+        "src/**/*.ts"
+    ],
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "target": "es5",
+        "rootDir": "src",
+        "outDir": ".",
+        "typeRoots": [ "node_modules/@types" ]
+    }
+}
