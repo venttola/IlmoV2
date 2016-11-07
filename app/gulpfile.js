@@ -4,20 +4,27 @@ var tslint 	= require("gulp-tslint");
 var watch 	= require("gulp-watch");
 var server 	= require('gulp-develop-server');
 var cache   = require('gulp-cached');
+var clean 	= require('gulp-clean');
 
 var tsProject = ts.createProject("tsconfig.json");
 
-var sourceFilePath = "src/**/*.ts";
+var sourceFilePath = "src/**/*";
+var distFolder = "dist";
 
 gulp.task("compile", ['tslint'], function () {
+	// Copy js files to dist
+	gulp.src(sourceFilePath + ".js")
+		.pipe(cache('copying'))
+		.pipe(gulp.dest(distFolder));
+
+	// Compile typescript files and copy to dist
     return tsProject.src()
     	.pipe(cache('compiling'))
         .pipe(tsProject())
-        .js.pipe(gulp.dest("dist"))
-        
+        .js.pipe(gulp.dest(distFolder))
 });
 
-gulp.task("tslint", function(){
+gulp.task("tslint", function() {
 	tsProject.src()
 		.pipe(cache('linting'))
 		.pipe(tslint({
@@ -26,7 +33,12 @@ gulp.task("tslint", function(){
 		.pipe(tslint.report())
 });
 
-gulp.task("watch", function(){
+gulp.task("clean", function() {
+	return gulp.src(distFolder, {read: false})
+        .pipe(clean());
+});
+
+gulp.task("watch", function() {
 	gulp.watch(sourceFilePath, ['tslint', 'compile']);
 });
 
@@ -38,4 +50,4 @@ gulp.task('server:livereload', function() {
     gulp.watch(sourceFilePath, ['tslint', 'compile', server.restart]);
 });
 
-gulp.task('start', ['server:start', 'server:livereload']);
+gulp.task('start', ['compile', 'server:start', 'server:livereload']);

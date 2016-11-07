@@ -7,6 +7,8 @@ New sign-up portal for Sotahuuto event
         - Contains the server launch script
     - dist
         - Compiled server javascript files
+    - migrations
+        - Database scripts
     - src
         - Server source files written in typescript
     - public
@@ -23,7 +25,9 @@ New sign-up portal for Sotahuuto event
     * Configuration file for typescript compiler
 * tslint.json
     * Rule file for typescript linter
+
 ---
+
 ### How to run
 Default node server:
 ```
@@ -34,3 +38,11 @@ Gulp development server:
 gulp start
 ```
 This one should be used for development. Gulp will lint + compile the source and restart the server when modified file is saved.
+
+---
+
+### Database setup
+To initialize database schema for development, run:
+```
+$ mysql -u root < migrations\init.sql
+```

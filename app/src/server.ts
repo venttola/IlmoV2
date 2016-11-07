@@ -2,13 +2,14 @@
 
 import * as express from "express";
 import * as testRoute from "./routes/testRoute";
+var models = require("./models");
 
 class Server {
 	public app: express.Application;
 
 	constructor() {
 		this.app = express();
-		this.setConfig();
+		this.getDbConnection();
 		this.setRoutes();
 	}
 
@@ -16,8 +17,18 @@ class Server {
     	return new Server();
   	}
 
-	private setConfig() {
-		
+	private getDbConnection() {
+		this.app.use(function(req: express.Request, res: express.Response, next: express.NextFunction) {
+			models.getDbConnection((function(err: any, db: any) {
+				if (err) {
+					return next(err);
+				}
+
+	        	(<any>req).models = db.models;
+
+	        	return next();
+			}));
+		});
 	}
 
 	private setRoutes() {
@@ -34,4 +45,3 @@ class Server {
 
 var server = Server.init();
 export = server.app;
-
