@@ -29,6 +29,7 @@ export function getDbConnection(cb: any) {
 				if (err) {
 					throw err;
 				}
+			console.log ("Synced " + file + " with the database");
 			});
 		});
 
