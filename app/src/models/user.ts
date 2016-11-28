@@ -8,5 +8,5 @@ export = function(db: any) {
 		allergies: {type: "text"}
 	});
 	user.hasMany("products", db.models.Product);
-	user.hasMany("moderatedGroups", db.models.ParticipantGroup, {reverse: "moderator"});
+	user.hasMany("moderatedGroups", db.models.ParticipantGroup, {}, {reverse: "moderator"});
 };

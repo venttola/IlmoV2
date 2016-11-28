@@ -4,5 +4,5 @@ export = function(db: any) {
 		name: { type: "text"},
 		price: { type: "number" }
 	});
-	product.hasOne ("event", db.models.Event, {reverse: "Products"} );
+	product.hasOne ("event", db.models.Event, {}, {reverse: "Products"} );
 };

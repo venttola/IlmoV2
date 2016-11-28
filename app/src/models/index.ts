@@ -4,45 +4,77 @@ var orm = require("orm");
 var fs = require("fs");
 var path = require("path");
 
-var dbConnection: any = null;
+import Promise from "ts-promise";
 
-export function getDbConnection(cb: any) {
-	// Connection exists, return it
-	if (dbConnection) {
-		return cb(null, dbConnection);
-	}
+class DatabaseHandler {
+	private dbConnection: any;
+	private models: any;
 
-	orm.connect("mysql://devuser@localhost/ilmov2", function(err: String, db: any) {
-		if (err) {
-			return cb(err);
-		}
+	public getDbConnection() {
+		return new Promise((resolve, reject) => {
+			if (this.dbConnection) {
+				console.log("Vanha");
+				resolve(this.dbConnection);
+			}
 
-		var modelsFolder = path.join(__dirname, "/../models");
-
-		fs
-		.readdirSync(modelsFolder)
-		.filter(function(file: any) {
-			return file !== path.basename(module.filename);
-		})
-		.forEach(function(file: any) {
-			db.load(path.join(modelsFolder, file), function(err: String) {
-				if (err) {
-					throw err;
-				}
-			console.log ("Synced " + file + " with the database");
+			this.connectToDb().then((conn) => {
+				console.log("Uusi");
+				this.dbConnection = conn;
 			});
 		});
+	}
 
-		// Generate the tables
-		db.sync(function(err: String) {
-        	if (err) {
-        		throw err;
-        	}
-    	});
+	private connectToDb() {
+		return new Promise((res, rej) => {
+			orm.connect("mysql://devuser@localhost/ilmov2", function(err: string, db: any) {
+				if (err) {
+					rej(new Error(err));
+				}
+				res(db);
+			});
+		});
+	}
 
-    	dbConnection = db;
+	public getModels(): any {
+		return this.models;
+	}
 
-		console.log("Models synced with database");
-		return cb(null, db);
-	});
-};
+	public syncDbModels() {
+		return new Promise((resolve, reject) => {
+			this.connectToDb().then((db: any) => {
+				var modelsFolder = path.join(__dirname, "/../models");
+
+				fs
+				.readdirSync(modelsFolder)
+				.filter(function(file: any) {
+					return file !== path.basename(module.filename);
+				})
+				.forEach(function(file: any) {
+					db.load(path.join(modelsFolder, file), function(err: String) {
+						if (err) {
+							throw err;
+						}
+					console.log ("Synced " + file + " with the database");
+					});
+				});
+
+				// Generate the tables, does not drop the old ones
+				db.sync(function(err: String) {
+		        	if (err) {
+		        		throw err;
+		        	}
+		    	});
+
+				this.dbConnection = db;
+				this.models = db.models;
+				console.log("Models synced with database");
+
+				return db;
+			}).then((db) => {
+				resolve(db);
+			});
+		});
+	}
+}
+
+export default new DatabaseHandler();

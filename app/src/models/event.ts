@@ -5,7 +5,7 @@ export = function(db: any) {
 		name: { type: "text"},
 		startdate: { type: "date"} //Check if there is a more elegant way.
 	});
-	event.hasMany ("products", db.models.Product, {reverse: "event"}); //Check if need more beef, or just plain works or even necessary at all.
+	event.hasMany ("products", db.models.Product, {}, {reverse: "event"}); //Check if need more beef, or just plain works or even necessary at all.
 	event.hasMany ("organizers", db.models.User);
 
 };

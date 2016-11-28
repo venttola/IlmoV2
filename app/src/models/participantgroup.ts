@@ -6,6 +6,6 @@ export = function(db: any) {
 		information: { type: "text" }
 	});
 
-	participantGroup.hasMany("moderator", db.models.User, {reverse: "moderatedGroups"});
+	participantGroup.hasMany("moderator", db.models.User, {}, {reverse: "moderatedGroups"});
 	participantGroup.hasMany("member", db.models.User);
 };
