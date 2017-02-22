@@ -1,0 +1,44 @@
+--Frontpage
+POST /api/login
+POST /api/signup
+POST /api/forgottenpw
+POST /api/:token/resetpw
+-- Logged in (Normal user)
+GET /api/user/:username 
+PATCH /api/user/:username/credentials 
+PATCH /api/user/:username/detail
+GET /api/user/:username/products
+POST /api/user/:username/product
+DELETE /api/user/:username/product
+POST /api/user/:username/group
+DELETE /api/user/:username/group
+
+-- Logged in (group moderator)
+DELETE /api/group/:groupname/:username
+PATCH /api/group/moderator
+DELETE /api/group/moderator
+GET /api/group/:username/products
+GET /api/group/payment
+POST /api/group/payment
+
+--Logged in (Organizer)
+PATCH /api/event/
+POST /api/event/product
+PATCH /api/event/product
+DELETE /api/event/product
+
+
+--Logged in (Administrator)
+POST /api/event
+POST /api/event/organizer
+DELETE /api/event
+
+
+GET /api/events
+GET /api/event/products
+
+GET /api/groups/
+POST /api/group/
+? DELETE /api/group
+
+
