@@ -9,12 +9,11 @@ import * as DbHandler from "./models";
 class Server {
 	public app: express.Application;
 	constructor() {
-		console.log("Constructing server");
 		this.app = express();
-
-		DbHandler.default.syncDbModels().then((db: any) => {
-			console.log("Did we connect to the database?");
+		DbHandler.default.syncDbModels().then(response  => {
 			this.setRoutes();
+		}, reject => {
+			console.error(reject);
 		});
 	}
 
