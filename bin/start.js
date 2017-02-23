@@ -1,14 +1,13 @@
-var app   = require("../dist/server");
+var server   = require("../dist/server");
 var http  = require("http");
 
 var port = normalizePort(process.env.PORT || 8080);
-app.set("port", port);
+server.app.set("port", port);
 
-// TODO: Define database connection here
 
-var server = http.createServer(app);
+var httpServer = http.createServer(server.app);
 
-server.listen(port);
+httpServer.listen(port);
 console.log("Listening port " + port);
 
 function normalizePort(val) {

@@ -13,6 +13,7 @@ class Server {
 		this.app = express();
 
 		DbHandler.default.syncDbModels().then((db: any) => {
+			console.log("Did we connect to the database?");
 			this.setRoutes();
 		});
 	}
@@ -35,4 +36,4 @@ class Server {
 }
 
 var server = Server.init();
-export = server.app;
+export = server;
