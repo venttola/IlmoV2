@@ -9,6 +9,7 @@ import * as DbHandler from "./models";
 class Server {
 	public app: express.Application;
 	constructor() {
+		console.log("Constructing server");
 		this.app = express();
 
 		DbHandler.default.syncDbModels().then((db: any) => {
@@ -26,6 +27,7 @@ class Server {
 
 	    // Define routes here
 	    var test: testRoute.TestRoute = new testRoute.TestRoute();
+	    console.log("Setting testroute");
 	    router.get("/", test.test);
 
 	    this.app.use(router);
