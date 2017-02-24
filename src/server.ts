@@ -4,16 +4,21 @@ import * as express from "express";
 
 import * as testRoute from "./routes/testRoute";
 import Promise from "ts-promise";
-import * as DbHandler from "./models";
+//import database  from "./models/index";
+import { DatabaseHandler } from "./models/databasehandler";
 
 class Server {
 	public app: express.Application;
+	private handler: any;
 	constructor() {
+		this.handler = new DatabaseHandler();
 		this.app = express();
-		DbHandler.default.syncDbModels().then(response  => {
+		let connection = this.handler.syncDbModels();
+		connection.then((res: any) => {
 			this.setRoutes();
-		}, reject => {
-			console.error(reject);
+		});
+		connection.catch((err: any) => {
+			console.log (err);
 		});
 	}
 
@@ -26,7 +31,7 @@ class Server {
 	    router = express.Router();
 
 	    // Define routes here
-	    var test: testRoute.TestRoute = new testRoute.TestRoute();
+	    var test: testRoute.TestRoute = new testRoute.TestRoute(this.handler);
 	    console.log("Setting testroute");
 	    router.get("/", test.test);
 

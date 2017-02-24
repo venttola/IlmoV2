@@ -1,12 +1,15 @@
 "use strict";
 
 import * as express from "express";
-import * as DbHandler from "../models";
+import { DatabaseHandler } from "../models/databasehandler";
 
 module Route {
   export class TestRoute {
-    public test(req: express.Request, res: express.Response, next: express.NextFunction) {
-		DbHandler.default.getModels().User.create({
+  	constructor(private handler: DatabaseHandler) {
+  	}
+    public test = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+		let self = this;
+		this.handler.getModels().User.create({
 			name: "Test12345"
 		}, function(err: any) {
 			if (err) {

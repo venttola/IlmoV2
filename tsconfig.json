@@ -7,6 +7,10 @@
         "target": "es5",
         "rootDir": "src",
         "outDir": ".",
+        "types": [
+            // add node as an option
+            "node"
+         ],
         "typeRoots": [ "node_modules/@types" ]
     }
 }

@@ -27,6 +27,7 @@
     "ts-promise": "^0.3.4"
   },
   "devDependencies": {
+    "@types/node": "^6.0.63",
     "gulp": "^3.9.1",
     "gulp-cached": "^1.1.0",
     "gulp-clean": "^0.3.2",

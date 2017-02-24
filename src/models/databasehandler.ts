@@ -1,15 +1,14 @@
 "use strict";
-
 var orm = require("orm");
 var fs = require("fs");
 var path = require("path");
-
 import Promise from "ts-promise";
-
-class DatabaseHandler {
+export class DatabaseHandler {
 	private dbConnection: any;
 	private models: any;
-
+	constructor() {
+		console.log("Constructing databasehandler");
+	}
 	public getDbConnection() {
 		return new Promise((resolve, reject) => {
 			if (this.dbConnection) {
@@ -79,5 +78,4 @@ class DatabaseHandler {
 		});
 	}
 }
-
-export default new DatabaseHandler();
+//export default new DatabaseHandler();
