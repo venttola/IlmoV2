@@ -9,7 +9,12 @@ module Route {
   	}
     public test = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 		this.handler.getModels().User.create({
-			name: "Test12345"
+			email: "test",
+			password: "test",
+			firstname: "test",
+			lastname: "test",
+			dob: new Date(),
+			allergies: "test"
 		}, function(err: any) {
 			if (err) {
 				throw err;
