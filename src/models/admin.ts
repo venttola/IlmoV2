@@ -1,7 +1,7 @@
 "use strict";
 
 export = function(db: any) {
-	var admins = db.define("Admins", {
+	var admin = db.define("Admin", {
 	});
-	admins.hasMany ("administrator", db.models.User);
+	admin.hasMany ("administrator", db.models.User);
 };
