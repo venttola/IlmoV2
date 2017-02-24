@@ -8,7 +8,6 @@ module Route {
   	constructor(private handler: DatabaseHandler) {
   	}
     public test = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-		let self = this;
 		this.handler.getModels().User.create({
 			name: "Test12345"
 		}, function(err: any) {
