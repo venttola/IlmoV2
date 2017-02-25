@@ -1,0 +1,11 @@
+{
+  "name": "LiigaLasse API",
+  "version": "0.0.1",
+  "description": "LiigaLasse API documentation",
+  "title": "LiigaLasse API",
+  "url" : "tkannat24.cs.tut.fi/api",
+  "header": {
+    "title": "LiigaLasse API",
+    "filename": "README.md"
+  }
+}
