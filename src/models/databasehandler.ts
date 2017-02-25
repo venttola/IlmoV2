@@ -10,13 +10,13 @@ export class DatabaseHandler {
 		console.log("Constructing databasehandler");
 	}
 	public getDbConnection() {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve: any, reject: any) => {
 			if (this.dbConnection) {
 				console.log("Vanha");
 				resolve(this.dbConnection);
 			}
 
-			this.connectToDb().then((conn) => {
+			this.connectToDb().then((conn: any) => {
 				console.log("Uusi");
 				this.dbConnection = conn;
 				resolve(this.dbConnection);
@@ -25,13 +25,13 @@ export class DatabaseHandler {
 	}
 
 	private connectToDb() {
-		return new Promise((res, rej) => {
+		return new Promise((resolve: any, reject: any) => {
 			orm.connect("mysql://devuser@localhost/ILMOV2", function(err: string, db: any) {
 				if (err) {
 					console.error(err);
-					rej(new Error(err));
+					reject(new Error(err));
 				}
-				res(db);
+				resolve(db);
 			});
 		});
 	}
@@ -41,7 +41,7 @@ export class DatabaseHandler {
 	}
 
 	public syncDbModels() {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve: any, reject: any) => {
 			console.log("Connecting to database");
 			this.connectToDb().then((db: any) => {
 				var modelsFolder = path.join(__dirname, "/../models");
@@ -61,7 +61,7 @@ export class DatabaseHandler {
 				});
 
 				// Generate the tables, does not drop the old ones
-				db.sync(function(err: String) {
+				db.sync(function(err: string) {
 		        	if (err) {
 		        		throw err;
 		        	}
@@ -72,7 +72,7 @@ export class DatabaseHandler {
 				console.log("Models synced with database");
 
 				return db;
-			}).then((db) => {
+			}).then((db: any) => {
 				resolve(db);
 			});
 		});
