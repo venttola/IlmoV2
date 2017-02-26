@@ -110,7 +110,12 @@ module Route {
                 dob: new Date(dob),
                 allergies: ""
               }, function(err: any, result: any){
-                return res.status(201).send("User added!");
+                if (err) {
+                  console.log("Error creating user: " + err);
+                  // TODO: Proper response
+                } else {
+                  return res.status(201).send("User added!");  
+                }
               });
             }
           });

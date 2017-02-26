@@ -1,14 +1,15 @@
 "use strict";
 
 import * as express from "express";
-
-
 import Promise from "ts-promise";
 import * as jwt from "jsonwebtoken";
-import * as testRoute from "./routes/testRoute";
-import * as authRoutes from "./routes/auth";
 import { DatabaseHandler } from "./models/databasehandler";
 import * as bodyparser from "body-parser";
+
+import * as testRoute from "./routes/testRoute";
+import * as authRoutes from "./routes/auth";
+import * as userRoutes from "./routes/user";
+
 
 const API_PREFIX: string = "/api";
 const SALT_ROUNDS: number = 10;
@@ -41,16 +42,37 @@ class Server {
 	    var test: testRoute.TestRoute = new testRoute.TestRoute(this.handler);
 	    console.log("Setting testroute");
 	    router.get("/", test.test);
+
 	    this.setAuthRoutes(router);
+	    this.setUserRoutes(router);
+
 	    this.app.use(bodyparser.json());
 	    this.app.use(router);
 	}
+
 	private setAuthRoutes(router: express.Router) {
 		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes( this.handler, this.app.get("superSecret"), SALT_ROUNDS);
 		router.post(API_PREFIX + "/signup", authRoute.signup);
 		router.post(API_PREFIX + "/login", authRoute.login);
-
 	}
+
+	private setUserRoutes(router: express.Router) {
+		console.log("Setting user routes");
+
+		let userRoute: userRoutes.UserRoutes = new userRoutes.UserRoutes(this.handler);
+
+		const userApiPrefix = API_PREFIX + "/user/:username";
+
+		router.get(userApiPrefix + 		"/", userRoute.getUserInfo);
+		router.patch(userApiPrefix + 	"/credentials");
+		router.patch(userApiPrefix + 	"/detail");
+		router.get(userApiPrefix + 		"/products");
+		router.post(userApiPrefix + 	"/product");
+		router.delete(userApiPrefix + 	"/product");
+		router.post(userApiPrefix + 	"/group");
+		router.delete(userApiPrefix + 	"/group");
+	}
+
 	private checkAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 		let self = this;
 		// check header or url parameters or post parameters for token
