@@ -114,7 +114,7 @@ module Route {
                   console.log("Error creating user: " + err);
                   // TODO: Proper response
                 } else {
-                  return res.status(201).send("User added!");  
+                  return res.status(201).send("User added!");
                 }
               });
             }

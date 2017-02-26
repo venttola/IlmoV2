@@ -59,12 +59,12 @@ class Server {
 	private setUserRoutes(router: express.Router) {
 		console.log("Setting user routes");
 
-		let userRoute: userRoutes.UserRoutes = new userRoutes.UserRoutes(this.handler);
+		let userRoute: userRoutes.UserRoutes = new userRoutes.UserRoutes(this.handler.getModels().User, SALT_ROUNDS);
 
 		const userApiPrefix = API_PREFIX + "/user/:username";
 
 		router.get(userApiPrefix + 		"/", userRoute.getUserInfo);
-		router.patch(userApiPrefix + 	"/credentials");
+		router.patch(userApiPrefix + 	"/credentials", userRoute.setUserCredentials);
 		router.patch(userApiPrefix + 	"/detail");
 		router.get(userApiPrefix + 		"/products");
 		router.post(userApiPrefix + 	"/product");
