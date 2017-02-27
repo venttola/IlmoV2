@@ -66,8 +66,19 @@ module Route {
 		}
 
 		public getUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			console.log("Username: " + req.params.username);
-			return res.status(204).send();
+			this.userModel.one({email: req.params.username}, function(err: Error, user: any) {
+				if (err) {
+					let errorMsg = "User data could not be fetched";
+					console.log(errorMsg, err);
+					return res.status(500).send(errorMsg);
+				} else if (!user) {
+					return res.status(400).send("Error: Username not found!\n");
+				} else {
+					let userData = user;
+					userData.password = undefined; // Delete doesn't work with node-orm
+					return res.status(200).send(JSON.stringify(userData));
+				}
+			});
 		}
 
 		public setUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
