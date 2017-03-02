@@ -82,7 +82,29 @@ module Route {
 		}
 
 		public setUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			return res.status(204).send();
+			this.userModel.one({email: req.params.username}, function(err: Error, user: any) {
+				if (err) {
+					let errorMsg = "User data could not be fetched";
+					return res.status(500).send(errorMsg);
+				} else if (!user) {
+					return res.status(400).send("Error: Username not found!\n");
+				} else {
+					// TODO: Validation?
+					user.firstName = req.body.firstName;
+					user.firstName = req.body.lastName;
+					user.dob = new Date(req.body.dob);
+					user.allergies = req.body.allergies;
+
+					user.save(function(err: Error){
+						if (!err) {
+							return res.status(204).send();
+						} else {
+							console.log(err);
+							return res.status(500).send("User details update failed");
+						}
+					});
+				}
+			});
 		}
 
 		public getProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {

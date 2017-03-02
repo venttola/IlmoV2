@@ -5,7 +5,7 @@ export = function(db: any) {
 		password: {type: "text", required: true}, //Look into how to save this safely
 		firstname: {type: "text", required: true},
 		lastname: {type: "text", require: true},
-		dob: {type: "date", required: true},
+		dob: {type: "date", time: false, required: true},
 		allergies: {type: "text"}
 	});
 

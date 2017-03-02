@@ -65,7 +65,7 @@ class Server {
 
 		router.get(userApiPrefix + 		"/", userRoute.getUserInfo);
 		router.patch(userApiPrefix + 	"/credentials", userRoute.setUserCredentials);
-		router.patch(userApiPrefix + 	"/detail");
+		router.patch(userApiPrefix + 	"/detail", userRoute.setUserInfo);
 		router.get(userApiPrefix + 		"/products");
 		router.post(userApiPrefix + 	"/product");
 		router.delete(userApiPrefix + 	"/product");
