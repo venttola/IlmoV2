@@ -90,8 +90,8 @@ module Route {
 					return res.status(400).send("Error: Username not found!\n");
 				} else {
 					// TODO: Validation?
-					user.firstName = req.body.firstName;
-					user.firstName = req.body.lastName;
+					user.firstname = req.body.firstName;
+					user.lastname = req.body.lastName;
 					user.dob = new Date(req.body.dob);
 					user.allergies = req.body.allergies;
 
