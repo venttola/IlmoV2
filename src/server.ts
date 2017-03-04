@@ -59,7 +59,14 @@ class Server {
 	private setUserRoutes(router: express.Router) {
 		console.log("Setting user routes");
 
-		let userRoute: userRoutes.UserRoutes = new userRoutes.UserRoutes(this.handler.getModels().User, SALT_ROUNDS);
+		let models = this.handler.getModels();
+
+		let userRoute: userRoutes.UserRoutes =
+			new userRoutes.UserRoutes(
+				models.User,
+				models.Product,
+				SALT_ROUNDS
+			);
 
 		const userApiPrefix = API_PREFIX + "/user/:username";
 
