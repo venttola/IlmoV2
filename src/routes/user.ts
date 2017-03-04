@@ -108,7 +108,22 @@ module Route {
 		}
 
 		public getProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			return res.status(204).send();
+			this.userModel.one({email: req.params.username}, function(err: Error, user: any) {
+				if (err) {
+					let errorMsg = "User data could not be fetched";
+					return res.status(500).send(errorMsg);
+				} else if (!user) {
+					return res.status(400).send("Error: Username not found!\n");
+				} else {
+					user.getProducts(function(err: Error, prods: any) {
+						if (err) {
+							return res.status(500).send("Error fetching product data");
+						} else {
+							return res.status(200).send(prods);
+						}
+					});
+				}
+			});
 		}
 
 		public addProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
