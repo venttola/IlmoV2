@@ -106,29 +106,41 @@ module Route {
 			let productId = req.body.productId; // Assuming that products are added one at a time
 
 			this.getUser(req.params.username).then((user: any) => {
-				this.productModel.one({id: productId}, function(err: Error, product: any) {
-					if (err) {
-						let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
-						return res.status(500).send(errorMsg);
-					} else if (!product) {
-						let errorMsg = this.errorMessage("Product", ErrorType.NOT_FOUND);
-						return res.status(400).send(errorMsg);
-					} else {
-						user.addProducts(product, function(err: Error) {
-							if (err) {
-								console.log(err);
-								return res.status(500).send("ERROR: Product update failed");
-							} else {
-								return res.status(204).send();
-							}
-						});
-					}
+				this.getProduct(productId).then((product: any) => {
+					user.addProducts(product, function(err: Error) {
+						if (err) {
+							return res.status(500).send("ERROR: Product update failed");
+						} else {
+							return res.status(204).send();
+						}
+					});
+				})
+				.catch((err: APIError) => {
+					return res.status(err.statusCode).send(err.message);
 				});
 			});
 		}
 
 		public removeProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			return res.status(204).send();
+			let productId = req.body.productId; // Assuming that products are added one at a time
+
+			this.getUser(req.params.username).then((user: any) => {
+				this.getProduct(productId).then((product: any) => {
+					user.removeProducts([product], function(error: Error) {
+						if (error) {
+							return res.status(500).send("Product removal failed");
+						} else {
+							return res.status(204).send();
+						}
+					});
+				})
+				.catch((err: APIError) => {
+					return res.status(err.statusCode).send(err.message);
+				});
+			})
+			.catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
+			});
 		}
 
 		public addGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -142,7 +154,6 @@ module Route {
 		private getUser = (username: String) => {
 			return new Promise((resolve, reject) => {
 				this.userModel.one({email: username}, function(err: Error, user: any) {
-					console.log(user);
 					if (err) {
 						let errorMsg = ErrorHandler.getErrorMsg("User data", ErrorType.DATABASE_READ);
 						reject(new DatabaseError(500, errorMsg));
@@ -155,6 +166,22 @@ module Route {
 				});
 			});
 		};
+
+		private getProduct = (productId: Number) => {
+			return new Promise((resolve, reject) => {
+				this.productModel.one({id: productId}, function(err: Error, product: any) {
+					if (err) {
+						let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
+						reject(new DatabaseError(500, errorMsg));
+					} else if (!product) {
+						let errorMsg = this.errorMessage("Product", ErrorType.NOT_FOUND);
+						reject(new DatabaseError(400, errorMsg));
+					} else {
+						return resolve(product);
+					}
+				});
+			});
+		}
 	}
 }
 
