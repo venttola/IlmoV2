@@ -103,23 +103,28 @@ module Route {
 		}
 
 		public addProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			/*
-			let productId = req.body.productId;
+			let productId = req.body.productId; // Assuming that products are added one at a time
 
-			this.productModel.one({id: productId}, function(err: Error, product: any) {
-				if (err) {
-					let errorMsg = ErrorPrinter.getErrorMsg("Product data", ErrorType.DATABASE_READ);
-					return res.status(500).send(errorMsg);
-				} else if (!product) {
-					let errorMsg = this.errorMessage("Product", ErrorType.NOT_FOUND);
-					return res.status(400).send(errorMsg);
-				} else {
-
-				}
+			this.getUser(req.params.username).then((user: any) => {
+				this.productModel.one({id: productId}, function(err: Error, product: any) {
+					if (err) {
+						let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
+						return res.status(500).send(errorMsg);
+					} else if (!product) {
+						let errorMsg = this.errorMessage("Product", ErrorType.NOT_FOUND);
+						return res.status(400).send(errorMsg);
+					} else {
+						user.addProducts(product, function(err: Error) {
+							if (err) {
+								console.log(err);
+								return res.status(500).send("ERROR: Product update failed");
+							} else {
+								return res.status(204).send();
+							}
+						});
+					}
+				});
 			});
-			
-			return res.status(204).send();
-			*/
 		}
 
 		public removeProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
