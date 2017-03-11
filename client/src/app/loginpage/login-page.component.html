@@ -1,0 +1,69 @@
+<div class= "container">
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">IlmoV2</a>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-md-0">
+      <li>
+        <button class="btn btn-primary">Sivu 1</button>
+      </li>
+      <li>
+        <button class="btn btn-primary">Sivu 2</button>
+      </li>
+    </ul>
+    <div class="form-inline my-2 my-lg-0 d-inline-block " ngbDropdown [autoClose]=false >
+      <button class="btn btn-outline-primary" id="dropdownMenu1" ngbDropdownToggle>Kirjaudu sisään</button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenu1" autoClose=false>
+         <form class="form-inline">
+                <div class="form-group">
+                    <label>Sähköposti:</label>
+                    <input type="text" class="form-control" id="#.username" required [(ngModel)]="credentials.email" name="#.username"/>
+                </div>
+                <div class="form-group">
+                    <label>Salasana:</label>
+                    <input type="text" class="form-control"  id="#.password" type="password" required [(ngModel)]="credentials.password" name="#.password"/>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary btn-block" (click)="attemptLogin()">Log in</button>
+            </form>
+      </div>
+  </div>
+  <div class="form-inline d-inline-block my-2 my-lg-0" ngbDropdown [autoClose]=false >
+      <button class="btn btn-outline-primary align-right" id="dropdownMenu1" ngbDropdownToggle>Rekisteröidy</button>
+      <div class="dropdown-menu navbar-rigth" aria-labelledby="dropdownMenu1" autoClose=false>
+            <form class="form-inline">
+                <div class="form-group">
+                    <label>Sähköposti:</label>
+                    <input type="text" class="form-control" [(ngModel)]="signupData.email" name="signup.username" required />
+                </div>
+                <div class="form-group">
+                    <label>Salasana:</label>
+                    <input type="text" class="form-control" [(ngModel)]="signupData.password" name="signup.password" required type="password" />
+                </div>
+                <div class="form-group">
+                    <label>Salasana uudestaan:</label>
+                    <input type="text" class="form-control" [(ngModel)]="signupData.repassword" name="signup.repassword" required type="password" />
+                </div> 
+                <div class="form-group">
+                    <label>Etunimi:</label>
+                    <input type="text" class="form-control" [(ngModel)]="signupData.firstname" name="signup.firstname" required />
+                </div>
+                <div class="form-group">
+                    <label>Sukunimi:</label>
+                    <input type="text" class="form-control" [(ngModel)]="signupData.lastname" name="signup.lastname" required />
+                </div>
+                <button type="submit" class="btn btn-success" (click)="attemptSignup()">Signup</button>
+            </form>
+        </div>
+    </div>
+  </div>
+</nav>
+ 
+    <div class="col-sm-12">
+      <!-- The router-outlet directive will display the component based on the route we are on, more on this soon -->
+        <router-outlet></router-outlet>
+    </div>
+</div>
