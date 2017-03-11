@@ -10,6 +10,6 @@ export = function(db: any) {
 	});
 
 	user.hasMany("products", db.models.Product);
-	user.hasMany("moderatedGroups", db.models.ParticipantGroup, {}, {reverse: "moderator"});
+	//user.hasMany("moderatedGroups", db.models.ParticipantGroup, {}, {reverse: "moderator"});
 	user.hasMany("payments", db.models.Payment, {}, {reverse: "payee"});
 };

@@ -18,7 +18,8 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 */
 module Route {
 	export class UserRoutes {
-		constructor(private userModel: any, private productModel: any, private saltRounds: number) {
+		constructor(private userModel: any, private productModel: any,
+			private participantGroupModel: any, private saltRounds: number) {
 
 		}
 
@@ -144,13 +145,32 @@ module Route {
 		}
 
 		public addGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			return res.status(204).send();
+			let groupId = req.body.groupId;
+
+			this.getGroup(groupId).then((group: any) => {
+				this.getUser(req.params.username).then((user: any) => {
+					group.addMembers(user, function(err: Error) {
+						if (err) {
+							return res.status(500).send("ERROR: Group update failed");
+						} else {
+							return res.status(204).send();
+						}
+					});
+				})
+				.catch((err: APIError) => {
+					return res.status(err.statusCode).send(err.message);
+				});
+			})
+			.catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
+			});
 		}
 
 		public removeGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			return res.status(204).send();
 		}
 
+		// TODO: Add these kinda methods to own service layer?
 		private getUser = (username: String) => {
 			return new Promise((resolve, reject) => {
 				this.userModel.one({email: username}, function(err: Error, user: any) {
@@ -174,10 +194,26 @@ module Route {
 						let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
 						reject(new DatabaseError(500, errorMsg));
 					} else if (!product) {
-						let errorMsg = this.errorMessage("Product", ErrorType.NOT_FOUND);
+						let errorMsg = ErrorHandler.getErrorMsg("Product", ErrorType.NOT_FOUND);
 						reject(new DatabaseError(400, errorMsg));
 					} else {
 						return resolve(product);
+					}
+				});
+			});
+		}
+
+		private getGroup = (groupId: Number) => {
+			return new Promise((resolve, reject) => {
+				this.participantGroupModel.one({id: groupId}, function(err: Error, group: any) {
+					if (err) {
+						let errorMsg = ErrorHandler.getErrorMsg("Group data", ErrorType.DATABASE_READ);
+						reject(new DatabaseError(500, errorMsg));
+					} else if (!group) {
+						let errorMsg = ErrorHandler.getErrorMsg("Group", ErrorType.NOT_FOUND);
+						reject(new DatabaseError(400, errorMsg));
+					} else {
+						return resolve(group);
 					}
 				});
 			});

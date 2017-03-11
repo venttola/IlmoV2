@@ -65,6 +65,7 @@ class Server {
 			new userRoutes.UserRoutes(
 				models.User,
 				models.Product,
+				models.ParticipantGroup,
 				SALT_ROUNDS
 			);
 
@@ -76,8 +77,8 @@ class Server {
 		router.get(userApiPrefix + 		"/products", userRoute.getProducts);
 		router.post(userApiPrefix + 	"/product", userRoute.addProduct);
 		router.delete(userApiPrefix + 	"/product", userRoute.removeProduct);
-		router.post(userApiPrefix + 	"/group");
-		router.delete(userApiPrefix + 	"/group");
+		router.post(userApiPrefix + 	"/group", userRoute.addGroup);
+		router.delete(userApiPrefix + 	"/group", userRoute.removeGroup);
 	}
 
 	private checkAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
