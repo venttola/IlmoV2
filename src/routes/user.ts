@@ -167,7 +167,25 @@ module Route {
 		}
 
 		public removeGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			return res.status(204).send();
+			let groupId = req.body.groupId;
+
+			this.getGroup(groupId).then((group: any) => {
+				this.getUser(req.params.username).then((user: any) => {
+					group.removeMembers(user, function(err: Error) {
+						if (err) {
+							return res.status(500).send("ERROR: Group update failed");
+						} else {
+							return res.status(204).send();
+						}
+					});
+				})
+				.catch((err: APIError) => {
+					return res.status(err.statusCode).send(err.message);
+				});
+			})
+			.catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
+			});
 		}
 
 		// TODO: Add these kinda methods to own service layer?
