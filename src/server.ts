@@ -9,6 +9,7 @@ import * as bodyparser from "body-parser";
 import * as testRoute from "./routes/testRoute";
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
+import * as eventRoutes from "./routes/event";
 
 
 const API_PREFIX: string = "/api";
@@ -45,6 +46,7 @@ class Server {
 
 	    this.setAuthRoutes(router);
 	    this.setUserRoutes(router);
+		this.setEventRoutes(router);
 
 	    this.app.use(bodyparser.json());
 	    this.app.use(router);
@@ -79,6 +81,21 @@ class Server {
 		router.delete(userApiPrefix + 	"/product", userRoute.removeProduct);
 		router.post(userApiPrefix + 	"/group", userRoute.addGroup);
 		router.delete(userApiPrefix + 	"/group", userRoute.removeGroup);
+	}
+
+	private setEventRoutes(router: express.Router) {
+		let models = this.handler.getModels();
+
+		let eventRoute: eventRoutes.EventRoutes =
+			new eventRoutes.EventRoutes(
+				models.Event,
+				models.Product
+			);
+
+		router.get(API_PREFIX + "/events", eventRoute.getEvents);
+		router.post(API_PREFIX + "/events", eventRoute.addEvent);
+		router.get(API_PREFIX + "/event/:event/product", eventRoute.getEventProducts);
+		router.post(API_PREFIX + "/event/:event/product", eventRoute.addProduct);
 	}
 
 	private checkAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {

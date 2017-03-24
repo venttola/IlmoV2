@@ -24,18 +24,6 @@ export class DatabaseHandler {
 		});
 	}
 
-	private connectToDb() {
-		return new Promise((resolve: any, reject: any) => {
-			orm.connect("mysql://devuser@localhost/ILMOV2", function(err: string, db: any) {
-				if (err) {
-					console.error(err);
-					reject(new Error(err));
-				}
-				resolve(db);
-			});
-		});
-	}
-
 	public getModels(): any {
 		return this.models;
 	}
@@ -43,29 +31,33 @@ export class DatabaseHandler {
 	public syncDbModels() {
 		return new Promise((resolve: any, reject: any) => {
 			console.log("Connecting to database");
+			let files = [];
 			this.connectToDb().then((db: any) => {
 				var modelsFolder = path.join(__dirname, "/../models");
 				fs
-				.readdirSync(modelsFolder)
-				.filter(function(file: any) {
-					return file !== path.basename(module.filename);
-				})
-				.forEach(function(file: any) {
-					db.load(path.join(modelsFolder, file), function(err: String) {
-						if (err) {
-							console.error(err);
-							throw err;
-						}
+					.readdirSync(modelsFolder)
+					.filter(function (file: any) {
+						return file !== path.basename(module.filename);
+					})
+					.forEach(function (file: any) {
+						db.load(path.join(modelsFolder, file), function (err: String) {
+							if (err) {
+								console.error(err);
+								throw err;
+							}
+						});
+
+						console.log("Synced " + file + " with the database");
 					});
-					console.log ("Synced " + file + " with the database");
-				});
+
+				this.updateModelReferences(db);
 
 				// Generate the tables, does not drop the old ones
-				db.sync(function(err: string) {
-		        	if (err) {
-		        		throw err;
-		        	}
-		    	});
+				db.sync(function (err: string) {
+					if (err) {
+						throw err;
+					}
+				});
 
 				this.dbConnection = db;
 				this.models = db.models;
@@ -77,5 +69,40 @@ export class DatabaseHandler {
 			});
 		});
 	}
+
+	private connectToDb() {
+		return new Promise((resolve: any, reject: any) => {
+			orm.connect("mysql://devuser@localhost/ILMOV2", function (err: string, db: any) {
+				if (err) {
+					console.error(err);
+					reject(new Error(err));
+				}
+				resolve(db);
+			});
+		});
+	}
+
+	private updateModelReferences(db: any) {
+
+		db.models.Admin.hasMany("administrator", db.models.User);
+
+		db.models.Discount.hasOne("product", db.models.Product, {}, { reverse: "discounts" });
+
+		db.models.Event.hasMany("products", db.models.Product, {}, { reverse: "events" });
+		db.models.Event.hasMany("organizers", db.models.User);
+
+		db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
+		//db.models.ParticipantGroup.hasMany("moderator", db.models.User, {}, { reverse: "moderatedGroups" });
+
+		db.models.Payment.hasOne("event", db.models.Event, {}, { reverse: "products" });
+		db.models.Payment.hasOne("payee", db.models.User, {}, { reverse: "payments" });
+
+		db.models.Product.hasMany("discounts", db.models.Discount, {}, { reverse: "product" });
+
+		db.models.User.hasMany("products", db.models.Product);
+		db.models.User.hasMany("moderatedGroups", db.models.ParticipantGroup, {}, { reverse: "moderator" });
+		db.models.User.hasMany("payments", db.models.Payment, {}, { reverse: "payee" });
+
+		console.log("References updated");
+	}
 }
-//export default new DatabaseHandler();

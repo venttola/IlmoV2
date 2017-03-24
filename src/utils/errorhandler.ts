@@ -1,6 +1,7 @@
 export const enum ErrorType {
     NOT_FOUND,
-    DATABASE_READ
+    DATABASE_READ,
+    DATABASE_INSERTION
 }
 
 export module ErrorHandler {
@@ -14,6 +15,10 @@ export module ErrorHandler {
                 break;
             case ErrorType.DATABASE_READ:
                 msg = `${prefix} ${item} could not be read from the database`;
+                break;
+            case ErrorType.DATABASE_INSERTION:
+                msg = `${prefix} ${item} insertion failed`;
+                break;
         }
 
         console.log(msg);
