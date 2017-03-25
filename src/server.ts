@@ -61,7 +61,7 @@ class Server {
 		this.setAuthRoutes(router);
 
 		router.use(jwt({
-			secret: "testisalaisuus",
+			secret: this.SECRET,
 			credentialsRequired: true,
 			getToken: function fromHeaderOrQuerystring(req: any) {
 				if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer") {
