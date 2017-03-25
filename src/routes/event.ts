@@ -1,10 +1,11 @@
 import * as express from "express";
 import Promise from "ts-promise";
+import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
 module Route {
     export class EventRoutes {
-        constructor(private eventModel: any, private productModel: any, private adminModel: any) {
+        constructor(private eventModel: any, private productModel: any, private userService: UserService) {
 
         }
 
@@ -86,11 +87,6 @@ module Route {
             });
         }
 
-        public isAdmin = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            console.log("Check if admin");
-            next();
-        }
-
         private getProduct = (productId: Number) => {
             return new Promise((resolve, reject) => {
                 this.productModel.one({ id: productId }, function (err: Error, product: any) {
@@ -105,6 +101,38 @@ module Route {
                     }
                 });
             });
+        }
+
+        public addOrganizer = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            let eventId = req.params.event;
+            let username = req.body.username;
+
+            Promise.all([this.getEvent(eventId), this.userService.getUser(username)]).then(values => {
+                let event: any = values[0];
+                let user: any = values[1];
+
+                event.addOrganizers(user, function (err: Error) {
+                    if (err) {
+                        let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                        return res.status(500).send(msg);
+                    } else {
+                        return res.status(204).send();
+                    }
+                });
+            });
+
+
+
+            /*
+            this.getEvent(eventId).then((event: any) => {
+                this.userService.getUser(username).then((user) => {
+
+                });
+                //event.addOrganizers()
+            })..catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+            */
         }
 
         private getEvent = (eventId: Number) => {

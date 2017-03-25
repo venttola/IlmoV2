@@ -4,6 +4,7 @@ import * as express from "express";
 import Promise from "ts-promise";
 import * as bcrypt from "bcrypt";
 import { DatabaseHandler } from "../models/databasehandler";
+import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
 /*
@@ -18,7 +19,7 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 */
 module Route {
 	export class UserRoutes {
-		constructor(private userModel: any, private productModel: any,
+		constructor(private userService: UserService, private productModel: any,
 			private participantGroupModel: any, private saltRounds: number) {
 
 		}
@@ -29,7 +30,7 @@ module Route {
 			let newPassword = req.body.newPassword;
 			let saltRounds = this.saltRounds;
 
-			this.getUser(userEmail).then((user: any) => {
+			this.userService.getUser(userEmail).then((user: any) => {
 				bcrypt.compare(oldPassword, user.password, function(err: Error, success: any) {
 					if (success) {
 						bcrypt.hash(newPassword, saltRounds, function(err: Error, hash: any) {
@@ -55,7 +56,7 @@ module Route {
 		}
 
 		public getUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			this.getUser(req.params.username).then((user: any) => {
+			this.userService.getUser(req.params.username).then((user: any) => {
 				let userData = user;
 				userData.password = undefined; // Delete doesn't work with node-orm
 				return res.status(200).send(JSON.stringify(userData));
@@ -66,7 +67,7 @@ module Route {
 		}
 
 		public setUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			this.getUser(req.params.username).then((user: any) => {
+			this.userService.getUser(req.params.username).then((user: any) => {
 				// TODO: Validation?
 				user.firstname = req.body.firstName;
 				user.lastname = req.body.lastName;
@@ -88,7 +89,7 @@ module Route {
 		}
 
 		public getProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			this.getUser(req.params.username).then((user: any) => {
+			this.userService.getUser(req.params.username).then((user: any) => {
 				user.getProducts(function(err: Error, prods: any) {
 					if (err) {
 						let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
@@ -106,7 +107,7 @@ module Route {
 		public addProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let productId = req.body.productId; // Assuming that products are added one at a time
 
-			this.getUser(req.params.username).then((user: any) => {
+			this.userService.getUser(req.params.username).then((user: any) => {
 				this.getProduct(productId).then((product: any) => {
 					user.addProducts(product, function(err: Error) {
 						if (err) {
@@ -125,7 +126,7 @@ module Route {
 		public removeProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let productId = req.body.productId; // Assuming that products are added one at a time
 
-			this.getUser(req.params.username).then((user: any) => {
+			this.userService.getUser(req.params.username).then((user: any) => {
 				this.getProduct(productId).then((product: any) => {
 					user.removeProducts([product], function(error: Error) {
 						if (error) {
@@ -148,7 +149,7 @@ module Route {
 			let groupId = req.body.groupId;
 
 			this.getGroup(groupId).then((group: any) => {
-				this.getUser(req.params.username).then((user: any) => {
+				this.userService.getUser(req.params.username).then((user: any) => {
 					group.addMembers(user, function(err: Error) {
 						if (err) {
 							return res.status(500).send("ERROR: Group update failed");
@@ -170,7 +171,7 @@ module Route {
 			let groupId = req.body.groupId;
 
 			this.getGroup(groupId).then((group: any) => {
-				this.getUser(req.params.username).then((user: any) => {
+				this.userService.getUser(req.params.username).then((user: any) => {
 					group.removeMembers(user, function(err: Error) {
 						if (err) {
 							return res.status(500).send("ERROR: Group update failed");
@@ -187,23 +188,6 @@ module Route {
 				return res.status(err.statusCode).send(err.message);
 			});
 		}
-
-		// TODO: Add these kinda methods to own service layer?
-		private getUser = (username: String) => {
-			return new Promise((resolve, reject) => {
-				this.userModel.one({email: username}, function(err: Error, user: any) {
-					if (err) {
-						let errorMsg = ErrorHandler.getErrorMsg("User data", ErrorType.DATABASE_READ);
-						reject(new DatabaseError(500, errorMsg));
-					} else if (!user) {
-						let errorMsg = ErrorHandler.getErrorMsg("User", ErrorType.NOT_FOUND);
-						reject(new DatabaseError(400, errorMsg));
-					} else {
-						return resolve(user);
-					}
-				});
-			});
-		};
 
 		private getProduct = (productId: Number) => {
 			return new Promise((resolve, reject) => {

@@ -7,6 +7,7 @@ import * as jwt from "express-jwt";
 
 import { DatabaseHandler } from "./models/databasehandler";
 import { PriviledgeChecker } from "./middleware/priviledgechecker";
+import { UserService } from "./services/userservice";
 
 import * as testRoute from "./routes/testRoute";
 import * as authRoutes from "./routes/auth";
@@ -22,6 +23,7 @@ class Server {
 
 	private handler: DatabaseHandler;
 	private priviledgeChecker: PriviledgeChecker;
+	private userService: UserService;
 
 	constructor() {
 		let config = require("./config.json");
@@ -31,11 +33,19 @@ class Server {
 		this.SECRET = config.SECRET;
 
 		this.handler = new DatabaseHandler();
+		let connection = this.handler.syncDbModels();
+
+		connection.then((conn: any) => {
+			let models = this.handler.getModels();
+			this.userService = new UserService(models.User);
+			this.setRoutes();
+		}).catch((err: Error) => {
+			console.log(err);
+		});
+
 		this.priviledgeChecker = new PriviledgeChecker();
 
 		this.app = express();
-
-		this.openDbConnection();
 	}
 
 	public static init(): Server {
@@ -83,7 +93,7 @@ class Server {
 
 		let userRoute: userRoutes.UserRoutes =
 			new userRoutes.UserRoutes(
-				models.User,
+				this.userService,
 				models.Product,
 				models.ParticipantGroup,
 				this.SALT_ROUNDS
@@ -108,25 +118,14 @@ class Server {
 			new eventRoutes.EventRoutes(
 				models.Event,
 				models.Product,
-				models.Admin
+				this.userService
 			);
 
 		router.get(this.API_PREFIX + "/events", eventRoute.getEvents);
-		router.post(this.API_PREFIX + "/events", this.priviledgeChecker.checkAdmin, eventRoute.addEvent);
+		router.post(this.API_PREFIX + "/events", /*this.priviledgeChecker.checkAdmin,*/ eventRoute.addEvent);
 		router.get(this.API_PREFIX + "/event/:event/product", eventRoute.getEventProducts);
 		router.post(this.API_PREFIX + "/event/:event/product", eventRoute.addProduct);
-	}
-
-	private openDbConnection = () => {
-		let connection = this.handler.syncDbModels();
-
-		connection.then((res: any) => {
-			this.setRoutes();
-		});
-
-		connection.catch((err: any) => {
-			console.log(err);
-		});
+		router.post(this.API_PREFIX + "/events/:event/organizer", eventRoute.addOrganizer);
 	}
 }
 
