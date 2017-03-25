@@ -13,7 +13,7 @@ var distFolder = "dist";
 
 gulp.task("compile", ['tslint'], function () {
 	// Copy js files to dist
-	gulp.src(sourceFilePath + ".js")
+	gulp.src(sourceFilePath + ".{js,json}")
 		.pipe(cache('copying'))
 		.pipe(gulp.dest(distFolder));
 

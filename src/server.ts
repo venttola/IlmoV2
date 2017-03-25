@@ -2,33 +2,40 @@
 
 import * as express from "express";
 import Promise from "ts-promise";
-import { DatabaseHandler } from "./models/databasehandler";
 import * as bodyparser from "body-parser";
 import * as jwt from "express-jwt";
+
+import { DatabaseHandler } from "./models/databasehandler";
+import { PriviledgeChecker } from "./middleware/priviledgechecker";
 
 import * as testRoute from "./routes/testRoute";
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
 import * as eventRoutes from "./routes/event";
 
-
-const API_PREFIX: string = "/api";
-const SALT_ROUNDS: number = 10;
 class Server {
 	public app: express.Application;
-	private handler: any;
+
+	private readonly API_PREFIX: String;
+	private readonly SALT_ROUNDS: number;
+	private readonly SECRET: string;
+
+	private handler: DatabaseHandler;
+	private priviledgeChecker: PriviledgeChecker;
+
 	constructor() {
+		let config = require("./config.json");
+
+		this.API_PREFIX = config.API_PREFIX;
+		this.SALT_ROUNDS = config.SALT_ROUNDS;
+		this.SECRET = config.SECRET;
+
 		this.handler = new DatabaseHandler();
+		this.priviledgeChecker = new PriviledgeChecker();
+
 		this.app = express();
-		this.app.set("superSecret", "testisalaisuus");
-		this.app.set("saltRounds", 10);
-		let connection = this.handler.syncDbModels();
-		connection.then((res: any) => {
-			this.setRoutes();
-		});
-		connection.catch((err: any) => {
-			console.log(err);
-		});
+
+		this.openDbConnection();
 	}
 
 	public static init(): Server {
@@ -39,11 +46,8 @@ class Server {
 		let router: express.Router;
 		router = express.Router();
 
-		// Define routes here
-		var test: testRoute.TestRoute = new testRoute.TestRoute(this.handler);
-		console.log("Setting testroute");
-		router.get("/", test.test);
-
+		// Login and signup routes do not need authentication,
+		// Define them before setting router to use jwt
 		this.setAuthRoutes(router);
 
 		router.use(jwt({
@@ -67,9 +71,9 @@ class Server {
 	}
 
 	private setAuthRoutes(router: express.Router) {
-		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes(this.handler, this.app.get("superSecret"), SALT_ROUNDS);
-		router.post(API_PREFIX + "/signup", authRoute.signup);
-		router.post(API_PREFIX + "/login", authRoute.login);
+		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes(this.handler, this.SECRET, this.SALT_ROUNDS);
+		router.post(this.API_PREFIX + "/signup", authRoute.signup);
+		router.post(this.API_PREFIX + "/login", authRoute.login);
 	}
 
 	private setUserRoutes(router: express.Router) {
@@ -82,10 +86,10 @@ class Server {
 				models.User,
 				models.Product,
 				models.ParticipantGroup,
-				SALT_ROUNDS
+				this.SALT_ROUNDS
 			);
 
-		const userApiPrefix = API_PREFIX + "/user/:username";
+		const userApiPrefix = this.API_PREFIX + "/user/:username";
 
 		router.get(userApiPrefix + "/", userRoute.getUserInfo);
 		router.patch(userApiPrefix + "/credentials", userRoute.setUserCredentials);
@@ -107,29 +111,22 @@ class Server {
 				models.Admin
 			);
 
-		router.get(API_PREFIX + "/events", eventRoute.getEvents);
-		router.post(API_PREFIX + "/events", this.checkAdmin, eventRoute.addEvent);
-		router.get(API_PREFIX + "/event/:event/product", eventRoute.getEventProducts);
-		router.post(API_PREFIX + "/event/:event/product", eventRoute.addProduct);
+		router.get(this.API_PREFIX + "/events", eventRoute.getEvents);
+		router.post(this.API_PREFIX + "/events", this.priviledgeChecker.checkAdmin, eventRoute.addEvent);
+		router.get(this.API_PREFIX + "/event/:event/product", eventRoute.getEventProducts);
+		router.post(this.API_PREFIX + "/event/:event/product", eventRoute.addProduct);
 	}
 
-	// TODO: Move to own middleware class
-	private checkAdmin = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-		console.log("CHECKING ADMIN: " + req.user.admin);
+	private openDbConnection = () => {
+		let connection = this.handler.syncDbModels();
 
-		if (req.user.admin) {
-			next();
-		} else {
-			return res.status(403).send({
-				success: false,
-				message: "Administrator priviledges required"
-			});
-		}
-	}
+		connection.then((res: any) => {
+			this.setRoutes();
+		});
 
-	private checkModerator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-		// TODO: Add list of group ids in req.user object
-		// and compare the request.body.groupId here with the list
+		connection.catch((err: any) => {
+			console.log(err);
+		});
 	}
 }
 

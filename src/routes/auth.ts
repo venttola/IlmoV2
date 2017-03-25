@@ -1,5 +1,6 @@
 "use strict";
 
+import Promise from "ts-promise";
 import * as express from "express";
 import { DatabaseHandler } from "../models/databasehandler";
 
@@ -46,19 +47,23 @@ module Route {
                 } else {
                     bcrypt.compare(password, result.password, function (err: any, success: any) {
                         if (success) {
-                            self.checkIfAdmin(result).then((isAdmin) => {
+                            self.checkIfAdmin(result).then((isAdmin: any) => {
                                 //Create the token for auth
                                 // let options: JSON = JSON.parse("expiresInMinutes: 1440")
+
                                 let userInfo = {
                                     "email": email,
                                     "admin": isAdmin
                                 };
+
                                 let token = jwt.sign(userInfo, superSecret);
+
                                 let response: any = JSON.stringify({
                                     success: true,
                                     message: "Login successfully",
                                     token: token
                                 });
+
                                 res.header("Content-Type", "application/json");
                                 return res.json(response);
                             });
@@ -133,16 +138,18 @@ module Route {
             });
         }
 
-        private checkIfAdmin = (user: any): Promise<Boolean> => {
-            return new Promise((resolve, reject) => user.hasAdmin(function (err: any, isAdmin: Boolean) {
-                if (err && err.literalCode !== "NOT_FOUND") {
-                    console.log("ERROR OCCURED: " + err);
-                    reject(false);
-                } else {
-                    console.log("User '" + user.email + "' admin status: " + isAdmin);
-                    return resolve(isAdmin);
-                }
-            }));
+        private checkIfAdmin = (user: any) => {
+            return new Promise((resolve, reject) => {
+                user.hasAdmin(function (err: any, isAdmin: Boolean) {
+                    if (err && err.literalCode !== "NOT_FOUND") {
+                        console.log("ERROR OCCURED: " + err);
+                        return reject(err);
+                    } else {
+                        console.log("User '" + user.email + "' admin status: " + isAdmin);
+                        return resolve(isAdmin);
+                    }
+                });
+            });
         }
     }
 }
