@@ -9,7 +9,7 @@ module Route {
 
         }
 
-        public addEvent = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        public addEvent = (req: express.Request, res: express.Response) => {
             this.eventModel.create({
                 name: req.body.name,
                 startdate: new Date(req.body.startDate),
@@ -24,7 +24,22 @@ module Route {
             });
         }
 
-        public getEvents = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        public deleteEvent = (req: express.Request, res: express.Response) => {
+            let eventId = req.params.event;
+
+            this.getEvent(eventId).then((event: any) => {
+                event.remove(function (err: Error) {
+                    if (err) {
+                        let msg = ErrorHandler.getErrorMsg("Event", ErrorType.DATABASE_DELETE);
+                        return res.status(500).send(msg);
+                    } else {
+                        return res.status(204).send();
+                    }
+                });
+            });
+        }
+
+        public getEvents = (req: express.Request, res: express.Response) => {
             this.eventModel.all(function (err: Error, events: any) {
                 if (err) {
                     let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_READ);
@@ -35,7 +50,7 @@ module Route {
             });
         }
 
-        public getEventProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        public getEventProducts = (req: express.Request, res: express.Response) => {
             console.log("Getting event products");
             let eventId = req.params.event;
 
@@ -59,7 +74,7 @@ module Route {
             });
         }
 
-        public addProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        public addProduct = (req: express.Request, res: express.Response) => {
             let eventId = req.params.event;
             let productName = req.body.name;
             let productPrice = req.body.price;
@@ -103,7 +118,7 @@ module Route {
             });
         }
 
-        public addOrganizer = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        public addOrganizer = (req: express.Request, res: express.Response) => {
             let eventId = req.params.event;
             let username = req.body.username;
 
@@ -120,19 +135,6 @@ module Route {
                     }
                 });
             });
-
-
-
-            /*
-            this.getEvent(eventId).then((event: any) => {
-                this.userService.getUser(username).then((user) => {
-
-                });
-                //event.addOrganizers()
-            })..catch((err: APIError) => {
-                return res.status(err.statusCode).send(err.message);
-            });
-            */
         }
 
         private getEvent = (eventId: Number) => {

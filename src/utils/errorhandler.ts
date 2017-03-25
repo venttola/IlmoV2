@@ -1,7 +1,8 @@
 export const enum ErrorType {
     NOT_FOUND,
     DATABASE_READ,
-    DATABASE_INSERTION
+    DATABASE_INSERTION,
+    DATABASE_DELETE
 }
 
 export module ErrorHandler {
@@ -18,6 +19,9 @@ export module ErrorHandler {
                 break;
             case ErrorType.DATABASE_INSERTION:
                 msg = `${prefix} ${item} insertion failed`;
+                break;
+            case ErrorType.DATABASE_DELETE:
+                msg = `${prefix} ${item} deletion failed`;
                 break;
         }
 

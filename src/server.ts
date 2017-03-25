@@ -123,9 +123,10 @@ class Server {
 
 		router.get(this.API_PREFIX + "/events", eventRoute.getEvents);
 		router.post(this.API_PREFIX + "/events", /*this.priviledgeChecker.checkAdmin,*/ eventRoute.addEvent);
-		router.get(this.API_PREFIX + "/event/:event/product", eventRoute.getEventProducts);
-		router.post(this.API_PREFIX + "/event/:event/product", eventRoute.addProduct);
+		router.get(this.API_PREFIX + "/events/:event/product", eventRoute.getEventProducts);
+		router.post(this.API_PREFIX + "/events/:event/product", eventRoute.addProduct);
 		router.post(this.API_PREFIX + "/events/:event/organizer", eventRoute.addOrganizer);
+		router.delete(this.API_PREFIX + "/events/:event", eventRoute.deleteEvent);
 	}
 }
 
