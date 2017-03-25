@@ -4,7 +4,7 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 
 module Route {
     export class EventRoutes {
-        constructor(private eventModel: any, private productModel: any) {
+        constructor(private eventModel: any, private productModel: any, private adminModel: any) {
 
         }
 
@@ -84,6 +84,11 @@ module Route {
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
+        }
+
+        public isAdmin = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            console.log("Check if admin");
+            next();
         }
 
         private getProduct = (productId: Number) => {

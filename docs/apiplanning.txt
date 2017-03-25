@@ -18,7 +18,7 @@ DELETE /api/group/:groupname/:username
 PATCH /api/group/moderator
 DELETE /api/group/moderator
 GET /api/group/:username/products
-GET /api/group/payment
+GET /api/group/payment // What are the last two ?
 POST /api/group/payment
 
 --Logged in (Organizer)

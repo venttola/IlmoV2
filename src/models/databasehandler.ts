@@ -83,9 +83,6 @@ export class DatabaseHandler {
 	}
 
 	private updateModelReferences(db: any) {
-
-		db.models.Admin.hasMany("administrator", db.models.User);
-
 		db.models.Discount.hasOne("product", db.models.Product, {}, { reverse: "discounts" });
 
 		db.models.Event.hasMany("products", db.models.Product, {}, { reverse: "events" });
@@ -102,6 +99,8 @@ export class DatabaseHandler {
 		db.models.User.hasMany("products", db.models.Product);
 		db.models.User.hasMany("moderatedGroups", db.models.ParticipantGroup, {}, { reverse: "moderator" });
 		db.models.User.hasMany("payments", db.models.Payment, {}, { reverse: "payee" });
+
+		db.models.User.extendsTo("admin", {});
 
 		console.log("References updated");
 	}

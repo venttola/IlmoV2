@@ -2,9 +2,9 @@
 
 import * as express from "express";
 import Promise from "ts-promise";
-import * as jwt from "jsonwebtoken";
 import { DatabaseHandler } from "./models/databasehandler";
 import * as bodyparser from "body-parser";
+import * as jwt from "express-jwt";
 
 import * as testRoute from "./routes/testRoute";
 import * as authRoutes from "./routes/auth";
@@ -27,33 +27,47 @@ class Server {
 			this.setRoutes();
 		});
 		connection.catch((err: any) => {
-			console.log (err);
+			console.log(err);
 		});
 	}
 
 	public static init(): Server {
-    	return new Server();
-  	}
+		return new Server();
+	}
 
 	private setRoutes() {
 		let router: express.Router;
-	    router = express.Router();
+		router = express.Router();
 
-	    // Define routes here
-	    var test: testRoute.TestRoute = new testRoute.TestRoute(this.handler);
-	    console.log("Setting testroute");
-	    router.get("/", test.test);
+		// Define routes here
+		var test: testRoute.TestRoute = new testRoute.TestRoute(this.handler);
+		console.log("Setting testroute");
+		router.get("/", test.test);
 
-	    this.setAuthRoutes(router);
-	    this.setUserRoutes(router);
+		this.setAuthRoutes(router);
+
+		router.use(jwt({
+			secret: "testisalaisuus",
+			credentialsRequired: true,
+			getToken: function fromHeaderOrQuerystring(req: any) {
+				if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer") {
+					return req.headers.authorization.split(" ")[1];
+				} else if (req.query && req.query.token) {
+					return req.query.token;
+				}
+				return null;
+			}
+		}));
+
+		this.setUserRoutes(router);
 		this.setEventRoutes(router);
 
-	    this.app.use(bodyparser.json());
-	    this.app.use(router);
+		this.app.use(bodyparser.json());
+		this.app.use(router);
 	}
 
 	private setAuthRoutes(router: express.Router) {
-		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes( this.handler, this.app.get("superSecret"), SALT_ROUNDS);
+		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes(this.handler, this.app.get("superSecret"), SALT_ROUNDS);
 		router.post(API_PREFIX + "/signup", authRoute.signup);
 		router.post(API_PREFIX + "/login", authRoute.login);
 	}
@@ -73,14 +87,14 @@ class Server {
 
 		const userApiPrefix = API_PREFIX + "/user/:username";
 
-		router.get(userApiPrefix + 		"/", userRoute.getUserInfo);
-		router.patch(userApiPrefix + 	"/credentials", userRoute.setUserCredentials);
-		router.patch(userApiPrefix + 	"/detail", userRoute.setUserInfo);
-		router.get(userApiPrefix + 		"/products", userRoute.getProducts);
-		router.post(userApiPrefix + 	"/product", userRoute.addProduct);
-		router.delete(userApiPrefix + 	"/product", userRoute.removeProduct);
-		router.post(userApiPrefix + 	"/group", userRoute.addGroup);
-		router.delete(userApiPrefix + 	"/group", userRoute.removeGroup);
+		router.get(userApiPrefix + "/", userRoute.getUserInfo);
+		router.patch(userApiPrefix + "/credentials", userRoute.setUserCredentials);
+		router.patch(userApiPrefix + "/detail", userRoute.setUserInfo);
+		router.get(userApiPrefix + "/products", userRoute.getProducts);
+		router.post(userApiPrefix + "/product", userRoute.addProduct);
+		router.delete(userApiPrefix + "/product", userRoute.removeProduct);
+		router.post(userApiPrefix + "/group", userRoute.addGroup);
+		router.delete(userApiPrefix + "/group", userRoute.removeGroup);
 	}
 
 	private setEventRoutes(router: express.Router) {
@@ -89,41 +103,33 @@ class Server {
 		let eventRoute: eventRoutes.EventRoutes =
 			new eventRoutes.EventRoutes(
 				models.Event,
-				models.Product
+				models.Product,
+				models.Admin
 			);
 
 		router.get(API_PREFIX + "/events", eventRoute.getEvents);
-		router.post(API_PREFIX + "/events", eventRoute.addEvent);
+		router.post(API_PREFIX + "/events", this.checkAdmin, eventRoute.addEvent);
 		router.get(API_PREFIX + "/event/:event/product", eventRoute.getEventProducts);
 		router.post(API_PREFIX + "/event/:event/product", eventRoute.addProduct);
 	}
 
-	private checkAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-		let self = this;
-		// check header or url parameters or post parameters for token
-		let token: string = req.body.token || req.query.token || req.get("x-access-token");
-		console.log(req.get("x-access-token"));
-		console.log(token);
-		// decode token
-		if (token) {
-			// verifies secret and checks exp
-			jwt.verify(token, self.app.get("superSecret"), function (err: any, decoded: any) {
-				if (err) {
-					return res.json({ success: false, message: "Failed to authenticate token." });
-				} else {
-					// if everything is good, save to request for use in other routes
-					// req.decoded = decoded;
-					next();
-				}
-			});
+	// TODO: Move to own middleware class
+	private checkAdmin = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+		console.log("CHECKING ADMIN: " + req.user.admin);
+
+		if (req.user.admin) {
+			next();
 		} else {
-			// if there is no token
-			// return an error
 			return res.status(403).send({
 				success: false,
-				message: "No token provided."
+				message: "Administrator priviledges required"
 			});
 		}
+	}
+
+	private checkModerator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+		// TODO: Add list of group ids in req.user object
+		// and compare the request.body.groupId here with the list
 	}
 }
 
