@@ -4,6 +4,7 @@ import * as express from "express";
 import Promise from "ts-promise";
 import * as bodyparser from "body-parser";
 import * as jwt from "express-jwt";
+import * as cors from "cors";
 
 import { DatabaseHandler } from "./models/databasehandler";
 import { PriviledgeChecker } from "./middleware/priviledgechecker";
@@ -27,7 +28,9 @@ class Server {
 
 	constructor() {
 		let config = require("./config.json");
-
+		let corsOptions: any = {
+			origin: "http://localhost:4200"
+		};
 		this.API_PREFIX = config.API_PREFIX;
 		this.SALT_ROUNDS = config.SALT_ROUNDS;
 		this.SECRET = config.SECRET;
@@ -46,6 +49,7 @@ class Server {
 		this.priviledgeChecker = new PriviledgeChecker();
 
 		this.app = express();
+		this.app.use(cors(corsOptions));
 	}
 
 	public static init(): Server {
