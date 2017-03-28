@@ -4,6 +4,7 @@ export class SignupData{
 	repassword: string;
 	firstname: string;
 	lastname: string;
+	dob: Date;
 	constructor(){
 	}
 	public allPresent(): boolean{
@@ -11,7 +12,8 @@ export class SignupData{
 			   this.password != undefined &&
 			   this.repassword != undefined &&
 			   this.firstname != undefined &&
-			   this.lastname != undefined);
+			   this.lastname != undefined &&
+			   this.dob != undefined);
 	}
 	public encodePassword(): void{
     	//Perform encoding

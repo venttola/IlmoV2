@@ -55,6 +55,10 @@
                     <label>Sukunimi:</label>
                     <input type="text" class="form-control" [(ngModel)]="signupData.lastname" name="signup.lastname" required />
                 </div>
+                <div class="form-group">
+                    <label>Syntymäaika</label>
+                    <input type="date" class="form-control" [(ngModel)]="signupData.dob" name="signup.dob" required />                  
+                </div>
                 <button type="submit" class="btn btn-success" (click)="attemptSignup()">Signup</button>
             </form>
         </div>
