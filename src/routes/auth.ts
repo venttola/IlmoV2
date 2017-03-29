@@ -2,11 +2,10 @@
 
 import Promise from "ts-promise";
 import * as express from "express";
-import { DatabaseHandler } from "../models/databasehandler";
-
 import * as bcrypt from "bcrypt";
-
 import * as jwt from "jsonwebtoken";
+
+import { DatabaseHandler } from "../models/databasehandler";
 module Route {
 
     export class AuthRoutes {
@@ -16,12 +15,12 @@ module Route {
             console.log("Creating authroutes");
         }
         /**
-        * @api {post} api/login/ Get list of all ships
+        * @api {post} api/login/ Check the user credentials against the database.
         * @apiName login
-        * @apiGroup Login
+        * @apiGroup Auth
         * @apiParam {JSON} username {username: "username"}
         * @apiParam {JSON} password {password: "password"}
-        * @apiSuccess -
+        * @apiSuccess {JSON} 
         * @apiError {} Missing Fields
         */
         public login = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -76,14 +75,14 @@ module Route {
             });
         }
         /**
-        * @api {post} api/signup/ Lisää uuden käyttäjän tietokantaan
+        * @api {post} api/signup/ Adds new user to the database
         * @apiName signup
         * @apiGroup Login
-        * @apiParam {JSON} email {email: ""}
-        * @apiParam {JSON} password {password: ""}
-        * @apiParam {JSON} firstname {firstname: ""}
-        * @apiParam {JSON} lastname {lastname: ""}
-        * @apiParam {JSON} dob { }
+        * @apiParam {JSON} email {email: "prettyboy88@hotmail.com"}
+        * @apiParam {JSON} password {password: "password"}
+        * @apiParam {JSON} firstname {firstname: "Matti"}
+        * @apiParam {JSON} lastname {lastname: "Meikalainen"}
+        * @apiParam {JSON} dob {dob: "20.12.1988"}
         * @apiSuccess -
         * @apiError  Missing fields 
         */
@@ -97,13 +96,14 @@ module Route {
                 !req.body.dob) {
                 return res.status(400).send("Error: Missing data \n");
             }
-            //let self = this;
+            let self = this;
             let email: string = req.body.email;
             //let password: string = new Buffer (req.body.password, "base64").toString();
             let password: string = req.body.password;
             let firstname: string = req.body.firstname;
             let lastname: string = req.body.lastname;
-            let dob: string = req.body.dob;
+            let dob: Date = self.stringToDate(req.body.dob);
+            console.log(dob);
             let userModel = this.handler.getModels().User;
             let saltRounds: number = this.saltRounds;
             console.log("Checking username " + email);
@@ -128,6 +128,8 @@ module Route {
                                 if (err) {
                                     console.log("Error creating user: " + err);
                                     // TODO: Proper response
+                                    // It's not a final one, but it's good to let the user know something went wrong.
+                                    return res.status(400).send("Failed to add user:" + err);
                                 } else {
                                     return res.status(201).send("User added!");
                                 }
@@ -150,6 +152,10 @@ module Route {
                     }
                 });
             });
+        }
+        private stringToDate = (dateStr: string): Date => {
+            let splitDob: any = dateStr.split(".");
+            return new Date(splitDob[2], splitDob[1] - 1, splitDob[0]);
         }
     }
 }

@@ -4,7 +4,7 @@ export class SignupData{
 	repassword: string;
 	firstname: string;
 	lastname: string;
-	dob: Date;
+	dob: string;
 	constructor(){
 	}
 	public allPresent(): boolean{
