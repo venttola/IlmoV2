@@ -7,8 +7,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from "./app.component";
 import { Routing, RoutedComponents } from './app.routing';
 
-import { LoginService } from "./loginpage/login.service";
-import { SignupService } from "./loginpage/signup.service";
+import { LoginService } from "./login-page/login.service";
+import { SignupService } from "./login-page/signup.service";
 import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
 

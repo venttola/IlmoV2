@@ -2,7 +2,7 @@ import { Routes, RouterModule, CanActivate } from '@angular/router';
 
 import { AuthGuard } from './authentication/auth-guard.service';
 
-import { LoginPageComponent } from "./loginpage/login-page.component";
+import { LoginPageComponent } from "./login-page/login-page.component";
 
 const appRoutes: Routes = [
   {
