@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 
+import { tokenNotExpired } from "angular2-jwt";
+
 @Injectable()
 export class AuthService {
   
@@ -26,11 +28,13 @@ export class AuthService {
     localStorage.removeItem("id_token");
 
     // Send the user back to the dashboard after logout
-    this.router.navigateByUrl("");
+    //this.router.navigateByUrl("");
   }
 
   loggedIn() {
-    return localStorage.getItem("user");
+    console.log ("Checking token expiration for: " + localStorage.getItem("id_token"));
+    console.log ("Result: " + tokenNotExpired(null, localStorage.getItem("id_token")));
+    return tokenNotExpired(null, localStorage.getItem("id_token"));
     //return tokenNotExpired();
   }
 }

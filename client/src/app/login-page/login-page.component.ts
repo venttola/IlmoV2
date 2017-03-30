@@ -31,6 +31,7 @@ export class LoginPageComponent implements OnInit {
         console.log("Loading Loginhandler");
         this.credentials = new Credentials();
         this.signupData = new SignupData();
+        this.authService.logout();
     }
 
     attemptLogin(): void {

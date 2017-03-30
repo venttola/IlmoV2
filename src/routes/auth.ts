@@ -48,15 +48,14 @@ module Route {
                         if (success) {
                             self.checkIfAdmin(result).then((isAdmin: any) => {
                                 //Create the token for auth
-                                // let options: JSON = JSON.parse("expiresInMinutes: 1440")
+                                let options: any =  {"expiresIn": "1h"};
 
-                                let userInfo = {
+                                let userInfo: any = {
                                     "email": email,
                                     "admin": isAdmin
-                                };
-
-                                let token = jwt.sign(userInfo, superSecret);
-
+                                }; 
+                                console.log(options);
+                                let token = jwt.sign(userInfo, superSecret, options);
                                 let response: any = JSON.stringify({
                                     success: true,
                                     message: "Login successfully",
