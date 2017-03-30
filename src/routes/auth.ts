@@ -20,8 +20,11 @@ module Route {
         * @apiGroup Auth
         * @apiParam {JSON} username {username: "username"}
         * @apiParam {JSON} password {password: "password"}
-        * @apiSuccess {JSON} 
-        * @apiError {} Missing Fields
+        * @apiSuccess {JSON} response {
+                                    success: true,
+                                    message: "Login successfully",
+                                    token: token}
+        * @apiError {JSON} Missing Fields
         */
         public login = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             console.log(req.body);
@@ -83,7 +86,7 @@ module Route {
         * @apiParam {JSON} lastname {lastname: "Meikalainen"}
         * @apiParam {JSON} dob {dob: "20.12.1988"}
         * @apiSuccess -
-        * @apiError  Missing fields 
+        * @apiError {JSON} Missing fields 
         */
         public signup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             console.log(req.body);

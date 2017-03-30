@@ -47,5 +47,10 @@
     "gulp-watch": "^4.3.10",
     "tslint": "^3.15.1",
     "typescript": "^2.0.6"
+  },
+   "apidoc": {
+    "title": "IlmoV2 API V 1",
+    "filename": "README.md",
+    "url": "localhost:4200/v1"
   }
 }
