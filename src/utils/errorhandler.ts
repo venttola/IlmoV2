@@ -6,7 +6,7 @@ export const enum ErrorType {
 }
 
 export module ErrorHandler {
-    export function getErrorMsg(item: String, errorType: ErrorType) {
+    export function getErrorMsg(item: string, errorType: ErrorType) {
         const prefix = "ERROR:";
 
         let msg = "";
@@ -23,6 +23,8 @@ export module ErrorHandler {
             case ErrorType.DATABASE_DELETE:
                 msg = `${prefix} ${item} deletion failed`;
                 break;
+            default:
+                msg = item;
         }
 
         console.log(msg);

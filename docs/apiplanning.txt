@@ -15,10 +15,10 @@ DELETE /api/user/:username/group
 
 -- Logged in (group moderator)
 DELETE /api/group/:groupname/:username
-PATCH /api/group/moderator
-DELETE /api/group/moderator
-GET /api/group/:username/products
-GET /api/group/payment // What are the last two ?
+PATCH /api/group/:groupname/moderator
+DELETE /api/group/:groupname/moderator
+GET /api/group/:groupname/products
+GET /api/group/payment
 POST /api/group/payment
 
 --Logged in (Organizer)
