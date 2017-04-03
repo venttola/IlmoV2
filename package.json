@@ -51,6 +51,6 @@
    "apidoc": {
     "title": "IlmoV2 API V 1",
     "filename": "README.md",
-    "url": "localhost:4200/v1"
+    "url": "localhost:4200/"
   }
 }
