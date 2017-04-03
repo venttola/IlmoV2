@@ -56,7 +56,7 @@ module Route {
                                 let userInfo: any = {
                                     "email": email,
                                     "admin": isAdmin
-                                }; 
+                                };
                                 console.log(options);
                                 let token = jwt.sign(userInfo, superSecret, options);
                                 let response: any = JSON.stringify({
@@ -156,7 +156,7 @@ module Route {
             });
         }
         private stringToDate = (dateStr: string): Date => {
-            let splitDob: any = dateStr.split(".");
+            let splitDob: any = dateStr.split("-");
             return new Date(splitDob[2], splitDob[1] - 1, splitDob[0]);
         }
     }

@@ -89,7 +89,7 @@ export class DatabaseHandler {
 		db.models.Event.hasMany("organizers", db.models.User);
 
 		db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
-		//db.models.ParticipantGroup.hasMany("moderator", db.models.User, {}, { reverse: "moderatedGroups" });
+		db.models.ParticipantGroup.hasMany("groupModerator", db.models.User);
 
 		db.models.Payment.hasOne("event", db.models.Event, {}, { reverse: "products" });
 		db.models.Payment.hasOne("payee", db.models.User, {}, { reverse: "payments" });
