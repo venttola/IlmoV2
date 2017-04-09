@@ -9,8 +9,16 @@ module Route {
 
         }
 
+        /**
+        * @api {post} api/group Adds new group
+        * @apiName New group
+        * @apiGroup Group
+        * @apiParam {JSON} name {name: "Group name"}
+        * @apiParam {JSON} description {description: "Group description"}
+        * @apiSuccess (204) -
+        * @apiError DatabaseInsertionError ERROR: Group data insertion failed
+        */
         public addGroup = (req: express.Request, res: express.Response) => {
-            console.log(this.groupModel);
             this.groupModel.create({
                 name: req.body.name,
                 description: req.body.description
@@ -24,6 +32,19 @@ module Route {
             });
         }
 
+        /**
+        * @api {delete} api/group/:group/:username
+        * @apiName Remove a group member
+        * @apiGroup Group
+        * @apiParam {Number} group Group unique id
+        * @apiParam {String} username Username (email)
+        * @apiSuccess (204) -
+        * @apiError DatabaseReadError ERROR: Group data could not be read from the database
+        * @apiError DatabaseReadError ERROR: Group was not found
+        * @apiError DatabaseReadError ERROR: User data could not be read from the database
+        * @apiError DatabaseReadError ERROR: User was not found
+        * @apiError DatabaseDeleteError ERROR: Member deletion failed
+        */
         public removeMember = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group; // Group name or id?
             let username = req.params.username;
@@ -45,6 +66,19 @@ module Route {
             });
         }
 
+        /**
+        * @api {patch} api/group/:group/moderator
+        * @apiName Add a group moderator
+        * @apiGroup Group
+        * @apiParam {Number} group Group unique id
+        * @apiParam {JSON} username Username (email)
+        * @apiSuccess (204) -
+        * @apiError DatabaseReadError ERROR: Group data could not be read from the database
+        * @apiError DatabaseReadError ERROR: Group was not found
+        * @apiError DatabaseReadError ERROR: User data could not be read from the database
+        * @apiError DatabaseReadError ERROR: User was not found
+        * @apiError DatabaseUpdateError ERROR: Moderator insertion failed
+        */
         public addModerator = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
             let username = req.body.username;
@@ -70,6 +104,19 @@ module Route {
             });
         }
 
+        /**
+        * @api {delete} api/group/:group/:username/moderator
+        * @apiName Remove a group moderator
+        * @apiGroup Group
+        * @apiParam {Number} group Group unique id
+        * @apiParam {String} username Username (email)
+        * @apiSuccess (204) -
+        * @apiError DatabaseReadError ERROR: Group data could not be read from the database
+        * @apiError DatabaseReadError ERROR: Group was not found
+        * @apiError DatabaseReadError ERROR: User data could not be read from the database
+        * @apiError DatabaseReadError ERROR: User was not found
+        * @apiError DatabaseUpdateError ERROR: Moderator deletion failed
+        */
         public removeModerator = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
             let username = req.params.username;
@@ -91,6 +138,19 @@ module Route {
             });
         }
 
+        /**
+        * @api {get} api/group/:group/:username/products
+        * @apiName Ger product list of a specific user
+        * @apiGroup Group
+        * @apiParam {Number} group Group unique id
+        * @apiParam {String} username Username (email)
+        * @apiSuccess (204) -
+        * @apiError DatabaseReadError ERROR: Group data could not be read from the database
+        * @apiError DatabaseReadError ERROR: Group was not found
+        * @apiError DatabaseReadError ERROR: User data could not be read from the database
+        * @apiError DatabaseReadError ERROR: User was not found
+        * @apiError DatabaseConstraintError ERROR: User is not a member of the group
+        */
         public getMemberProducts = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
             let username = req.params.username;
