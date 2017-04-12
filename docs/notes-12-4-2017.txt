@@ -1,0 +1,55 @@
+- Testidataa kantaan
+- Tapahtumalle loppuaika
+- Backendin luokat JSON-luokiksi
+
+- HTTPS-sertifikaatti (Let's encrypt)
+- Hostaus Säätöyhteisö B2 Ry
+
+- Kirjautumaton näkee tapahtumat, ei muuta
+- Vapaa liittyminen
+- Yksi ryhmä per tapahtuma, käyttäjä voi siis olla useamman ryhmän jäsen
+- Viitenumero maksajalle
+
+Organisaatio
+	- Useita järjestäjiä
+
+Järjestäjä
+	- Voi olla useita per tapahtuma
+	- Organisaatio + tapahtuma uniikki 
+
+Admin-näkymä
+	- Voi lisätä organisaatioita
+	- Voi lisätä organisaatioihin
+	-Tapahtumat
+		- CRUD
+		- Järjestäjät
+		- Tuotteet
+	- Käyttäjät
+		- CRUD
+
+Järjestäjä-näkymä
+Tapahtumakoosteet
+	- Osallistujaryhmät
+		- Osallistujat
+		- Tuotteet kappaleittain
+	- Summat osallistujaryhmittäin
+		- Osallistujien kok.määrä
+		- Ruokalijoiden kok.määrä
+		- Vakuutuksenottaneiden kok.määrä
+		- (tuotekohtaiset kplmäärät)
+		- Maksut (ryhmän kaikkien tuotteiden summa)
+	- Vakuutuksenottaneiden nimet
+		- CSV export
+	- Maksaneet/maksamattomat
+
+Osallistujaryhmän moderaattori-näkymä
+	- Ilmoittaa koko ryhmän tapahtumaan
+	- Voi poistaa käyttäjiä ryhmästä
+	- Merkkaa maksaneet osallistujat
+	- Näkee ryhmänjäsenet
+	- Jäsenen tuotteet
+
+Käyttäjän tuotevalinta
+	- Käyttäjä valitsee kaikki tuotteet itse ja merkkaa valinnan yhteydessä oikean alennuksen
+		- Checkbox-lista tuotteille
+		- Tuotekohtaisesti radiobutton-lista alennuksille
