@@ -37,8 +37,10 @@ module Route {
         public addEvent = (req: express.Request, res: express.Response) => {
             this.eventModel.create({
                 name: req.body.name,
-                startdate: new Date(req.body.startDate),
-                description: req.body.description
+                startDate: new Date(req.body.startDate),
+                endDate: new Date(req.body.endDate),
+                description: req.body.description,
+                registerationOpen: req.body.registerationOpen
             }, function (err: Error, items: any) {
                 if (err) {
                     let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_INSERTION);
@@ -85,6 +87,8 @@ module Route {
                     let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_READ);
                     return res.status(500).send(errorMsg);
                 } else {
+                    console.log("The eventlist contains: ");
+                    console.log(events);
                     return res.status(200).send(events);
                 }
             });
