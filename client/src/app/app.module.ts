@@ -11,7 +11,8 @@ import { LoginService } from "./login-page/login.service";
 import { SignupService } from "./login-page/signup.service";
 import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
-import { AdminPageComponent } from './admin-page/admin-page.component';
+import { EventService} from "./event.service";
+
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { AdminPageComponent } from './admin-page/admin-page.component';
     SignupService,
     AuthService,
     AuthGuard,
+    EventService
      ],
   bootstrap: [AppComponent]
 })

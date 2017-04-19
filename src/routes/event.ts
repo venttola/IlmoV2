@@ -6,11 +6,12 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 module Route {
 
     class Event {
-        name: string;
-        starDate: Date;
-        endDate: Date;
-        description: string;
-        registerationOpen: boolean;
+        constructor(private id: number,
+                    private name: string,
+                    private startDate: Date,
+                    private endDate: Date,
+                    private description: string,
+                    private registerationOpen: boolean) {}
     }
     class Product {
         name: string;
@@ -87,9 +88,17 @@ module Route {
                     let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_READ);
                     return res.status(500).send(errorMsg);
                 } else {
+                    let eventList: Event[] = new Array<Event>();
                     console.log("The eventlist contains: ");
-                    console.log(events);
-                    return res.status(200).send(events);
+                    for (let event of events){
+                        eventList.push(new Event(event.id,
+                                                 event.name,
+                                                 event.startDate,
+                                                 event.endDate,
+                                                 event.description,
+                                                 event.registerationOpen ));
+                    }
+                    return res.status(200).json(eventList);
                 }
             });
         }

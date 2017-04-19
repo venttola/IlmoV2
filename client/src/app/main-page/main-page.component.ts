@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Event } from "../event";
+
+import { EventService } from "../event.service";
 
 @Component({
   selector: 'app-main-page',
@@ -6,10 +9,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent implements OnInit {
-
-  constructor() { }
+  eventList: any;
+  error: any;
+  constructor(private eventService: EventService) { }
 
   ngOnInit() {
+  	this.getEvents();
+
+  }
+  getEvents(){
+  	this.eventService.getEventListing().subscribe(events => this.eventList = events,
+  												  error => this.error = <any>error);
   }
 
 }
