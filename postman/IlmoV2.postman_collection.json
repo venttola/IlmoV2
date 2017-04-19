@@ -47,7 +47,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"testievent\",\n\t\"startDate\": \"Sat Mar 04 2017 12:56:26 GMT+0200 (FLE Standard Time)\",\n\t\"description\": \"ASD\"\n}"
+							"raw": "{\n\t\"name\": \"testievent\", \n\t\"startDate\": \"Sat Mar 04 2017 12:56:26 GMT+0200 (FLE Standard Time)\", \n\t\"endDate\": \"Sat Mar 06 2017 12:56:26 GMT+0200 (FLE Standard Time)\", \n\t\"description\": \"ASD\"\n, \n\t\"registerationOpen\": \"false\"\n}"
 						},
 						"description": ""
 					},

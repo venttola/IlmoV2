@@ -4,6 +4,22 @@ import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
 module Route {
+
+    class Event {
+        name: string;
+        starDate: Date;
+        endDate: Date;
+        description: string;
+        registerationOpen: boolean;
+    }
+    class Product {
+        name: string;
+        price: string;
+    }
+    class Discount {
+        name: string;
+        amount: string;
+    }
     export class EventRoutes {
         constructor(private eventModel: any, private productModel: any, private userService: UserService) {
 
