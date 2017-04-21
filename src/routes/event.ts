@@ -72,6 +72,9 @@ module Route {
                         return res.status(204).send();
                     }
                 });
+            })
+            .catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
             });
         }
 
