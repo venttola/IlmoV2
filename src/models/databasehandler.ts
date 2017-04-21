@@ -85,11 +85,12 @@ export class DatabaseHandler {
 	private updateModelReferences(db: any) {
 		db.models.Discount.hasOne("product", db.models.Product, {}, { reverse: "discounts" });
 
-		db.models.Event.hasMany("products", db.models.Product, {}, { reverse: "events" });
-		db.models.Event.hasMany("organizers", db.models.User);
-
 		db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
 		db.models.ParticipantGroup.hasMany("groupModerator", db.models.User);
+
+		db.models.Event.hasMany("products", db.models.Product, {}, { reverse: "events" });
+		db.models.Event.hasMany("organizers", db.models.User);
+		db.models.Event.hasMany("participantGroups", db.models.ParticipantGroup);
 
 		db.models.Payment.hasOne("event", db.models.Event, {}, { reverse: "products" });
 		db.models.Payment.hasOne("payee", db.models.User, {}, { reverse: "payments" });

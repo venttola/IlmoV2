@@ -124,7 +124,8 @@ class Server {
 			new eventRoutes.EventRoutes(
 				models.Event,
 				models.Product,
-				this.userService
+				this.userService,
+				models.ParticipantGroup
 			);
 
 		router.get(this.API_PREFIX + "/events", eventRoute.getEvents);
@@ -133,6 +134,7 @@ class Server {
 		router.post(this.API_PREFIX + "/events/:event/product", eventRoute.addProduct);
 		router.post(this.API_PREFIX + "/events/:event/organizer", eventRoute.addOrganizer);
 		router.delete(this.API_PREFIX + "/events/:event", eventRoute.deleteEvent);
+		router.post(this.API_PREFIX + "/events/:event/group", eventRoute.addParticipantGroup);
 	}
 
 	private setGroupRoutes(router: express.Router) {

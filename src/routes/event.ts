@@ -7,11 +7,11 @@ module Route {
 
     class Event {
         constructor(private id: number,
-                    private name: string,
-                    private startDate: Date,
-                    private endDate: Date,
-                    private description: string,
-                    private registerationOpen: boolean) {}
+            private name: string,
+            private startDate: Date,
+            private endDate: Date,
+            private description: string,
+            private registerationOpen: boolean) { }
     }
     class Product {
         name: string;
@@ -22,7 +22,7 @@ module Route {
         amount: string;
     }
     export class EventRoutes {
-        constructor(private eventModel: any, private productModel: any, private userService: UserService) {
+        constructor(private eventModel: any, private productModel: any, private userService: UserService, private participantGroupModel: any) {
 
         }
 
@@ -73,9 +73,9 @@ module Route {
                     }
                 });
             })
-            .catch((err: APIError) => {
-                return res.status(err.statusCode).send(err.message);
-            });
+                .catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
+                });
         }
 
         /**
@@ -93,14 +93,15 @@ module Route {
                 } else {
                     let eventList: Event[] = new Array<Event>();
                     console.log("The eventlist contains: ");
-                    for (let event of events){
+                    for (let event of events) {
                         eventList.push(new Event(event.id,
-                                                 event.name,
-                                                 event.startDate,
-                                                 event.endDate,
-                                                 event.description,
-                                                 event.registerationOpen ));
+                            event.name,
+                            event.startDate,
+                            event.endDate,
+                            event.description,
+                            event.registerationOpen));
                     }
+
                     return res.status(200).json(eventList);
                 }
             });
@@ -208,6 +209,46 @@ module Route {
                         return res.status(500).send(msg);
                     } else {
                         return res.status(204).send();
+                    }
+                });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+        /**
+        * @api {post} api/events/:event/group Adds participantgroup to event
+        * @apiName Add participantgroup to event
+        * @apiGroup Event
+        * @apiParam {Number} event Events unique ID
+        * @apiParam {JSON} groupId {groupId: 1}
+        * @apiSuccess (204) -
+        * @apiError DatabaseReadError ERROR: Event data could not be read from the database
+        * @apiError DatabaseReadError ERROR: ParticipantGroup data could not be read from the database
+        * @apiError NotFound ERROR: Event was not found
+        * @apiError NotFound ERROR: ParticipantGroup was not found
+        * @apiError DatabaseInsertionError ERROR: ParticipantGroup insertion failed
+        */
+        public addParticipantGroup = (req: express.Request, res: express.Response) => {
+            let eventId = req.params.event;
+            let groupId = req.body.groupId;
+
+            this.getEvent(eventId).then((event: any) => {
+                this.participantGroupModel.one({ id: groupId }, function (err: Error, group: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("ParticipantGroup data", ErrorType.DATABASE_READ);
+                        return res.status(500).send(errorMsg);
+                    } else if (!group) {
+                        let errorMsg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.NOT_FOUND);
+                        return res.status(404).send(errorMsg);
+                    } else {
+                        event.addParticipantGroups(group, function (err: Error) {
+                            if (err) {
+                                let msg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.DATABASE_INSERTION);
+                                return res.status(500).send(msg);
+                            } else {
+                                return res.status(204).send();
+                            }
+                        });
                     }
                 });
             }).catch((err: APIError) => {
