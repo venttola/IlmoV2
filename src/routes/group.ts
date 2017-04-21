@@ -87,11 +87,7 @@ module Route {
                 let group: any = values[0];
                 let user: any = values[1];
 
-                console.log(group);
-                console.log(user);
-
                 group.addGroupModerator(user, function (err: Error) {
-                    console.log("TEST");
                     if (err) {
                         let msg = ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_INSERTION);
                         return res.status(500).send(msg);
