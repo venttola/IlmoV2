@@ -4,14 +4,14 @@ import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
 
 
-import { LoginPageComponent } from "./login-page/login-page.component";
+import { FrontPageComponent } from "./front-page/front-page.component";
 import { MainPageComponent } from "./main-page/main-page.component";
 import { AdminPageComponent } from "./admin-page/admin-page.component";
 
 const appRoutes: Routes = [
   {
     path: "",
-    component: LoginPageComponent
+    component: FrontPageComponent
   },
   {
   	path: "main",
@@ -27,6 +27,6 @@ const appRoutes: Routes = [
 
 export const Routing = RouterModule.forRoot(appRoutes);
 
-export const RoutedComponents = [LoginPageComponent, 
+export const RoutedComponents = [FrontPageComponent, 
 								                 MainPageComponent,  
                                  AdminPageComponent];

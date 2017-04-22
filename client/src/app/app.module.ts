@@ -7,17 +7,21 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from "./app.component";
 import { Routing, RoutedComponents } from './app.routing';
 
-import { LoginService } from "./login-page/login.service";
-import { SignupService } from "./login-page/signup.service";
+import { LoginService } from "./front-page/login-component/login.service";
+import { SignupService } from "./front-page/signup-component/signup.service";
 import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { EventService} from "./event.service";
+import { SignupComponentComponent } from './front-page/signup-component/signup.component';
+import { LoginComponentComponent } from './front-page/login-component/login.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    RoutedComponents
+    RoutedComponents,
+    SignupComponentComponent,
+    LoginComponentComponent
   ],
   imports: [
     BrowserModule,

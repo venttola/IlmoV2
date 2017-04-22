@@ -1,0 +1,23 @@
+<section id="login">
+    <div id = "login-caption">
+      <div class="container">
+        <div class="col-sm-10 col-sm-offset-1">
+          <h1>Tervetuloa Ilmoportaaliin</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis sit dolores, magnam excepturi ratione suscipit, id nihil atque architecto ipsum necessitatibus nemo quis quia animi aliquid quo omnis pariatur quos!</p>
+          <form action="" class="form-inline">
+            <div class="form-group">
+              <label class="sr-only" >Sähköposti:</label>
+              <input type="text" class="form-control form-control-lg" placeholder="etu.suku@mail.com" id="#.username" required [(ngModel)]="credentials.email" name="#.username"/>
+            </div>
+            <br>
+            <div class="form-group">
+              <label class="sr-only">Salasana:</label>
+              <input type="text" class="form-control form-control-lg" placeholder="salasana"  id="#.password" type="password" required [(ngModel)]="credentials.password" name="#.password"/>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary btn-lg" (click)="attemptLogin()">Kirjaudu sisään</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
