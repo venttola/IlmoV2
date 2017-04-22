@@ -18,7 +18,7 @@ export class EventService {
       this.headers.append('Authorization', 'Bearer ' + localStorage.getItem("id_token"));
   }
 
-  getEventListing(): Observable<any[]>{
+  getEventListing(): Observable<Event[]>{
   	let response: any = this.http.get(EVENTS_URL, { headers: this.headers }).map(this.extractData).catch(this.handleError);
   	return (response);
   }

@@ -9,7 +9,7 @@ import { EventService } from "../event.service";
   styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent implements OnInit {
-  eventList: any;
+  eventList: Event[];
   error: any;
   constructor(private eventService: EventService) { }
 
