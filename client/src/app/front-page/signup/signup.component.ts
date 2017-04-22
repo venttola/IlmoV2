@@ -8,7 +8,7 @@ import { SignupService } from "./signup.service";
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponentComponent implements OnInit {
+export class SignupComponent implements OnInit {
   @Input() signupData: SignupData;
   error: any;
   constructor(private signupService: SignupService) { }

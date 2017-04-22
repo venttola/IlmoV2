@@ -9,7 +9,7 @@ import { AuthService } from "../../authentication/auth.service";
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponentComponent implements OnInit {
+export class LoginComponent implements OnInit {
   @Input() credentials: Credentials;
   error: any;
   constructor(private loginService: LoginService,
