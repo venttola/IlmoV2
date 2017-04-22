@@ -28,7 +28,7 @@ export class AuthService {
     localStorage.removeItem("id_token");
 
     // Send the user back to the dashboard after logout
-    //this.router.navigateByUrl("");
+    this.router.navigateByUrl("");
   }
 
   loggedIn(): boolean {

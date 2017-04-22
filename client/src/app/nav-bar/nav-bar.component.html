@@ -1,0 +1,23 @@
+<nav class="navbar navbar-toggleable-md navbar-dark bg-inverse navbar-full">
+	<button class="navbar-toggler navbar-toggler-right navbar-light" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<a class="navbar-brand" routerLink="" routerLinkActive="active">Ilmoportaali</a>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<div class="navbar-nav">
+			
+			<div class="navbar-nav" *ngIf=!isLoggedIn()>
+				<a class="nav-item nav-link" routerLink="">Etusivu <span class="sr-only">(current)</span></a>
+				<a class="nav-item nav-link" routerLink="/login">Kirjaudu sisään</a>
+				<a class="nav-item nav-link" routerLink="/signup" >Rekisteröidy</a>
+			</div>
+			<div class="navbar-nav" *ngIf=isLoggedIn()>
+				<a class="nav-item nav-link" routerLink="main">Etusivu <span class="sr-only">(current)</span></a>
+				<a class="nav-item nav-link" routerLink="#">Link</a>
+				<a class="nav-item nav-link disabled" routerLink="">Disabled</a>
+				<button class="btn btn-link my-lg-0 my-sm-0" type="submit" (click)="logout()">Kirjaudu ulos</button>
+			</div>
+		</div>
+	</div>
+</nav>

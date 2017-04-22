@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Event } from "../event";
 
 import { EventService } from "../event.service";
-
+import { AuthService } from "../authentication/auth.service";
 @Component({
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
@@ -11,7 +11,9 @@ import { EventService } from "../event.service";
 export class MainPageComponent implements OnInit {
   eventList: Event[];
   error: any;
-  constructor(private eventService: EventService) { }
+  constructor(private eventService: EventService,
+              private authService: AuthService) { 
+  }
 
   ngOnInit() {
   	this.getEvents();
@@ -21,5 +23,7 @@ export class MainPageComponent implements OnInit {
   	this.eventService.getEventListing().subscribe(events => this.eventList = events,
   												  error => this.error = <any>error);
   }
-
+  logout(): void {
+    this.authService.logout();
+  }
 }

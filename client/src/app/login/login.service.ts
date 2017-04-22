@@ -4,7 +4,7 @@ import "rxjs/add/operator/toPromise";
 
 
 import { Credentials } from "./credentials.model";
-import { AuthService } from "../../authentication/auth.service";
+import { AuthService } from "../authentication/auth.service";
 
 const loginURL = "http://localhost:8080/api/login";
 
