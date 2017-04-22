@@ -9,12 +9,12 @@
 			
 			<div class="navbar-nav" *ngIf=!isLoggedIn()>
 				<a class="nav-item nav-link" routerLink="">Etusivu <span class="sr-only">(current)</span></a>
-				<a class="nav-item nav-link" routerLink="/login">Kirjaudu sisään</a>
-				<a class="nav-item nav-link" routerLink="/signup" >Rekisteröidy</a>
+				<a class="nav-item nav-link" routerLink="login">Kirjaudu sisään</a>
+				<a class="nav-item nav-link" routerLink="signup" >Rekisteröidy</a>
 			</div>
 			<div class="navbar-nav" *ngIf=isLoggedIn()>
 				<a class="nav-item nav-link" routerLink="main">Etusivu <span class="sr-only">(current)</span></a>
-				<a class="nav-item nav-link" routerLink="#">Link</a>
+				<a class="nav-item nav-link" routerLink="settings">Käyttäjäasetukset</a>
 				<a class="nav-item nav-link disabled" routerLink="">Disabled</a>
 				<button class="btn btn-link my-lg-0 my-sm-0" type="submit" (click)="logout()">Kirjaudu ulos</button>
 			</div>

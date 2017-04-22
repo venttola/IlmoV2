@@ -32,10 +32,7 @@ export class AuthService {
   }
 
   loggedIn(): boolean {
-    console.log ("Checking token expiration for: " + localStorage.getItem("id_token"));
-    console.log ("Result: " + tokenNotExpired(null, localStorage.getItem("id_token")));
     return tokenNotExpired(null, localStorage.getItem("id_token"));
-    //return tokenNotExpired();
   }
 
   isAdmin(): boolean {

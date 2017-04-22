@@ -14,6 +14,8 @@ import { AuthGuard } from "./authentication/auth-guard.service";
 import { EventService} from "./event.service";
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
+import { UserSettingsService } from './user-settings/user-settings.service';
+
 
 
 @NgModule({
@@ -34,7 +36,8 @@ import { SignupService } from "./signup/signup.service";
     AuthGuard,
     EventService,
     LoginService,
-    SignupService
+    SignupService,
+    UserSettingsService
      ],
   bootstrap: [AppComponent]
 })

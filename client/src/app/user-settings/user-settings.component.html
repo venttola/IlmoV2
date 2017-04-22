@@ -1,0 +1,37 @@
+ <h1>Muuta käyttäjätietoja </h1>
+<form >
+   <div class="form-group">
+    <label for="email" class="sr-only">Sähköposti:</label>
+    <input type="email" class="form-control" placeholder="email@example.com" id="email" [(ngModel)]="userData.email" name="email"/>
+</div>
+<div class="form-group">
+    <label for="firstname" class="sr-only">Etunimi:</label>
+    <input type="text" class="form-control" placeholder="Etunimi" id="firstname" [(ngModel)]="userData.firstname" name="firstname"/>
+</div>
+<div class="form-group">
+    <label for="lastname" class="sr-only">Sukunimi:</label>
+    <input type="text" class="form-control" placeholder="Sukunimi" id="lastname" [(ngModel)]="userData.lastname" name="lastname"/>
+</div>
+<div class="form-group">
+    <label for="dob" class="sr-only">Syntymäaika:</label>
+    <input type="date" class="form-control" placeholder="1990-4-12" id="dob" [(ngModel)]="userData.dob" name="dob"/>                  
+</div>
+<div class="form-group">
+    <label for="allergies" class="sr-only">Allergiat:</label>
+    <input type="text" class="form-control" placeholder="" id="allergies" [(ngModel)]="userData.allergies" name="allergies"/>                  
+</div>
+<div class="form-group">
+    <label for="password" class="sr-only">Salasana:</label>
+    <input type="password" class="form-control" placeholder="Uusi salasana" id="password" [(ngModel)]="userData.newPassword" name="password"/>
+</div>
+<div class="form-group">
+    <label for="repassword" class="sr-only">Salasana uudestaan:</label>
+    <input type="password" class="form-control" placeholder="Uusi salasana uudestaan" id="reNewPassword" [(ngModel)]="userData.reNewPassword" name="repassword"/>
+</div> 
+<div class="form-group">
+    <label for="password" class="sr-only">Vahvista muutokset antamalla vanhasalasana:</label>
+    <input type="password" class="form-control" placeholder="Vahvista muutokset antamalla vanha salasana" id="password" [(ngModel)]="userData.password" name="password" required  />
+</div>
+<button type="submit" class="btn btn-success" (click)="sendUpdate()">Muuta tietoja</button>
+</form>
+

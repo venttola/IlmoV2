@@ -11,7 +11,7 @@ import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
 import { MainPageComponent } from "./main-page/main-page.component";
 import { AdminPageComponent } from "./admin-page/admin-page.component";
-
+import { UserSettingsComponent } from "./user-settings/user-settings.component";
 const appRoutes: Routes = [
   {
     path: "",
@@ -36,6 +36,11 @@ const appRoutes: Routes = [
     canActivate: [AdminGuard] 
   },
   {
+    path: "settings",
+    component: UserSettingsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: "**",
     redirectTo: "",
     pathMatch: "full"
@@ -48,4 +53,5 @@ export const RoutedComponents = [FrontPageComponent,
 								                 MainPageComponent,  
                                  AdminPageComponent,
                                  LoginComponent,
-                                 SignupComponent];
+                                 SignupComponent,
+                                 UserSettingsComponent];
