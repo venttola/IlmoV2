@@ -4,7 +4,7 @@ import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 
-import { Event } from "./event";
+import { Event } from "./event-model";
 import { AuthorizedHttpService } from "./authorizedhttp.service";
 
 import { AuthService } from "./authentication/auth.service";
