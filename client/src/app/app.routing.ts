@@ -22,6 +22,11 @@ const appRoutes: Routes = [
     path: "admin",
     component: AdminPageComponent,
     canActivate: [AdminGuard] 
+  },
+  {
+    path: "**",
+    redirectTo: "",
+    pathMatch: "full"
   }
 ];
 

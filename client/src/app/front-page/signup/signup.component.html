@@ -1,37 +1,27 @@
-<section id="signup">
-    <div id = "signup-caption">
-      <div class="container">
-        <div class="col-sm-10 col-sm-offset-1">
-          <h1>Tervetuloa Ilmoportaaliin</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis sit dolores, magnam excepturi ratione suscipit, id nihil atque architecto ipsum necessitatibus nemo quis quia animi aliquid quo omnis pariatur quos!</p>
-         <form class="form-inline">
-                <div class="form-group">
-                    <label class="sr-only">Sähköposti:</label>
-                    <input type="text" class="form-control" placeholder="email@example.com" [(ngModel)]="signupData.email" name="signup.username" required />
-                </div>
-                <div class="form-group">
-                    <label class="sr-only">Salasana:</label>
-                    <input type="text" class="form-control" placeholder="Salasana" [(ngModel)]="signupData.password" name="signup.password" required type="password" />
-                </div>
-                <div class="form-group">
-                    <label class="sr-only">Salasana uudestaan:</label>
-                    <input type="text" class="form-control" placeholder="Salasana uudestaan" [(ngModel)]="signupData.repassword" name="signup.repassword" required type="password" />
-                </div> 
-                <div class="form-group">
-                    <label class="sr-only">Etunimi:</label>
-                    <input type="text" class="form-control" placeholder="Etunimi" [(ngModel)]="signupData.firstname" name="signup.firstname" required />
-                </div>
-                <div class="form-group">
-                    <label class="sr-only">Sukunimi:</label>
-                    <input type="text" class="form-control" placeholder="Sukunimi" [(ngModel)]="signupData.lastname" name="signup.lastname" required />
-                </div>
-                <div class="form-group">
-                    <label class="sr-only">Syntymäaika</label>
-                    <input type="date" class="form-control" placeholder="20.4.1990" [(ngModel)]="signupData.dob" name="signup.dob" required />                  
-                </div>
-                <button type="submit" class="btn btn-success" (click)="attemptSignup()">Signup</button>
-            </form>
-        </div>
-      </div>
-    </div>
-  </section>
+<form >
+   <div class="form-group">
+    <label for="email" class="sr-only">Sähköposti:</label>
+    <input type="email" class="form-control" placeholder="email@example.com" id="email" [(ngModel)]="signupData.email" name="email" required />
+</div>
+<div class="form-group">
+    <label for="password" class="sr-only">Salasana:</label>
+    <input type="password" class="form-control" placeholder="Salasana" id="password" [(ngModel)]="signupData.password" name="password" required  />
+</div>
+<div class="form-group">
+    <label for="repassword" class="sr-only">Salasana uudestaan:</label>
+    <input type="password" class="form-control" placeholder="Salasana uudestaan" id="repassword" [(ngModel)]="signupData.repassword" name="repassword" required  />
+</div> 
+<div class="form-group">
+    <label for="firstname" class="sr-only">Etunimi:</label>
+    <input type="text" class="form-control" placeholder="Etunimi" id="firstname" [(ngModel)]="signupData.firstname" name="firstname" required />
+</div>
+<div class="form-group">
+    <label for="lastname" class="sr-only">Sukunimi:</label>
+    <input type="text" class="form-control" placeholder="Sukunimi" id="lastname" [(ngModel)]="signupData.lastname" name="lastname" required />
+</div>
+<div class="form-group">
+    <label for="dob" class="sr-only">Syntymäaika:</label>
+    <input type="date" class="form-control" placeholder="1990-4-12" id="dob" [(ngModel)]="signupData.dob" name="dob" required />                  
+</div>
+<button type="submit" class="btn btn-success" (click)="attemptSignup()">Signup</button>
+</form>

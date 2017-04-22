@@ -1,5 +1,4 @@
-
-<nav class="navbar navbar-toggleable-md navbar-dark bg-inverse ">
+<nav class="navbar navbar-toggleable-md navbar-dark bg-inverse navbar-full">
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -8,25 +7,35 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <button class="btn btn-link" (click)="openFrontPage()">Home <span class="sr-only">(current)</span></button>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
+        <button class="btn btn-link my-2 my-sm-0" (click)="openLogin()" >Kirjaudu sisään</button>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
+        <button class="btn btn-link my-2 my-sm-0" (click)="openSignup()" >Rekisteröidy</button>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
   </div>
 </nav>
-
-<div *ngIf="loginOpen">
-Login
-</div>
-<div *ngIf="signupOpen"> Signup</div>
+<section id="signup">
+  <div id = "signup-caption">
+    <div class="container">
+      <div class="col-sm-10 col-sm-offset-1">
+        <h1>Tervetuloa Ilmoportaaliin</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis sit dolores, magnam excepturi ratione suscipit, id nihil atque architecto ipsum necessitatibus nemo quis quia animi aliquid quo omnis pariatur quos!</p>
+        <div *ngIf="frontPageOpen">
+          There could be something here
+        </div>
+        <div *ngIf="loginOpen">
+          <login> </login>
+        </div>
+        <div *ngIf="signupOpen">
+          <signup> </signup>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 
