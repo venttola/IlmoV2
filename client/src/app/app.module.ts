@@ -11,11 +11,12 @@ import { Routing, RoutedComponents } from './app.routing';
 
 import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
+import { AdminGuard } from "./authentication/admin-guard.service";
 import { EventService} from "./event.service";
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
 import { UserSettingsService } from './user-settings/user-settings.service';
-
+import { EventCreatorService } from "./admin-page/event-creator.service";
 
 
 @NgModule({
@@ -34,10 +35,12 @@ import { UserSettingsService } from './user-settings/user-settings.service';
   providers: [
     AuthService,
     AuthGuard,
+    AdminGuard,
     EventService,
     LoginService,
     SignupService,
-    UserSettingsService
+    UserSettingsService,
+    EventCreatorService
      ],
   bootstrap: [AppComponent]
 })

@@ -9,8 +9,6 @@ import { AuthorizedHttpService } from "./authorizedhttp.service";
 
 import { AuthService } from "./authentication/auth.service";
 
-
-
 @Injectable()
 export class EventService extends AuthorizedHttpService {
   eventsUrl: string;

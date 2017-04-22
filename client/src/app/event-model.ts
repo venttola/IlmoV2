@@ -1,8 +1,12 @@
 export class Event {
 	id: number;
 	name: string;
-	starDate: Date;
+	startDate: Date;
 	endDate: Date;
 	description: string;
-	registerationOpem: boolean;
+	registerationOpen: boolean;
+	constructor(){
+		this.name = "";
+		this.registerationOpen = false;
+	}
 }

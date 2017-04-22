@@ -18,6 +18,9 @@
 				<a class="nav-item nav-link disabled" routerLink="">Disabled</a>
 				<button class="btn btn-link my-lg-0 my-sm-0" type="submit" (click)="logout()">Kirjaudu ulos</button>
 			</div>
+			<div class="navbar-nav" *ngIf=isAdmin()>
+				<a href="" class="nav-item nav-link" routerLink="admin">Hallinta</a>
+			</div>
 		</div>
 	</div>
 </nav>
