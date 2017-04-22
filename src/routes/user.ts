@@ -26,13 +26,14 @@ module Route {
 
 		public setUserCredentials = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let userEmail = req.params.username;
-			let oldPassword = req.body.oldPassword;
+			let oldPassword = req.body.password;
 			let newPassword = req.body.newPassword;
 			let saltRounds = this.saltRounds;
-
+			console.log("Updating pasword");
 			this.userService.getUser(userEmail).then((user: any) => {
 				bcrypt.compare(oldPassword, user.password, function(err: Error, success: any) {
 					if (success) {
+						console.log("Passwords match");
 						bcrypt.hash(newPassword, saltRounds, function(err: Error, hash: any) {
 							if (!err) {
 								user.password = hash;
@@ -47,6 +48,9 @@ module Route {
 								console.log("Hash calculation failed", err);
 							}
 						});
+					} else {
+						console.log("Credential update failed", err);
+						return res.status(500).send("Credential update failed");
 					}
 				});
 			})
@@ -67,20 +71,31 @@ module Route {
 		}
 
 		public setUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			this.userService.getUser(req.params.username).then((user: any) => {
-				// TODO: Validation?
-				user.firstname = req.body.firstName;
-				user.lastname = req.body.lastName;
-				user.dob = new Date(req.body.dob);
-				user.allergies = req.body.allergies;
-
-				user.save(function(err: Error){
-					if (!err) {
-						return res.status(204).send();
+			console.log(req.body);
+			let userEmail = req.params.username;
+			let password = req.body.password;
+			console.log("updating userdata");
+			this.userService.getUser(userEmail).then((user: any) => {
+				bcrypt.compare(password, user.password, function(err: Error, success: any) {
+					if (success) {
+						user.firstname = req.body.firstname;
+						user.lastname = req.body.lastname;
+						user.dob = new Date(req.body.dob);
+						user.allergies = req.body.allergies;
+						user.save(function(err: Error){
+							if (!err) {
+								return res.status(204).send();
+							} else {
+								console.log(err);
+								return res.status(500).send("User details update failed");
+							}
+						});
 					} else {
-						console.log(err);
-						return res.status(500).send("User details update failed");
-					}
+								console.log("Userdata update failed", err);
+								return res.status(500).send("User details update failed");
+							}
+				}).catch((err: APIError) => {
+					return res.status(err.statusCode).send(err.message);
 				});
 			})
 			.catch((err: APIError) => {
@@ -89,6 +104,7 @@ module Route {
 		}
 
 		public getProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			console.log(req.body);
 			this.userService.getUser(req.params.username).then((user: any) => {
 				user.getProducts(function(err: Error, prods: any) {
 					if (err) {

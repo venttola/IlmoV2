@@ -1,5 +1,5 @@
- <h1>Muuta käyttäjätietoja </h1>
-<form >
+<h1>Muuta käyttäjätietoja </h1>
+<form>
    <div class="form-group">
     <label for="email" class="sr-only">Sähköposti:</label>
     <input type="email" class="form-control" placeholder="email@example.com" id="email" [(ngModel)]="userData.email" name="email"/>
@@ -21,17 +21,24 @@
     <input type="text" class="form-control" placeholder="" id="allergies" [(ngModel)]="userData.allergies" name="allergies"/>                  
 </div>
 <div class="form-group">
-    <label for="password" class="sr-only">Salasana:</label>
-    <input type="password" class="form-control" placeholder="Uusi salasana" id="password" [(ngModel)]="userData.newPassword" name="password"/>
+    <label for="userdatapassword" class="sr-only">Salasana:</label>
+    <input type="password" class="form-control" placeholder="Vahvista muutokset antamalla salasana" id="userdatapassword" [(ngModel)]="userData.password" name="allergies"/>                  
 </div>
-<div class="form-group">
-    <label for="repassword" class="sr-only">Salasana uudestaan:</label>
-    <input type="password" class="form-control" placeholder="Uusi salasana uudestaan" id="reNewPassword" [(ngModel)]="userData.reNewPassword" name="repassword"/>
-</div> 
-<div class="form-group">
-    <label for="password" class="sr-only">Vahvista muutokset antamalla vanhasalasana:</label>
-    <input type="password" class="form-control" placeholder="Vahvista muutokset antamalla vanha salasana" id="password" [(ngModel)]="userData.password" name="password" required  />
-</div>
-<button type="submit" class="btn btn-success" (click)="sendUpdate()">Muuta tietoja</button>
+<button type="submit" class="btn btn-success" (click)="updateInformation()" >Muuta tietoja</button>
 </form>
-
+<h1> Vaihda salasana </h1>
+<form>
+    <div class="form-group">
+        <label for="password" class="sr-only">Salasana:</label>
+        <input type="password" class="form-control" placeholder="Uusi salasana" id="password" [(ngModel)]="credentialUpdate.newPassword" name="password" required/>
+    </div>
+    <div class="form-group">
+        <label for="repassword" class="sr-only">Salasana uudestaan:</label>
+        <input type="password" class="form-control" placeholder="Uusi salasana uudestaan" id="reNewPassword" [(ngModel)]="credentialUpdate.reNewPassword" name="repassword" required/>
+    </div> 
+    <div class="form-group">
+        <label for="password" class="sr-only">Vahvista muutokset antamalla vanha salasana:</label>
+        <input type="password" class="form-control" placeholder="Vahvista muutokset antamalla vanha salasana" id="password" [(ngModel)]="credentialUpdate.password" name="password" required  />
+    </div>
+    <button type="submit" class="btn btn-success"(click)="updatePassword()" [disabled]="credentialUpdate.allPresent()">Vaihda</button>
+</form>
