@@ -1,27 +1,27 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { tokenNotExpired } from "angular2-jwt";
+import { tokenNotExpired, JwtHelper } from "angular2-jwt";
 
 @Injectable()
 export class AuthService {
-  
+  jwtHelper: JwtHelper;
   constructor(private router: Router) {
-
+    this.jwtHelper = new JwtHelper();
   }
-  saveToken(user: any, token: any): void{
+  public saveToken(user: any, token: any): void{
     console.log(user, token);
     localStorage.setItem("id_token", token);
     localStorage.setItem("user", user);
 
   }
-  login(): void {
-  //  this.lock.show();
+  public login(): void {
+    //  this.lock.show();
     console.log("Rerouting to main page");
     this.router.navigateByUrl("main")
   }
 
-  logout(): void {
+  public logout(): void {
     // To log out, just remove the token and profile
     // from local storage
     localStorage.removeItem("user");
@@ -31,11 +31,17 @@ export class AuthService {
     this.router.navigateByUrl("");
   }
 
-  loggedIn(): boolean {
+  public loggedIn(): boolean {
     return tokenNotExpired(null, localStorage.getItem("id_token"));
   }
 
-  isAdmin(): boolean {
-    return true;
+  public isAdmin(): boolean {
+    if(localStorage.getItem("id_token")){
+      let token = this.jwtHelper.decodeToken(localStorage.getItem("id_token"));
+      return token.admin;
+    }
+    else {
+      return false;
+    }
   }
 }
