@@ -24,6 +24,19 @@ module Route {
 
 		}
 
+		/**
+        * @api {patch} /api/user/:username/credentials Update user credentials
+        * @apiName Update user credentials
+        * @apiGroup User
+        * @apiParam {String} username Username
+        * @apiParam {JSON} password {password: "old password"}
+        * @apiParam {JSON} newPassword {newPassword: "new password"}
+        * @apiSuccess (204) -
+        * @apiError NotFound ERROR: User was not found
+		* @apiError PasswordMismatch Credential update failed
+		* @apiError HashCalculationError Hash calculation failed
+        * @apiError DatabaseUpdateError Password update failed
+        */
 		public setUserCredentials = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let userEmail = req.params.username;
 			let oldPassword = req.body.password;
@@ -46,6 +59,7 @@ module Route {
 								});
 							} else {
 								console.log("Hash calculation failed", err);
+								return res.status(500).send("Hash calculation failed");
 							}
 						});
 					} else {
@@ -59,6 +73,14 @@ module Route {
 			});
 		}
 
+		/**
+        * @api {patch} /api/user/:username Get user details
+        * @apiName Get user details
+        * @apiGroup User
+        * @apiParam {String} username Username
+        * @apiSuccess {JSON} User details
+        * @apiError NotFound ERROR: User was not found
+        */
 		public getUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			this.userService.getUser(req.params.username).then((user: any) => {
 				let userData = user;
@@ -70,6 +92,22 @@ module Route {
 			});
 		}
 
+		/**
+        * @api {patch} /api/user/:username/detail Update user details
+        * @apiName Update user details
+        * @apiGroup User
+        * @apiParam {String} username Username
+        * @apiParam {JSON} password {password: "user password"}
+        * @apiParam {JSON} firstname {firstname: "firstname"}
+		* @apiParam {JSON} lastname {lastname: "lastname"}
+		* @apiParam {JSON} date of birth {dob: "2000-01-01"}
+		* @apiParam {JSON} allergies {allergies: "celiac disease"}
+        * @apiSuccess (204) -
+        * @apiError NotFound ERROR: User was not found
+		* @apiError PasswordMismatch Userdata update failed
+		* @apiError HashCalculationError Hash calculation failed
+        * @apiError DatabaseUpdateError User details update failed
+        */
 		public setUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			console.log(req.body);
 			let userEmail = req.params.username;
@@ -103,6 +141,15 @@ module Route {
 			});
 		}
 
+		/**
+        * @api {get} /api/user/:username/products Get user products
+        * @apiName Get user products
+        * @apiGroup User
+        * @apiParam {String} username Username
+        * @apiSuccess {JSON} List of user products
+        * @apiError NotFound ERROR: User was not found
+        * @apiError DatabaseReadError Product data could not be read from the database
+        */
 		public getProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			console.log(req.body);
 			this.userService.getUser(req.params.username).then((user: any) => {
@@ -120,6 +167,18 @@ module Route {
 			});
 		}
 
+		/**
+        * @api {post} /api/user/:username/product Add user product
+        * @apiName Add user product
+        * @apiGroup User
+        * @apiParam {String} username Username
+        * @apiParam {JSON} productId {productId: 1}
+        * @apiSuccess (204) -
+        * @apiError NotFound ERROR: User was not found
+		* @apiError NotFound ERROR: Product was not found
+		* @apiError PasswordMismatch Userdata update failed
+        * @apiError DatabaseUpdateError ERROR: Product update failed
+        */
 		public addProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let productId = req.body.productId; // Assuming that products are added one at a time
 
@@ -139,6 +198,17 @@ module Route {
 			});
 		}
 
+		/**
+        * @api {delete} /api/user/:username/product Remove user product
+        * @apiName Remove user product
+        * @apiGroup User
+        * @apiParam {String} username Username
+		* @apiParam {JSON} productId {productId: 1}
+        * @apiSuccess (204) -
+        * @apiError NotFound ERROR: User was not found
+		* @apiError NotFound ERROR: Product was not found
+        * @apiError DatabaseDeleteError Product removal failed
+        */
 		public removeProduct = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let productId = req.body.productId; // Assuming that products are added one at a time
 
@@ -161,6 +231,17 @@ module Route {
 			});
 		}
 
+		/**
+        * @api {post} /api/user/:username/group Add user group
+        * @apiName Add user group
+        * @apiGroup User
+        * @apiParam {String} username Username
+        * @apiParam {JSON} groupId {groupId: 1}
+        * @apiSuccess (204) -
+        * @apiError NotFound ERROR: User was not found
+		* @apiError NotFound ERROR: Group was not found
+        * @apiError DatabaseUpdateError ERROR: Group update failed
+        */
 		public addGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let groupId = req.body.groupId;
 
@@ -183,6 +264,17 @@ module Route {
 			});
 		}
 
+		/**
+        * @api {delete} /api/user/:username/group Remove user group
+        * @apiName Remove user group
+        * @apiGroup User
+        * @apiParam {String} username Username
+		* @apiParam {JSON} groupId {groupId: 1}
+        * @apiSuccess (204) -
+        * @apiError NotFound ERROR: User was not found
+		* @apiError NotFound ERROR: Group was not found
+        * @apiError DatabaseUpdateError ERROR: Group update failed
+        */
 		public removeGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let groupId = req.body.groupId;
 
