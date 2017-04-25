@@ -12,7 +12,8 @@ export class AdminPageComponent implements OnInit {
 	response: any;
 	error: any;
 	constructor(private eventCreatorService: EventCreatorService) { 
-		this.newEvent = new Event;}
+		this.newEvent = new Event;
+	}
 
 	ngOnInit() {
 	}
