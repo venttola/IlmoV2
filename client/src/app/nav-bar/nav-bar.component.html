@@ -3,24 +3,31 @@
 		<span class="navbar-toggler-icon"></span>
 	</button>
 	<a class="navbar-brand" routerLink="" routerLinkActive="active">Ilmoportaali</a>
-
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		<div class="navbar-nav">
-			
-			<div class="navbar-nav" *ngIf=!isLoggedIn()>
-				<a class="nav-item nav-link" routerLink="">Etusivu <span class="sr-only">(current)</span></a>
-				<a class="nav-item nav-link" routerLink="login">Kirjaudu sisään</a>
-				<a class="nav-item nav-link" routerLink="signup" >Rekisteröidy</a>
-			</div>
-			<div class="navbar-nav" *ngIf=isLoggedIn()>
-				<a class="nav-item nav-link" routerLink="main">Etusivu <span class="sr-only">(current)</span></a>
-				<a class="nav-item nav-link" routerLink="settings">Käyttäjäasetukset</a>
-				<a class="nav-item nav-link disabled" routerLink="">Disabled</a>
-				<button class="btn btn-link my-lg-0 my-sm-0" type="submit" (click)="logout()">Kirjaudu ulos</button>
-			</div>
-			<div class="navbar-nav" *ngIf=isAdmin()>
-				<a href="" class="nav-item nav-link" routerLink="admin">Hallinta</a>
-			</div>
-		</div>
+		<ul class="navbar-nav mr-auto">
+			<li  class="nav-item">
+				<a class="nav-link" routerLink="">Etusivu <span class="sr-only">(current)</span></a>
+			</li>
+			<li class="nav-item" *ngIf=isLoggedIn()>
+				<a class="nav-link" routerLink="settings">Käyttäjäasetukset</a>	
+			</li>
+			<li class="nav-item" *ngIf=isLoggedIn()>
+				<a class="nav-link disabled" routerLink="">Disabled</a>
+			</li>
+			<li class="nav-item"*ngIf=isAdmin()>
+				<a class="nav-link" routerLink="admin">Hallinta</a>
+			</li>
+		</ul>
+		<ul class="navbar-nav">
+			<li  class="nav-item" *ngIf=!isLoggedIn()>
+				<a class="nav-link" routerLink="login">Kirjaudu sisään</a>
+			</li>
+			<li  class="nav-item" *ngIf=!isLoggedIn()>
+				<a class="nav-link" routerLink="signup" >Rekisteröidy</a>
+			</li>
+			<li class="nav-item" *ngIf=isLoggedIn()>
+				<button class="btn btn-link my-2 my-lg-0" type="button" (click)="logout()">Kirjaudu ulos</button>
+			</li>
+		</ul>
 	</div>
 </nav>
