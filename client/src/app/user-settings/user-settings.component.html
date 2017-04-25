@@ -1,44 +1,63 @@
-<h1>Muuta käyttäjätietoja </h1>
 <form>
-   <div class="form-group">
-    <label for="email" class="sr-only">Sähköposti:</label>
-    <input type="email" class="form-control" placeholder="email@example.com" id="email" [(ngModel)]="userData.email" name="email"/>
-</div>
-<div class="form-group">
-    <label for="firstname" class="sr-only">Etunimi:</label>
-    <input type="text" class="form-control" placeholder="Etunimi" id="firstname" [(ngModel)]="userData.firstname" name="firstname"/>
-</div>
-<div class="form-group">
-    <label for="lastname" class="sr-only">Sukunimi:</label>
-    <input type="text" class="form-control" placeholder="Sukunimi" id="lastname" [(ngModel)]="userData.lastname" name="lastname"/>
-</div>
-<div class="form-group">
-    <label for="dob" class="sr-only">Syntymäaika:</label>
-    <input type="date" class="form-control" placeholder="1990-4-12" id="dob" [(ngModel)]="userData.dob" name="dob"/>                  
-</div>
-<div class="form-group">
-    <label for="allergies" class="sr-only">Allergiat:</label>
-    <input type="text" class="form-control" placeholder="" id="allergies" [(ngModel)]="userData.allergies" name="allergies"/>                  
-</div>
-<div class="form-group">
-    <label for="userdatapassword" class="sr-only">Salasana:</label>
-    <input type="password" class="form-control" placeholder="Vahvista muutokset antamalla salasana" id="userdatapassword" [(ngModel)]="userData.password" name="allergies"/>                  
-</div>
-<button type="submit" class="btn btn-success" (click)="updateInformation()" >Muuta tietoja</button>
-</form>
-<h1> Vaihda salasana </h1>
-<form>
-    <div class="form-group">
-        <label for="password" class="sr-only">Salasana:</label>
-        <input type="password" class="form-control" placeholder="Uusi salasana" id="password" [(ngModel)]="credentialUpdate.newPassword" name="password" required/>
+    <h4 class="pb-2">Muuta käyttäjätietoja </h4>
+    <div class="form-group row">
+        <label for="email" class="col-sm-2 col-form-label">Sähköposti:</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" placeholder="email@example.com" id="email" [(ngModel)]="userData.email" name="email"/>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="repassword" class="sr-only">Salasana uudestaan:</label>
-        <input type="password" class="form-control" placeholder="Uusi salasana uudestaan" id="reNewPassword" [(ngModel)]="credentialUpdate.reNewPassword" name="repassword" required/>
+    <div class="form-group row">
+        <label for="firstname" class="col-sm-2 col-form-label">Etunimi:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="Etunimi" id="firstname" [(ngModel)]="userData.firstname" name="firstname"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="lastname" class="col-sm-2 col-form-label">Sukunimi:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="Sukunimi" id="lastname" [(ngModel)]="userData.lastname" name="lastname"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="dob" class="col-sm-2 col-form-label">Syntymäaika:</label>
+        <div class="col-sm-10">
+            <input type="date" class="form-control" placeholder="1990-4-12" id="dob" [(ngModel)]="userData.dob" name="dob"/>
+        </div>                  
+    </div>
+    <div class="form-group row">
+        <label for="allergies" class="col-sm-2 col-form-label">Allergiat:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="" id="allergies" [(ngModel)]="userData.allergies" name="allergies"/>
+        </div>                  
+    </div>
+    <div class="form-group row">
+        <label for="userdatapassword" class="col-sm-2 col-form-label">Salasana:</label>
+        <div class="col-sm-10">
+            <input type="password" class="form-control" placeholder="Vahvista muutokset antamalla salasana" id="userdatapassword" [(ngModel)]="userData.password" name="allergies"/>   
+        </div>               
+    </div>
+    <button type="submit" class="btn btn-success" (click)="updateInformation()" >Muuta tietoja</button>
+</form>
+
+<form class="pt-5">
+    <h4 class="pb-2">Vaihda salasana </h4>
+    <div class="form-group row">
+        <label for="password" class="col-sm-2 col-form-label">Salasana:</label>
+        <div class="col-sm-10">
+            <input type="password" class="form-control" placeholder="Uusi salasana" id="password" [(ngModel)]="credentialUpdate.newPassword" name="password" required/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="repassword" class="col-sm-2 col-form-label">Salasana uudestaan:</label>
+        <div class="col-sm-10">
+            <input type="password" class="form-control" placeholder="Uusi salasana uudestaan" id="reNewPassword" [(ngModel)]="credentialUpdate.reNewPassword" name="repassword" required/>
+        </div>
     </div> 
-    <div class="form-group">
-        <label for="password" class="sr-only">Vahvista muutokset antamalla vanha salasana:</label>
-        <input type="password" class="form-control" placeholder="Vahvista muutokset antamalla vanha salasana" id="password" [(ngModel)]="credentialUpdate.password" name="password" required  />
+    <div class="form-group row">
+        <label for="password" class="col-sm-2 col-form-label">Vanha salasana:</label>
+        <div class="col-sm-10">
+            <input type="password" class="form-control" placeholder="Vahvista muutokset antamalla vanha salasana" id="password" [(ngModel)]="credentialUpdate.password" name="password" required  />
+        </div>
     </div>
     <button type="submit" class="btn btn-success"(click)="updatePassword()" [disabled]="credentialUpdate.allPresent()">Vaihda</button>
 </form>

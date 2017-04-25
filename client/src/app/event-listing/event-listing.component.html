@@ -1,8 +1,17 @@
-<div class="list-group" *ngFor="let event of events">
-	<a routerLink="/events/ + {{event.name}}" >
-		<h4 class="list-group-item-heading">{{event.name}} </h4>
-			<p class="list-group-item text">
-			{{event.description}}
-			</p>
-	</a>
+<div class="row" >
+	<div class="col-sm-6">
+		<div class="card-group">
+			<div class="card" id="eventCard" *ngFor= "let event of events">
+				<h5 class="card-title"><b>{{event.name}}</b></h5> 
+				<h6 class="card-subtitle">{{event.startDate | date}} - {{event.endDate | date}} </h6>
+				<p class="card-text"> {{event.description}} </p>
+				<div *ngIf="event.registerationOpen">
+					<a routerLink="/events/ + {{event.name}}" class="text-success">Ilmoittautuminen auki</a>  
+				</div>
+				<div *ngIf ="!event.registerationOpen"> 	
+					<p class="text-danger">Ilmoittautuminen kiinni </p>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

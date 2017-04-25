@@ -1,3 +1,23 @@
-.list-group{
-	width: 50%
+
+
+p {
+	text-align: left;
+}
+
+.card-group{
+	background: #222;
+	display: flex;
+	color: black;
+	padding: 3rem 3rem;
+
+}
+#eventCard {
+	background: white;
+	border-color: #222;
+}
+.card{
+	padding: 1rem 1rem;
+}
+#cardrow {
+	padding: 3rem 3rem;
 }

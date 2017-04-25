@@ -1,7 +1,5 @@
 
 #cover {
-	background: #222;
-	background-size: cover;
 	color: white;
 	height: 100%;
 	text-align: center;
@@ -12,3 +10,7 @@
 #cover-caption {
 	width: 100%;
 }
+
+text-align: center;
+	display: flex;
+	align-items: center;

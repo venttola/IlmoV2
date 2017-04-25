@@ -1,11 +1,11 @@
+
 <form>
-  <div class="form-group">
-    <label for="email" class="sr-only" >Sähköposti:</label>
-    <input type="email" class="form-control" placeholder="etu.suku@mail.com" id="email" required [(ngModel)]="credentials.email" name="email"/>
-  </div>
-  <div class="form-group">
-    <label for="password" class="sr-only">Salasana:</label>
-    <input type="password" class="form-control" placeholder="salasana"  id="password" required [(ngModel)]="credentials.password" name="password"/>
-  </div>
-  <button type="submit" class="btn btn-primary btn-lg" (click)="attemptLogin()">Kirjaudu sisään</button>
+	<h4 class="pb-2">Kirjaudu järjestelmään</h4>
+	<div class="form-group">
+		<input type="email" class="form-control" placeholder="Sähköposti" id="email" required [(ngModel)]="credentials.email" name="email"/>
+	</div>
+	<div class="form-group">
+		<input type="password" class="form-control" placeholder="Salasana" id="password" required [(ngModel)]="credentials.password" name="password"/>
+	</div>
+	<button type="submit" class="btn btn-primary btn-lg" (click)="attemptLogin()">Kirjaudu sisään</button>
 </form>

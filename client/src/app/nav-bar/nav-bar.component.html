@@ -1,4 +1,4 @@
-<nav class="navbar navbar-toggleable-md navbar-dark bg-inverse navbar-full">
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse navbar-full">
 	<button class="navbar-toggler navbar-toggler-right navbar-light" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>
@@ -6,13 +6,10 @@
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
 			<li  class="nav-item">
-				<a class="nav-link" routerLink="">Etusivu <span class="sr-only">(current)</span></a>
+				<a class="nav-link" routerLink="main">Etusivu <span class="sr-only">(current)</span></a>
 			</li>
 			<li class="nav-item" *ngIf=isLoggedIn()>
 				<a class="nav-link" routerLink="settings">Käyttäjäasetukset</a>	
-			</li>
-			<li class="nav-item" *ngIf=isLoggedIn()>
-				<a class="nav-link disabled" routerLink="">Disabled</a>
 			</li>
 			<li class="nav-item"*ngIf=isAdmin()>
 				<a class="nav-link" routerLink="admin">Hallinta</a>
@@ -26,7 +23,7 @@
 				<a class="nav-link" routerLink="signup" >Rekisteröidy</a>
 			</li>
 			<li class="nav-item" *ngIf=isLoggedIn()>
-				<button class="btn btn-link my-2 my-lg-0" type="button" (click)="logout()">Kirjaudu ulos</button>
+				<button class="btn btn-link btn-inverse my-2 my-lg-0" type="button" (click)="logout()">Kirjaudu ulos</button>
 			</li>
 		</ul>
 	</div>
