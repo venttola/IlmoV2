@@ -17,13 +17,15 @@ import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
 import { UserSettingsService } from './user-settings/user-settings.service';
 import { EventCreatorService } from "./admin-page/event-creator.service";
+import { EventListingComponent } from './event-listing/event-listing.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     RoutedComponents,
-    NavBarComponent
+    NavBarComponent, 
+    EventListingComponent
   ],
   imports: [
     BrowserModule,
