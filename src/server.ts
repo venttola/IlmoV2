@@ -115,17 +115,20 @@ class Server {
 		router.delete(userApiPrefix + "/product", userRoute.removeProduct);
 		router.post(userApiPrefix + "/group", userRoute.addGroup);
 		router.delete(userApiPrefix + "/group", userRoute.removeGroup);
+		console.log("User routes set");
 	}
 
 	private setEventRoutes(router: express.Router) {
+		console.log("Setting event routes");
 		let models = this.handler.getModels();
 
 		let eventRoute: eventRoutes.EventRoutes =
 			new eventRoutes.EventRoutes(
 				models.Event,
 				models.Product,
+				models.Platoon,
+				models.ParticipantGroup,
 				this.userService,
-				models.ParticipantGroup
 			);
 
 		router.get(this.API_PREFIX + "/events", eventRoute.getEvents);
@@ -135,6 +138,9 @@ class Server {
 		router.post(this.API_PREFIX + "/events/:event/organizer", eventRoute.addOrganizer);
 		router.delete(this.API_PREFIX + "/events/:event", eventRoute.deleteEvent);
 		router.post(this.API_PREFIX + "/events/:event/group", eventRoute.addParticipantGroup);
+		router.post(this.API_PREFIX + "/events/:event/platoon", eventRoute.addPlatoon);
+		router.get(this.API_PREFIX + "/events/:event", eventRoute.getEventDetails);
+		console.log("Event routes set");
 	}
 
 	private setGroupRoutes(router: express.Router) {

@@ -21,8 +21,17 @@ module Route {
         name: string;
         amount: string;
     }
+    class Platoon{
+        constructor(private id: number,
+                    private name: string ) { }
+    }
     export class EventRoutes {
-        constructor(private eventModel: any, private productModel: any, private userService: UserService, private participantGroupModel: any) {
+        constructor(private eventModel: any,
+                    private productModel: any, 
+                    private platoonModel: any,
+                    private participantGroupModel: any,
+                    private userService: UserService) {
+
 
         }
 
@@ -255,7 +264,85 @@ module Route {
                 return res.status(err.statusCode).send(err.message);
             });
         }
+        /**
+        * @api {get} api/events/:id Get detailed information about the event
+        * @apiName Get detailed information about the event
+        * @apiGroup Event
+        * @apiParam {Number} event Events unique ID
+        * @apiSuccess (200) -
+        * @apiError DatabaseReadError ERROR: Event data could not be read from the database
+        * @apiError DatabaseReadError ERROR: ParticipantGroup data could not be read from the database
+        * @apiError NotFound ERROR: Event was not found
+        */
+        public getEventDetails = (req: express.Request, res: express.Response) => {
+            let id = req.params.event;
+            console.log( "Getting event, id: " + id);
+            let details: any[] = new Array <any>();
+            this.getEvent(id).then((event: any) => {
+                let rVal: Event = new Event(event.id,
+                            event.name,
+                            event.startDate,
+                            event.endDate,
+                            event.description,
+                            event.registerationOpen);
+                details.push({event: JSON.stringify(rVal)});
+                event.getPlatoons(function (err: Error, platoons: any) {
+                        if (err) {
+                            let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
+                       //     return res.status(500).send(errorMsg);
+                        } else {
+                            let platoonList: Platoon[] = new Array<Platoon>();
+                            for (let platoon of platoons){
+                                platoonList.push(platoon.id, platoon.name);
+                            }
+                            details.push({platoons: JSON.stringify(platoonList)});
+                            return res.status(200).json(details);
+                        }
+                    });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+        /**
+        * @api {post} api/events/:event/platoon Adds a platoon to event
+        * @apiName Add platoon to event
+        * @apiGroup Event
+        * @apiParam {Number} event Events unique ID
+        * @apiParam {JSON} name {name: "Ruotsi"}
+        * @apiSuccess (204) -
+        * @apiError DatabaseReadError ERROR: Event data could not be read from the database
+        * @apiError NotFound ERROR: Event was not found
+        * @apiError DatabaseInsertionError ERROR: Platoon insertion failed
+        */
+        public addPlatoon = (req: express.Request, res: express.Response) => {
+            let eventId = req.body.id;
+            let name = req.body.name;
+            this.getEvent(eventId).then((event: any) => {
+                this.platoonModel.create({
+                    name: name
+                }, function (err: Error, platoon: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Platoon data", ErrorType.DATABASE_READ);
+                        return res.status(500).send(errorMsg);
+                    } else if (!platoon) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND);
+                        return res.status(404).send(errorMsg);
+                    } else {
+                        event.addPlatoons(platoon, function (err: Error) {
+                            if (err) {
+                                let msg = ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_INSERTION);
+                                return res.status(500).send(msg);
+                            } else {
+                                return res.status(204).send();
+                            }
+                        });
+                    }
+                });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
 
+        }
         private getProduct = (productId: Number) => {
             return new Promise((resolve, reject) => {
                 this.productModel.one({ id: productId }, function (err: Error, product: any) {
