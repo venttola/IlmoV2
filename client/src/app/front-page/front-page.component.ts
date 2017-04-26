@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 //import { AuthService } from "../authentication/auth.service";
 
 @Component({
-    moduleId: module.id,
     selector: "front-page",
     templateUrl: "front-page.component.html",
     styleUrls: ['./front-page.component.css']

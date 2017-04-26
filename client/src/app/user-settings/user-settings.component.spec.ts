@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSettingsComponent } from './user-settings.component';
+import { FormsModule } from "@angular/forms";
+import { UserSettingsService } from "./user-settings.service";
+import { HttpModule } from "@angular/http";
 
 describe('UserSettingsComponent', () => {
   let component: UserSettingsComponent;
@@ -8,7 +11,9 @@ describe('UserSettingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserSettingsComponent ]
+      imports: [HttpModule, FormsModule],
+      declarations: [ UserSettingsComponent ],
+      providers: [UserSettingsService]
     })
     .compileComponents();
   }));

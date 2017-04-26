@@ -1,11 +1,13 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { UserSettingsService } from './user-settings.service';
+import { HttpModule } from "@angular/http";
 
 describe('UserSettingsService ', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UserSettingsService ]
+      imports: [HttpModule],
+      providers: [UserSettingsService, ]
     });
   });
 
