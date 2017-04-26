@@ -10,7 +10,6 @@ import { DatabaseHandler } from "./models/databasehandler";
 import { PriviledgeChecker } from "./middleware/priviledgechecker";
 import { UserService } from "./services/userservice";
 
-import * as testRoute from "./routes/testRoute";
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
 import * as eventRoutes from "./routes/event";

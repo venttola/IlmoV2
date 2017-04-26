@@ -21,13 +21,13 @@ module Route {
         name: string;
         amount: string;
     }
-    class Platoon{
+    class Platoon {
         constructor(private id: number,
                     private name: string ) { }
     }
     export class EventRoutes {
         constructor(private eventModel: any,
-                    private productModel: any, 
+                    private productModel: any,
                     private platoonModel: any,
                     private participantGroupModel: any,
                     private userService: UserService) {
@@ -276,16 +276,17 @@ module Route {
         */
         public getEventDetails = (req: express.Request, res: express.Response) => {
             let id = req.params.event;
+            let selectedEvent: Event;
+            let platoonList: Platoon[];
             console.log( "Getting event, id: " + id);
             let details: any[] = new Array <any>();
             this.getEvent(id).then((event: any) => {
-                let rVal: Event = new Event(event.id,
+                 selectedEvent = new Event(event.id,
                             event.name,
                             event.startDate,
                             event.endDate,
                             event.description,
                             event.registerationOpen);
-                details.push({event: JSON.stringify(rVal)});
                 event.getPlatoons(function (err: Error, platoons: any) {
                         if (err) {
                             let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
@@ -295,8 +296,8 @@ module Route {
                             for (let platoon of platoons){
                                 platoonList.push(platoon.id, platoon.name);
                             }
-                            details.push({platoons: JSON.stringify(platoonList)});
-                            return res.status(200).json(details);
+                            details.push({data: {platoons: JSON.stringify(platoonList)}});
+                            return res.status(200).json({data: {event: selectedEvent, platoons: platoonList}});
                         }
                     });
             }).catch((err: APIError) => {
