@@ -12,6 +12,8 @@ import { SignupComponent } from "./signup/signup.component";
 import { MainPageComponent } from "./main-page/main-page.component";
 import { AdminPageComponent } from "./admin-page/admin-page.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
+import { EventDetailsComponent } from "./event-details/event-details.component";
+
 const appRoutes: Routes = [
   {
     path: "",
@@ -41,6 +43,11 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: "events/:id",
+    component: EventDetailsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: "**",
     redirectTo: "",
     pathMatch: "full"
@@ -54,4 +61,5 @@ export const RoutedComponents = [FrontPageComponent,
                                  AdminPageComponent,
                                  LoginComponent,
                                  SignupComponent,
-                                 UserSettingsComponent];
+                                 UserSettingsComponent,
+                                 EventDetailsComponent];

@@ -18,6 +18,7 @@ import { SignupService } from "./signup/signup.service";
 import { UserSettingsService } from './user-settings/user-settings.service';
 import { EventCreatorService } from "./admin-page/event-creator.service";
 import { EventListingComponent } from './event-listing/event-listing.component';
+import { EventDetailsService } from "./event-details/event-details.service";
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { EventListingComponent } from './event-listing/event-listing.component';
     LoginService,
     SignupService,
     UserSettingsService,
-    EventCreatorService
+    EventCreatorService,
+    EventDetailsService
      ],
   bootstrap: [AppComponent]
 })

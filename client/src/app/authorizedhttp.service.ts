@@ -13,7 +13,6 @@ export class AuthorizedHttpService {
 	}
 	protected extractData(res: Response){
 		let body = res.json();
-		console.log(body);
 		return body || {};
 	}
 	protected handleError(error: any): Promise<any> {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Event } from "../event-model";
 import { EventService } from "../event.service";
+import { Event } from "../event.model"; 
 @Component({
   selector: "event-listing",
   templateUrl: "./event-listing.component.html",

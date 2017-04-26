@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { Event } from "../event-model";
+import { Event } from "../event.model";
 import { EventCreatorService } from "./event-creator.service";
 @Component({
 	selector: 'app-admin-page',
@@ -18,8 +18,6 @@ export class AdminPageComponent implements OnInit {
 	ngOnInit() {
 	}
 	createEvent(){
-		console.log("Luodaan uusi tapahtuma");
-		console.log(this.newEvent);
 		this.eventCreatorService.createEvent(this.newEvent).subscribe( response => this.response = response, error => this.error = <any>error);
 	}
 }
