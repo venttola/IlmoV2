@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EventListingComponent } from './event-listing.component';
+import { Router, RouterModule } from "@angular/router";
+import { EventService } from "../event.service";
+import { HttpModule } from "@angular/http";
 
 describe('EventListingComponent', () => {
   let component: EventListingComponent;
@@ -8,7 +11,9 @@ describe('EventListingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EventListingComponent ]
+      imports: [RouterModule, HttpModule],
+      declarations: [ EventListingComponent ],
+      providers: [EventService]
     })
     .compileComponents();
   }));

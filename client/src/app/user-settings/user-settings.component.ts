@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormsModule } from "@angular/forms";
 
 import { UserData } from "./userdata.model";
 import { CredentialUpdate } from "./credentialupdate.model";

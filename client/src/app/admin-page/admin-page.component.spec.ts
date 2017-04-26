@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { AdminPageComponent } from './admin-page.component';
+import { EventCreatorService } from "./event-creator.service";
+import { HttpModule } from "@angular/http";
 
 describe('AdminPageComponent', () => {
   let component: AdminPageComponent;
@@ -8,7 +11,9 @@ describe('AdminPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminPageComponent ]
+      imports: [ FormsModule, HttpModule ],
+      declarations: [ AdminPageComponent ],
+      providers: [EventCreatorService]
     })
     .compileComponents();
   }));
