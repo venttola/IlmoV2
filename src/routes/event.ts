@@ -102,16 +102,7 @@ module Route {
                 } else {
                     let eventList: Event[] = new Array<Event>();
                     console.log("The eventlist contains: ");
-                    for (let event of events) {
-                        eventList.push(new Event(event.id,
-                            event.name,
-                            event.startDate,
-                            event.endDate,
-                            event.description,
-                            event.registerationOpen));
-                    }
-
-                    return res.status(200).json(eventList);
+                    return res.status(200).json(events);
                 }
             });
         }
@@ -276,28 +267,13 @@ module Route {
         */
         public getEventDetails = (req: express.Request, res: express.Response) => {
             let id = req.params.event;
-            let selectedEvent: Event;
-            let platoonList: Platoon[];
-            console.log( "Getting event, id: " + id);
-            let details: any[] = new Array <any>();
             this.getEvent(id).then((event: any) => {
-                 selectedEvent = new Event(event.id,
-                            event.name,
-                            event.startDate,
-                            event.endDate,
-                            event.description,
-                            event.registerationOpen);
                 event.getPlatoons(function (err: Error, platoons: any) {
                         if (err) {
                             let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
                        //     return res.status(500).send(errorMsg);
                         } else {
-                            let platoonList: Platoon[] = new Array<Platoon>();
-                            for (let platoon of platoons){
-                                platoonList.push(platoon.id, platoon.name);
-                            }
-                            details.push({data: {platoons: JSON.stringify(platoonList)}});
-                            return res.status(200).json({data: {event: selectedEvent, platoons: platoonList}});
+                            return res.status(200).json({data: {event: event, platoons: platoons}});
                         }
                     });
             }).catch((err: APIError) => {
