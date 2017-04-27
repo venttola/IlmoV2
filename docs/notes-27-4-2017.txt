@@ -1,0 +1,68 @@
+- Platoon aina groupin ja eventin väliin
+- Participantgroupille aina yksi viitenumero -> groupille viitenumero luonnin yhteydessä -> kolumni kantaan
+- Participantgroup aina liittyneenä vain yhteen tapahtumaan
+- Tapahtuman organisaation jäsen
+	- Voi muokata tapahtuman tietoja
+	- Lisätä tuotteita
+	- Avata/sulkea rekistöröitymisen
+
+UI:
+- Event-listi etusivulle (kirjautumaton näkee)
+- 
+
+Event-näkymä:
+	- Tapahtuman tiedot
+		- Nimi
+		- Aika
+		- Osapuoli 1 Osapuoli2
+			click -> expandaa ryhmälistan, ryhmät linkkejä
+				- Lisää uusi ryhmä-nappi
+					-> Uusi ryhmä-näkymä
+						- Nimi
+						- Description
+			- Tsekkaa nykyiset ilmot -> kehota peruutus (?)
+			uusi näkymä ->
+				Ryhmä tapahtumassa
+					- Tuotteet (checkbox-lista)
+						- Alennusdropdown per tuote
+					- Ilmottaudu-painike -> submit
+	- Osapuolet
+
+Navipalkkiin "omat ilmottautumiset"
+- Lista ilmottautumisista
+	- Tapahtuman nimi, ryhmä
+	- Ilmottaumisen tiedot
+		- Tuotteet
+		- Ryhmä viitenumero
+	- Muuta tietoja-nappi
+		-> voi muokata valittuja tuotteita (Estä, kun ilmottautuminen sulkeutuu)
+
+Moderaattori-näkymä
+	- Samassa kuin "Omat ilmottautumiset"
+	- Lista ryhmän jäsenistä
+		- Klikkaus nimestä aukaisee dialogin, jossa toiminnot "Poista ryhmästä", "Merkitse maksaneeksi" ja tuotelista
+		- Riville checkbox
+	- Maksuerittely (listaa maksaneeksi merkityt) -> paljonko maksetaan organisaatiolle
+	- Virtuaaliviivakoodi
+
+
+Hallinta-näkymä
+	- Dropdown-lista (käyttäjät, organisaatiot, tapahtumat)
+	- Pääasiassa listoja, muokkailut dialogiin
+
+PRIORITEETIT:
+	Normikäyttäjä:
+	- Osallistujaryhmien luonti
+	- Osallistujien ilmottautuminen
+
+	Hallinta:
+	- Käyttäjät
+	- Tapahtumien luonti
+		- Osapuolien lisääminen (0...N)
+		- Tuotteet
+	- Organisaatioiden luonti
+		- Järjestäjien lisääminen
+
+MUUTA:
+	- Puh.num. user-modeliin (optionaalinen kenttä rekistöröitymisessä)
+	- Herokuun beta-versio (tsekkaa EU-servut)
