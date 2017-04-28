@@ -2,7 +2,8 @@ export const enum ErrorType {
     NOT_FOUND,
     DATABASE_READ,
     DATABASE_INSERTION,
-    DATABASE_DELETE
+    DATABASE_DELETE,
+    DATABASE_UPDATE
 }
 
 export module ErrorHandler {
@@ -23,6 +24,9 @@ export module ErrorHandler {
             case ErrorType.DATABASE_DELETE:
                 msg = `${prefix} ${item} deletion failed`;
                 break;
+            case ErrorType.DATABASE_UPDATE:
+                msg = `${prefix} ${item} update failed`;
+                break;
             default:
                 msg = item;
         }
@@ -38,4 +42,4 @@ export class APIError extends Error {
     }
 }
 
-export class DatabaseError extends APIError {}
+export class DatabaseError extends APIError { }
