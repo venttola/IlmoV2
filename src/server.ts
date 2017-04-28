@@ -101,6 +101,7 @@ class Server {
 				this.userService,
 				models.Product,
 				models.ParticipantGroup,
+				models.UserPayment,
 				this.SALT_ROUNDS
 			);
 
@@ -110,7 +111,7 @@ class Server {
 		router.patch(userApiPrefix + "/credentials", userRoute.setUserCredentials);
 		router.patch(userApiPrefix + "/detail", userRoute.setUserInfo);
 		router.get(userApiPrefix + "/products", userRoute.getProducts);
-		router.post(userApiPrefix + "/product", userRoute.addProduct);
+		router.post(userApiPrefix + "/product", userRoute.addProducts);
 		router.delete(userApiPrefix + "/product", userRoute.removeProduct);
 		router.post(userApiPrefix + "/group", userRoute.addGroup);
 		router.delete(userApiPrefix + "/group", userRoute.removeGroup);

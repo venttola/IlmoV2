@@ -94,11 +94,11 @@ export class DatabaseHandler {
 		db.models.Event.hasOne("organization", db.models.Organization);
 		db.models.Event.hasMany("platoons", db.models.Platoon);
 
-		db.models.GroupPayment.hasOne("payee", db.models.ParticipantGroup, {}, { reverse: "GroupPayments" });
+		db.models.GroupPayment.hasOne("payee", db.models.ParticipantGroup, {}, { reverse: "GroupPayment" });
 		db.models.GroupPayment.hasMany("userPayments", db.models.UserPayments);
 
-		db.models.UserPayment.hasMany("products", db.models.Product);
 		db.models.Product.hasMany("discounts", db.models.Discount, {}, { reverse: "product" });
+		db.models.UserPayment.hasMany("products", db.models.Product);
 
 		//Refactored to UserPaymets.
 		// TODO: update all routes
