@@ -38,7 +38,7 @@ export class AuthService {
   public isAdmin(): boolean {
     if(localStorage.getItem("id_token")){
       let token = this.jwtHelper.decodeToken(localStorage.getItem("id_token"));
-      return token.admin;
+      return token.admin && this.loggedIn();
     }
     else {
       return false;
