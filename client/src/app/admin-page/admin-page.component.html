@@ -17,5 +17,9 @@
     <label for="description" class="sr-only">Kuvaus:</label>
     <input type="text" class="form-control" placeholder="Lyhyt kuvaus tapahtumasta" id="description" [(ngModel)]="newEvent.description" name="description"/>                  
 </div>
+<div class="form-group">
+    <label for="platoon1" class="sr-only">Osapuoli1:</label>
+    <input type="text" class="form-control" placeholder="Ruotsi" id="platoon1" [(ngModel)]="platoons[0].name" name="platoon1"/>
+</div>
 <button type="submit" class="btn btn-success" (click)="createEvent()" >Luo tapahtuma</button>
 </form>

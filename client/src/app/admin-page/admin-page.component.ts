@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { Event } from "../event.model";
+import { Platoon } from "../platoon.model";
+import { Organizer } from "../organizer.model";
 import { EventCreatorService } from "./event-creator.service";
 @Component({
 	selector: 'app-admin-page',
@@ -9,15 +11,24 @@ import { EventCreatorService } from "./event-creator.service";
 })
 export class AdminPageComponent implements OnInit {
 	@Input() newEvent: Event;
-	response: any;
+	@Input() platoons: Platoon[];
+	@Input() organizer: Organizer;
+	result: any;
 	error: any;
 	constructor(private eventCreatorService: EventCreatorService) { 
 		this.newEvent = new Event;
+		this.platoons = new Array<Platoon>();
+		this.organizer = new Organizer;
+		this.platoons.push(new Platoon);
 	}
 
 	ngOnInit() {
 	}
 	createEvent(){
-		this.eventCreatorService.createEvent(this.newEvent).subscribe( response => this.response = response, error => this.error = <any>error);
+		this.eventCreatorService.createEvent(this.newEvent, this.platoons, this.organizer).
+		subscribe( function(result){
+			console.log("In AdminPageComponent" + result);
+		}, error => this.error = <any>error);
 	}
+
 }
