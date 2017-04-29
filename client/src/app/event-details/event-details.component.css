@@ -1,0 +1,62 @@
+.event-details {
+    text-align: center;
+}
+
+.platoons {
+    margin: 0 auto;
+    margin-bottom: 3%;
+}
+
+.dates {
+    margin-bottom: 2%;
+}
+
+.description {
+    margin-bottom: 2%;
+}
+
+.platoon {
+    display: inline-block;
+    text-align: center;
+    margin-left: 1%;
+    margin-right: 1%;
+
+    padding: 1%;
+
+    font-size: 20;
+    background-color: #3E3C3C;
+}
+
+.clickable:hover, .create-group-button:hover {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.selected {
+    border: 2px solid white;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.participantgroup-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.participantgroup-list > li {
+    margin-bottom: 1%;
+}
+
+.group-item {
+    margin: 0 auto;
+    width: 50%;
+    background-color: #5D5C5C;
+    text-align: center;
+}

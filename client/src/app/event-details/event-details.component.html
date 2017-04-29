@@ -1,3 +1,20 @@
-<p>
-  event-details works!
-</p>
+<div class="event-details">
+  <h1>{{ eventDetails?.event.name }}</h1>
+  <div class="dates">{{ eventDetails?.event.startDate }} - {{ eventDetails?.event.endDate }}</div>
+
+  <div class="description">{{ eventDetails?.event.description }}</div>
+
+  <div class="platoons">
+    <div class="platoon clickable" *ngFor="let p of eventDetails?.platoonList" (click)="onSelectPlatoon(p)" [class.selected]="p == selectedPlatoon">
+      <span class="unselectable"><h4>{{ p.name }}</h4></span>
+    </div>
+  </div>
+
+  <ul class="participantgroup-list">
+    <li *ngFor="let g of selectedPlatoon?.participantGroups">
+      <div class="group-item unselectable clickable" (click)="onSelectGroup(g)">{{ g.name }}</div>
+    </li>
+  </ul>
+
+  <button class="btn btn-primary create-group-button" (click)="onNewGroup()">Ilmoita uusi ryhmä</button>
+</div>
