@@ -8,6 +8,7 @@ import { Event } from "./event.model";
 import { AuthorizedHttpService } from "./authorizedhttp.service";
 
 import { AuthService } from "./authentication/auth.service";
+import { ParticipantGroup } from "./event-details/participantgroup.model";
 
 @Injectable()
 export class EventService extends AuthorizedHttpService {
@@ -17,8 +18,12 @@ export class EventService extends AuthorizedHttpService {
     this.eventsUrl = this.urlBase + "events";
   }
 
-  getEventListing(): Observable<Event[]>{
+  getEventListing(): Observable<Event[]> {
   	return this.http.get(this.eventsUrl, { headers: this.headers }).map(this.extractData).catch(this.handleError);
+  }
+
+  addGroup(group: ParticipantGroup, eventId: number): Observable<Response> {
+    return this.http.post(`${this.eventsUrl}/${eventId}/group`, JSON.stringify(group), { headers: this.headers });
   }
   
   protected extractData(res: Response): Event[]{

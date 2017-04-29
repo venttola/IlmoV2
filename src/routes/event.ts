@@ -229,6 +229,9 @@ module Route {
         * @apiError DatabaseInsertionError ERROR: ParticipantGroup insertion failed
         */
         public addParticipantGroup = (req: express.Request, res: express.Response) => {
+            // TODO: Move group creation from group route to here
+            console.log(req.body);
+
             let eventId = req.params.event;
             let groupId = req.body.groupId;
 
@@ -273,6 +276,7 @@ module Route {
                             let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
                             return res.status(500).send(errorMsg);
                         } else {
+                            //console.log(platoons);
                             return res.status(200).json({data: {event: event, platoons: platoons}});
                         }
                     });
