@@ -56,7 +56,7 @@ module Route {
                     let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_INSERTION);
                     return res.status(500).send(errorMsg);
                 } else {
-                    return res.status(204).send();
+                    return res.status(200).json({data: {event: items}});
                 }
             });
         }
@@ -271,7 +271,7 @@ module Route {
                 event.getPlatoons(function (err: Error, platoons: any) {
                         if (err) {
                             let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
-                       //     return res.status(500).send(errorMsg);
+                            return res.status(500).send(errorMsg);
                         } else {
                             return res.status(200).json({data: {event: event, platoons: platoons}});
                         }
@@ -291,10 +291,16 @@ module Route {
         * @apiError NotFound ERROR: Event was not found
         * @apiError DatabaseInsertionError ERROR: Platoon insertion failed
         */
-        public addPlatoon = (req: express.Request, res: express.Response) => {
-            let eventId = req.body.id;
-            let name = req.body.name;
+        public addPlatoons = (req: express.Request, res: express.Response) => {
+            let eventId = req.params.event;
+            let platoons = req.body.platoons;
+            console.log("Adding Platoons");
+            console.log("Apiparam: " + eventId);
+            console.log("ApiBody: " + platoons);
             this.getEvent(eventId).then((event: any) => {
+                for (let platoon of platoons){
+                    this.createPlatoon(eventId, platoon);
+                }
                 this.platoonModel.create({
                     name: name
                 }, function (err: Error, platoon: any) {
@@ -310,7 +316,7 @@ module Route {
                                 let msg = ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_INSERTION);
                                 return res.status(500).send(msg);
                             } else {
-                                return res.status(204).send();
+                                return res.status(200).send(platoon);
                             }
                         });
                     }
@@ -351,6 +357,33 @@ module Route {
                 });
             });
         };
+        private createPlatoon = (eventId: number, platoon: Platoon) => {
+            return new Promise((resolve, reject) => {
+
+                this.platoonModel.create({
+                    name: name
+                }, function(err: Error, platoon: any) {
+                    if (err || !platoon) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Platoon data", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(500, errorMsg));
+                    } else {
+                        this.getEvent(eventId).then((event: any) => {
+                           event.addPlatoons(platoon, function (err: Error) {
+                            if (err) {
+                                let msg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.DATABASE_INSERTION);
+                                return reject(new DatabaseError(500, msg));
+                            } else {
+                                return resolve(platoon);
+                            }
+                        });
+                        }).catch((err: APIError) => {
+                            return reject(err);
+                        });
+                        return resolve(platoon);
+                    }
+                });
+            });
+        }
     }
 }
 

@@ -138,7 +138,7 @@ class Server {
 		router.post(this.API_PREFIX + "/events/:event/organizer", eventRoute.addOrganizer);
 		router.delete(this.API_PREFIX + "/events/:event", eventRoute.deleteEvent);
 		router.post(this.API_PREFIX + "/events/:event/group", eventRoute.addParticipantGroup);
-		router.post(this.API_PREFIX + "/events/:event/platoon", eventRoute.addPlatoon);
+		router.post(this.API_PREFIX + "/events/:event/platoons", eventRoute.addPlatoons);
 		router.get(this.API_PREFIX + "/events/:event", eventRoute.getEventDetails);
 		console.log("Event routes set");
 	}
