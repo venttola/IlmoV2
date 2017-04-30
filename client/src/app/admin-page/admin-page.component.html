@@ -1,34 +1,5 @@
 
-<form>
-	<h4>Luo uusi tapahtuma  </h4>
- <div class="form-group">
-    <label for="name" class="sr-only">Nimi:</label>
-    <input type="name" class="form-control" placeholder="Sotahuuto 2017" id="name" [(ngModel)]="newEvent.name" name="name"/>
+<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#eventCreator" aria-expanded="false" aria-controls="eventCreator">Lisää uusi tapahtuma</button>
+<div class="collapse" id="eventCreator">
+    <event-creator-component></event-creator-component>
 </div>
-<div class="form-group">
-    <label for="starDate" class="sr-only">Alkupäivämäärä:</label>
-    <input type="date" class="form-control" placeholder="2017-2-10" id="starDate" [(ngModel)]="newEvent.startDate" name="starDate"/>
-</div>
-<div class="form-group">
-    <label for="endDate" class="sr-only">Loppupäivämäärä:</label>
-    <input type="date" class="form-control" placeholder="2017-2-12" id="endDate" [(ngModel)]="newEvent.endDate" name="endDate"/>
-</div>
-<div class="form-group">
-    <label for="description" class="sr-only">Kuvaus:</label>
-    <input type="text" class="form-control" placeholder="Lyhyt kuvaus tapahtumasta" id="description" [(ngModel)]="newEvent.description" name="description"/>                  
-</div>
-<h5>Osapuolet</h5>
-<button class="btn btn-success" (click) ="addInputForPlatoon()">+</button>
-<button class="btn btn-success" (click) ="removeInputForPlatoon()">-</button>
-<div *ngFor="let platoon of platoons; let i = index; trackBy: trackPlatoons" class="form-group">
-    <label  for="platoon + {{index}}" class="sr-only">Osapuoli1:</label>
-    <input #platoon type="text" class="form-control" placeholder="Osapuoli" id="platoon{{index}}"  [(ngModel)]="platoon.name" name="platoon{{index}}"/>
-</div>
-<h5>Järjestäjä</h5>
-<div class="form-group">
-     <label for="organizer" class="sr-only">Järjestäjä:</label>
-    <input type="text" class="form-control" placeholder="Nimi" id="organizer" [(ngModel)]="organizer.name" name="organizer"/>
-</div>
-<button type="submit" class="btn btn-success" (click)="createEvent()" >Luo tapahtuma</button>
-</form>
-
