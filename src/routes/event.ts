@@ -296,24 +296,25 @@ module Route {
             console.log("Adding Platoons");
             console.log("Apiparam: " + eventId);
             console.log("ApiBody: " + JSON.stringify(platoons));
-            new Promise((resolve, reject) => {
-                return self.getEvent(eventId).then((event: any) => {
+            
+                 self.getEvent(eventId).then((event: any) => {
                     console.log(event.name);
                     console.log("Crating platoons: " + JSON.stringify(platoons));
                     return new Promise((resolve, reject) => {
                         let platoonList = new Array();
-                        for (let platoon of platoons){
+                        for (let platoon of platoons) {
                             console.log("adding platoon" + platoon.name);
                             self.createPlatoon(eventId, platoon).then( platoon => {
                                 platoonList.push(platoon);
+                                if(platoonList.length === platoons.length){
+                                   console.log("PlatoonList is" + platoonList);
+                                   return resolve(platoonList);  
+                                }
                             }).catch((err: APIError) => {
                                 return reject(err);
                             });
                         }
-                        console.log("PlatoonList is" + platoonList);
-                        return resolve(platoonList);
                     });
-                });
             }).then((platoonList: any) => {
                 console.log("Promise resolved : returning " + JSON.stringify({data: {platoons: platoonList}}));
                 return res.status(200).json(JSON.stringify({data: {platoons: platoonList}}));  
