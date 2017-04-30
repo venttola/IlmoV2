@@ -8,6 +8,8 @@ import { Event } from "./event.model";
 import { AuthorizedHttpService } from "./authorizedhttp.service";
 
 import { AuthService } from "./authentication/auth.service";
+import { ParticipantGroup } from "./event-details/participantgroup.model";
+import { Platoon } from "./event-details/platoon.model";
 
 @Injectable()
 export class EventService extends AuthorizedHttpService {
@@ -17,16 +19,22 @@ export class EventService extends AuthorizedHttpService {
     this.eventsUrl = this.urlBase + "events";
   }
 
-  getEventListing(): Observable<Event[]>{
-  	return this.http.get(this.eventsUrl, { headers: this.headers }).map(this.extractData).catch(this.handleError);
+  getEventListing(): Observable<Event[]> {
+    return this.http.get(this.eventsUrl, { headers: this.headers }).map(this.extractData).catch(this.handleError);
   }
-  
-  protected extractData(res: Response): Event[]{
-		let body = res.json();
-		let eventList = new Array<Event>();
-		for (let event of body){
-			eventList.push(Event.fromJSON(event));
-		}
-		return eventList;
-	}
+
+  addGroup(group: ParticipantGroup, eventId: number): Observable<Platoon> {
+    return this.http.post(`${this.eventsUrl}/${eventId}/group`, JSON.stringify(group), { headers: this.headers })
+      .map((r: Response) => Platoon.fromJSON(r.json()))
+      .catch(this.handleError);
+  }
+
+  protected extractData(res: Response): Event[] {
+    let body = res.json();
+    let eventList = new Array<Event>();
+    for (let event of body) {
+      eventList.push(Event.fromJSON(event));
+    }
+    return eventList;
+  }
 }

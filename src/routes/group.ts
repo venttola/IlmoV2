@@ -18,19 +18,19 @@ module Route {
         * @apiSuccess (204) -
         * @apiError DatabaseInsertionError ERROR: Group data insertion failed
         */
-        public addGroup = (req: express.Request, res: express.Response) => {
-            this.groupModel.create({
-                name: req.body.name,
-                description: req.body.description
-            }, function (err: Error, group: any) {
-                if (err) {
-                    let errorMsg = ErrorHandler.getErrorMsg("Group data", ErrorType.DATABASE_INSERTION);
-                    return res.status(500).send(errorMsg);
-                } else {
-                    return res.status(204).send();
-                }
-            });
-        }
+        // public addGroup = (req: express.Request, res: express.Response) => {
+        //     this.groupModel.create({
+        //         name: req.body.name,
+        //         description: req.body.description
+        //     }, function (err: Error, group: any) {
+        //         if (err) {
+        //             let errorMsg = ErrorHandler.getErrorMsg("Group data", ErrorType.DATABASE_INSERTION);
+        //             return res.status(500).send(errorMsg);
+        //         } else {
+        //             return res.status(204).send();
+        //         }
+        //     });
+        // }
 
         /**
         * @api {delete} api/group/:group/:username

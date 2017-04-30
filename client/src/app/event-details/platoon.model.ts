@@ -1,6 +1,10 @@
+import { ParticipantGroup } from "./participantgroup.model";
+
 export class Platoon {
 	id: number;
 	name: string;
+	participantGroups: ParticipantGroup[];
+	
 	constructor() {
 		this.id = 0;
 		this.name = "";

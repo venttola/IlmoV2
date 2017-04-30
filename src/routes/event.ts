@@ -54,7 +54,7 @@ module Route {
                     let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_INSERTION);
                     return res.status(500).send(errorMsg);
                 } else {
-                    return res.status(200).json({data: {event: items}});
+                    return res.status(200).json({ data: { event: items } });
                 }
             });
         }
@@ -218,41 +218,47 @@ module Route {
         * @apiName Add participantgroup to event
         * @apiGroup Event
         * @apiParam {Number} event Events unique ID
-        * @apiParam {JSON} groupId {groupId: 1}
-        * @apiSuccess (204) -
+        * @apiParam {JSON} name {name: "testiryhmä"}
+        * @apiParam {JSON} description {description: "Joku ryhmä"}
+        * @apiParam {JSON} platoonId {platoonId: 1}
+        * @apiSuccess (200) Platoon identified by platoonId
         * @apiError DatabaseReadError ERROR: Event data could not be read from the database
-        * @apiError DatabaseReadError ERROR: ParticipantGroup data could not be read from the database
-        * @apiError NotFound ERROR: Event was not found
-        * @apiError NotFound ERROR: ParticipantGroup was not found
         * @apiError DatabaseInsertionError ERROR: ParticipantGroup insertion failed
+        * @apiError NotFound ERROR: Event was not found
+        * @apiError DatabaseUpdateError ERROR: Event update failed
         */
         public addParticipantGroup = (req: express.Request, res: express.Response) => {
+            console.log(req.body);
+
             let eventId = req.params.event;
-            let groupId = req.body.groupId;
+            let platoonId = req.body.platoonId;
+            let self = this;
 
             this.getEvent(eventId).then((event: any) => {
-                this.participantGroupModel.one({ id: groupId }, function (err: Error, group: any) {
-                    if (err) {
-                        let errorMsg = ErrorHandler.getErrorMsg("ParticipantGroup data", ErrorType.DATABASE_READ);
-                        return res.status(500).send(errorMsg);
-                    } else if (!group) {
-                        let errorMsg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.NOT_FOUND);
-                        return res.status(404).send(errorMsg);
-                    } else {
-                        event.addParticipantGroups(group, function (err: Error) {
-                            if (err) {
-                                let msg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.DATABASE_INSERTION);
-                                return res.status(500).send(msg);
-                            } else {
-                                return res.status(204).send();
-                            }
+                event.getPlatoons(function (err: Error, platoons: Array<any>) {
+                    let values = platoons.filter(p => p.id === platoonId);
+                    let platoon = values.length > 0 ? values[0] : null;
+
+                    if (platoon) {
+                        self.participantGroupModel.create({
+                            name: req.body.name,
+                            description: req.body.description
+                        }, function (err: Error, group: any) {
+                            platoon.addParticipantGroups(group, function (err: Error) {0
+                                return err != null
+                                    ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))
+                                    : res.status(200).json(platoon);
+                            });
                         });
+                    } else {
+                        return res.status(404).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND));
                     }
                 });
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
         }
+
         /**
         * @api {get} api/events/:id Get detailed information about the event
         * @apiName Get detailed information about the event
@@ -267,13 +273,14 @@ module Route {
             let id = req.params.event;
             this.getEvent(id).then((event: any) => {
                 event.getPlatoons(function (err: Error, platoons: any) {
-                        if (err) {
-                            let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
-                            return res.status(500).send(errorMsg);
-                        } else {
-                            return res.status(200).json({data: {event: event, platoons: platoons}});
-                        }
-                    });
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
+                        return res.status(500).send(errorMsg);
+                    } else {
+                        //console.log(platoons);
+                        return res.status(200).json({ data: { event: event, platoons: platoons } });
+                    }
+                });
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
@@ -295,6 +302,7 @@ module Route {
             let self = this;
             console.log("Adding Platoons");
             console.log("Apiparam: " + eventId);
+<<<<<<< HEAD
             console.log("ApiBody: " + JSON.stringify(platoons));
             
                  self.getEvent(eventId).then((event: any) => {
@@ -353,6 +361,7 @@ module Route {
                 });
             });
         };
+
         private createPlatoon = (eventId: number, platoon: Platoon) => {
             let self = this;
             return new Promise((resolve, reject) => {
@@ -379,6 +388,19 @@ module Route {
                         }).catch((err: APIError) => {
                             return reject(err);
                         });
+                    }
+                });
+            });
+        }
+
+        private getPlatoon = (platoonId: number) => {
+            return new Promise((resolve, reject) => {
+                this.platoonModel.one({ id: platoonId }, function (err: Error, platoon: any) {
+                    if (err) {
+                        let msg = ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND);
+                        return reject(new DatabaseError(500, msg));
+                    } else {
+                        return resolve(platoon);
                     }
                 });
             });
