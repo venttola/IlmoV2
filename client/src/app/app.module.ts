@@ -19,6 +19,7 @@ import { UserSettingsService } from './user-settings/user-settings.service';
 import { EventCreatorService } from "./admin-page/event-creator.service";
 import { EventListingComponent } from './event-listing/event-listing.component';
 import { EventDetailsService } from "./event-details/event-details.service";
+import { EventCreatorComponentComponent } from './admin-page/event-creator-component/event-creator-component.component';
 
 
 @NgModule({
@@ -26,7 +27,7 @@ import { EventDetailsService } from "./event-details/event-details.service";
     AppComponent,
     RoutedComponents,
     NavBarComponent, 
-    EventListingComponent
+    EventListingComponent, EventCreatorComponentComponent
   ],
   imports: [
     BrowserModule,
