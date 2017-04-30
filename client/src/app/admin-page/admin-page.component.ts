@@ -36,5 +36,8 @@ export class AdminPageComponent implements OnInit {
 		this.platoons.pop();
 		console.log(JSON.stringify(this.platoons));
 	}
+	trackPlatoon(index, item: Platoon){
+		return item.name;
+	}
 
 }

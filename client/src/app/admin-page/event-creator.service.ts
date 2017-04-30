@@ -43,9 +43,11 @@ export class EventCreatorService extends AuthorizedHttpService {
 		catch(this.handleError);
 
 	}
-	/*public addOrganizer (eventId: number): Observable<any>{
-
-	}*/
+	public addOrganizer (eventId: number, organizer: Organizer): Observable<any>{
+		return this.http.post(this.eventsUrl + eventId + "/organizer", JSON.stringify(organizer), {headers: this.headers}).
+		map(this.extractOrganizerData).
+		catch(this.handleError);
+	}
 	protected extractEventData(res: Response): Event{
 		let body = res.json();
 		console.log("Extract eventData" + body);
@@ -60,5 +62,10 @@ export class EventCreatorService extends AuthorizedHttpService {
 			platoonList.push(Platoon.fromJSON(platoon));
 		}
 		return platoonList;
+	}
+	protected extractOrganizerData(res: Response): Organizer{
+		let body = res.json();
+		console.log("Extract eventData" + body);
+		return Organizer.fromJSON(body.data.event);
 	}
 }
