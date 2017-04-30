@@ -22,8 +22,8 @@ module Route {
         amount: string;
     }
     class Platoon {
-        constructor(private id: number,
-                    private name: string ) { }
+        constructor(public id: number,
+                    public name: string ) { }
     }
     export class EventRoutes {
         constructor(private eventModel: any,
@@ -31,8 +31,6 @@ module Route {
                     private platoonModel: any,
                     private participantGroupModel: any,
                     private userService: UserService) {
-
-
         }
 
         /**
@@ -294,37 +292,34 @@ module Route {
         public addPlatoons = (req: express.Request, res: express.Response) => {
             let eventId = req.params.event;
             let platoons = req.body.platoons;
+            let self = this;
             console.log("Adding Platoons");
             console.log("Apiparam: " + eventId);
-            console.log("ApiBody: " + platoons);
-            this.getEvent(eventId).then((event: any) => {
-                for (let platoon of platoons){
-                    this.createPlatoon(eventId, platoon);
-                }
-                this.platoonModel.create({
-                    name: name
-                }, function (err: Error, platoon: any) {
-                    if (err) {
-                        let errorMsg = ErrorHandler.getErrorMsg("Platoon data", ErrorType.DATABASE_READ);
-                        return res.status(500).send(errorMsg);
-                    } else if (!platoon) {
-                        let errorMsg = ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND);
-                        return res.status(404).send(errorMsg);
-                    } else {
-                        event.addPlatoons(platoon, function (err: Error) {
-                            if (err) {
-                                let msg = ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_INSERTION);
-                                return res.status(500).send(msg);
-                            } else {
-                                return res.status(200).send(platoon);
-                            }
-                        });
-                    }
+            console.log("ApiBody: " + JSON.stringify(platoons));
+            new Promise((resolve, reject) => {
+                return self.getEvent(eventId).then((event: any) => {
+                    console.log(event.name);
+                    console.log("Crating platoons: " + JSON.stringify(platoons));
+                    return new Promise((resolve, reject) => {
+                        let platoonList = new Array();
+                        for (let platoon of platoons){
+                            console.log("adding platoon" + platoon.name);
+                            self.createPlatoon(eventId, platoon).then( platoon => {
+                                platoonList.push(platoon);
+                            }).catch((err: APIError) => {
+                                return reject(err);
+                            });
+                        }
+                        console.log("PlatoonList is" + platoonList);
+                        return resolve(platoonList);
+                    });
                 });
+            }).then((platoonList: any) => {
+                console.log("Promise resolved : returning " + JSON.stringify({data: {platoons: platoonList}}));
+                return res.status(200).json(JSON.stringify({data: {platoons: platoonList}}));  
             }).catch((err: APIError) => {
-                return res.status(err.statusCode).send(err.message);
+                return res.status(err.statusCode).send(err.message);; 
             });
-
         }
         private getProduct = (productId: Number) => {
             return new Promise((resolve, reject) => {
@@ -358,28 +353,31 @@ module Route {
             });
         };
         private createPlatoon = (eventId: number, platoon: Platoon) => {
+            let self = this;
             return new Promise((resolve, reject) => {
-
-                this.platoonModel.create({
-                    name: name
+                self.platoonModel.create({
+                    name: platoon.name
                 }, function(err: Error, platoon: any) {
                     if (err || !platoon) {
+                        console.log(err);
                         let errorMsg = ErrorHandler.getErrorMsg("Platoon data", ErrorType.DATABASE_INSERTION);
                         reject(new DatabaseError(500, errorMsg));
                     } else {
-                        this.getEvent(eventId).then((event: any) => {
-                           event.addPlatoons(platoon, function (err: Error) {
+                        console.log("Adding platoon to event:" + platoon.name);
+                        self.getEvent(eventId).then((event: any) => {
+                           event.addPlatoons([platoon], function (err: Error) {
+                                console.log("Adding platoon to event " + event.name );
                             if (err) {
                                 let msg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.DATABASE_INSERTION);
                                 return reject(new DatabaseError(500, msg));
                             } else {
+                               console.log("Platoon adding succesfull" + platoon);
                                 return resolve(platoon);
                             }
                         });
                         }).catch((err: APIError) => {
                             return reject(err);
                         });
-                        return resolve(platoon);
                     }
                 });
             });
