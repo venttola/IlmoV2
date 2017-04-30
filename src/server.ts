@@ -152,7 +152,7 @@ class Server {
 				this.userService
 			);
 
-		router.post(this.API_PREFIX + "/group", groupRoute.addGroup);
+		//router.post(this.API_PREFIX + "/group", groupRoute.addGroup);
 		router.delete(this.API_PREFIX + "/group/:group/:username", groupRoute.removeMember);
 		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
 		router.delete(this.API_PREFIX + "/group/:group/:username/moderator", groupRoute.removeModerator);
