@@ -53,7 +53,12 @@ export class EventCreatorService extends AuthorizedHttpService {
 	}
 	protected extractPlatoonData(res: Response){
 		let body = res.json();
-		console.log("Extract platoonData" +body);
-		return Platoon.fromJSON(body.data.platoon);
+		console.log("Extract platoonData" + body);
+		let platoons = body.platoons;
+		let platoonList = new Array<Platoon>();
+		for (let platoon of platoons){
+			platoonList.push(Platoon.fromJSON(platoon));
+		}
+		return platoonList;
 	}
 }

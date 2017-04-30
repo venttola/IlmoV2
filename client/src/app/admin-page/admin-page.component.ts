@@ -19,9 +19,7 @@ export class AdminPageComponent implements OnInit {
 		this.newEvent = new Event;
 		this.platoons = new Array<Platoon>();
 		this.organizer = new Organizer;
-		this.platoons.push(new Platoon);
 	}
-
 	ngOnInit() {
 	}
 	createEvent(){
@@ -29,6 +27,14 @@ export class AdminPageComponent implements OnInit {
 		subscribe( function(result){
 			console.log("In AdminPageComponent" + result);
 		}, error => this.error = <any>error);
+	}
+	addInputForPlatoon(){
+		this.platoons.push(new Platoon);
+		console.log(JSON.stringify(this.platoons));
+	}
+	removeInputForPlatoon(){
+		this.platoons.pop();
+		console.log(JSON.stringify(this.platoons));
 	}
 
 }
