@@ -302,7 +302,6 @@ module Route {
             let self = this;
             console.log("Adding Platoons");
             console.log("Apiparam: " + eventId);
-<<<<<<< HEAD
             console.log("ApiBody: " + JSON.stringify(platoons));
             
                  self.getEvent(eventId).then((event: any) => {
