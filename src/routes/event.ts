@@ -1,6 +1,7 @@
 import * as express from "express";
 import Promise from "ts-promise";
 import { UserService } from "../services/userservice";
+import { OrganizationService } from "../services/organizationservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
 module Route {
@@ -30,7 +31,8 @@ module Route {
                     private productModel: any,
                     private platoonModel: any,
                     private participantGroupModel: any,
-                    private userService: UserService) {
+                    private userService: UserService,
+                    private organizationService: OrganizationService) {
         }
 
         /**
@@ -98,8 +100,6 @@ module Route {
                     let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_READ);
                     return res.status(500).send(errorMsg);
                 } else {
-                    let eventList: Event[] = new Array<Event>();
-                    console.log("The eventlist contains: ");
                     return res.status(200).json(events);
                 }
             });
@@ -181,34 +181,36 @@ module Route {
         }
 
         /**
-        * @api {post} api/events/:event/organizer Adds event organizer
-        * @apiName Add event organizer
+        * @api {post} api/events/:event/organization Adds organization for event.
+        * @apiName Add organization for event
         * @apiGroup Event
         * @apiParam {Number} event Events unique ID
-        * @apiParam {JSON} username {username: "user@gmail.com"}
+        * @apiParam {JSON} name {name: "Sotahuuto-yhdistys Ry"}
         * @apiSuccess (204) -
         * @apiError DatabaseReadError ERROR: Event data could not be read from the database
-        * @apiError DatabaseReadError ERROR: User data could not be read from the database
+        * @apiError DatabaseReadError ERROR: Organization data could not be read from the database
         * @apiError NotFound ERROR: Event was not found
-        * @apiError NotFound ERROR: User was not found
-        * @apiError DatabaseInsertionError ERROR: Organizer insertion failed
+        * @apiError NotFound ERROR: Organization was not found
+        * @apiError DatabaseInsertionError ERROR: Organization insertion failed
         */
-        public addOrganizer = (req: express.Request, res: express.Response) => {
+        public setOrganization = (req: express.Request, res: express.Response) => {
             let eventId = req.params.event;
-            let username = req.body.username;
-
-            Promise.all([this.getEvent(eventId), this.userService.getUser(username)]).then(values => {
-                let event: any = values[0];
-                let user: any = values[1];
-
-                event.addOrganizers(user, function (err: Error) {
-                    if (err) {
-                        let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-                        return res.status(500).send(msg);
-                    } else {
-                        return res.status(204).send();
-                    }
+            let organizationName = req.body.name;
+            this.getEvent(eventId).then((event: any) => {
+                this.organizationService.getOrganization(organizationName).then((organization: any) => {
+                    return new Promise((resolve, reject) => {
+                        event.setOrganization(organization, function (err: Error) {
+                            if (err) {
+                                let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                                 reject (new DatabaseError(500, msg));
+                            } else {
+                                 resolve(organization);
+                            }
+                        });
+                    });
                 });
+            }).then((organization: any) => {
+                return res.status(200).json(JSON.stringify({data: {organization: organization}}));
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
@@ -244,7 +246,7 @@ module Route {
                             name: req.body.name,
                             description: req.body.description
                         }, function (err: Error, group: any) {
-                            platoon.addParticipantGroups(group, function (err: Error) {0
+                            platoon.addParticipantGroups(group, function (err: Error) {
                                 return err != null
                                     ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))
                                     : res.status(200).json(platoon);
@@ -296,26 +298,20 @@ module Route {
         * @apiError NotFound ERROR: Event was not found
         * @apiError DatabaseInsertionError ERROR: Platoon insertion failed
         */
+
+        //TODO: Currently hangs if platoons is empty.
         public addPlatoons = (req: express.Request, res: express.Response) => {
             let eventId = req.params.event;
             let platoons = req.body.platoons;
             let self = this;
-            console.log("Adding Platoons");
-            console.log("Apiparam: " + eventId);
-            console.log("ApiBody: " + JSON.stringify(platoons));
-            
                  self.getEvent(eventId).then((event: any) => {
-                    console.log(event.name);
-                    console.log("Crating platoons: " + JSON.stringify(platoons));
                     return new Promise((resolve, reject) => {
                         let platoonList = new Array();
                         for (let platoon of platoons) {
-                            console.log("adding platoon" + platoon.name);
                             self.createPlatoon(eventId, platoon).then( platoon => {
                                 platoonList.push(platoon);
-                                if(platoonList.length === platoons.length){
-                                   console.log("PlatoonList is" + platoonList);
-                                   return resolve(platoonList);  
+                                if (platoonList.length === platoons.length) {
+                                   return resolve(platoonList);
                                 }
                             }).catch((err: APIError) => {
                                 return reject(err);
@@ -323,10 +319,9 @@ module Route {
                         }
                     });
             }).then((platoonList: any) => {
-                console.log("Promise resolved : returning " + JSON.stringify({data: {platoons: platoonList}}));
-                return res.status(200).json(JSON.stringify({data: {platoons: platoonList}}));  
+                return res.status(200).json(JSON.stringify({data: {platoons: platoonList}}));
             }).catch((err: APIError) => {
-                return res.status(err.statusCode).send(err.message);; 
+                return res.status(err.statusCode).send(err.message);
             });
         }
         private getProduct = (productId: Number) => {
@@ -372,15 +367,12 @@ module Route {
                         let errorMsg = ErrorHandler.getErrorMsg("Platoon data", ErrorType.DATABASE_INSERTION);
                         reject(new DatabaseError(500, errorMsg));
                     } else {
-                        console.log("Adding platoon to event:" + platoon.name);
                         self.getEvent(eventId).then((event: any) => {
                            event.addPlatoons([platoon], function (err: Error) {
-                                console.log("Adding platoon to event " + event.name );
                             if (err) {
                                 let msg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.DATABASE_INSERTION);
                                 return reject(new DatabaseError(500, msg));
                             } else {
-                               console.log("Platoon adding succesfull" + platoon);
                                 return resolve(platoon);
                             }
                         });

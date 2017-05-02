@@ -79,7 +79,7 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
             		let memberList = new Array();
         			for (let user of newMembers) {
         				this.userService.getUser(user.id).then((user: any) => {
-        					user.addOrganizations(organizationId), function(err: any) {
+        					user.addOrganizations(organizationId, function(err: any) {
         						if (err) {
         							 let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.NOT_FOUND);
                         			 reject(new DatabaseError(500, errorMsg));
@@ -89,7 +89,7 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
         								return resolve(memberList);
         							}
         						}
-        					};
+        					});
         				}).catch((err: APIError) => {
         					reject(err);
         				});

@@ -9,6 +9,7 @@ import * as cors from "cors";
 import { DatabaseHandler } from "./models/databasehandler";
 import { PriviledgeChecker } from "./middleware/priviledgechecker";
 import { UserService } from "./services/userservice";
+import { OrganizationService } from "./services/organizationservice";
 
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
@@ -25,6 +26,7 @@ class Server {
 	private handler: DatabaseHandler;
 	private priviledgeChecker: PriviledgeChecker;
 	private userService: UserService;
+	private organizationService: OrganizationService;
 
 	constructor() {
 		let config = require("./config.json");
@@ -41,6 +43,7 @@ class Server {
 		connection.then((conn: any) => {
 			let models = this.handler.getModels();
 			this.userService = new UserService(models.User);
+			this.organizationService = new OrganizationService(models.Organization);
 			this.setRoutes();
 		}).catch((err: Error) => {
 			console.log(err);
@@ -129,13 +132,14 @@ class Server {
 				models.Platoon,
 				models.ParticipantGroup,
 				this.userService,
+				this.organizationService
 			);
 
 		router.get(this.API_PREFIX + "/events", eventRoute.getEvents);
 		router.post(this.API_PREFIX + "/events", /*this.priviledgeChecker.checkAdmin,*/ eventRoute.addEvent);
 		router.get(this.API_PREFIX + "/events/:event/product", eventRoute.getEventProducts);
 		router.post(this.API_PREFIX + "/events/:event/product", eventRoute.addProduct);
-		router.post(this.API_PREFIX + "/events/:event/organizer", eventRoute.addOrganizer);
+		router.post(this.API_PREFIX + "/events/:event/organization", eventRoute.setOrganization);
 		router.delete(this.API_PREFIX + "/events/:event", eventRoute.deleteEvent);
 		router.post(this.API_PREFIX + "/events/:event/group", eventRoute.addParticipantGroup);
 		router.post(this.API_PREFIX + "/events/:event/platoons", eventRoute.addPlatoons);
