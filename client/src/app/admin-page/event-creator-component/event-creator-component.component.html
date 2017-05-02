@@ -20,8 +20,8 @@
 <button class="btn btn-success" (click) ="addInputForPlatoon()">+</button>
 <button class="btn btn-success" (click) ="removeInputForPlatoon()">-</button>
 <div *ngFor="let platoon of platoons; let i = index; trackBy: trackPlatoons" class="form-group">
-    <label  for="platoon + {{index}}" class="sr-only">Osapuoli1:</label>
-    <input #platoon type="text" class="form-control" placeholder="Osapuoli" id="platoon{{index}}"  [(ngModel)]="platoon.name" name="platoon{{index}}"/>
+    <label  for="platoon{{i}}" class="sr-only">Osapuoli1:</label>
+    <input type="text" class="form-control" placeholder="Osapuoli" id="platoon{{i}}"  [(ngModel)]="platoon.name" name="platoon{{i}}"/>
 </div>
 <h5>Järjestäjä</h5>
 <div class="form-group">

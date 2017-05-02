@@ -26,9 +26,10 @@ export class EventCreatorService extends AuthorizedHttpService {
 
 			console.log("do we even get here. id is " + resultEvent.id);
 			let resultPlatoons = this.addPlatoons(resultEvent.id, platoons);
+			let resultOrganization = this.setOrganization(resultEvent.id, organizer);
 			console.log("Platoons result");
 			console.log(resultPlatoons);
-			return resultPlatoons;
+			return Observable.forkJoin(resultPlatoons, resultOrganization);
 		}).
 		catch(this.handleError);
 		//Organizer adding is missing, since no backend route yet exists
@@ -43,8 +44,8 @@ export class EventCreatorService extends AuthorizedHttpService {
 		catch(this.handleError);
 
 	}
-	public addOrganizer (eventId: number, organizer: Organizer): Observable<any>{
-		return this.http.post(this.eventsUrl + eventId + "/organizer", JSON.stringify(organizer), {headers: this.headers}).
+	public setOrganization (eventId: number, organizer: Organizer): Observable<any>{
+		return this.http.post(this.eventsUrl + eventId + "/organization", JSON.stringify(organizer), {headers: this.headers}).
 		map(this.extractOrganizerData).
 		catch(this.handleError);
 	}

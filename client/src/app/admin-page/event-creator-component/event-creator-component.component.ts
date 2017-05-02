@@ -37,8 +37,8 @@ export class EventCreatorComponentComponent implements OnInit {
 		this.platoons.pop();
 		console.log(JSON.stringify(this.platoons));
 	}
-	trackPlatoon(index, item: Platoon){
-		return item.name;
+	trackPlatoon(index: number, platoon: Platoon): string{
+		return platoon.name;
 	}
 
 }
