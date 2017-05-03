@@ -244,7 +244,7 @@ module Route {
                     if (platoon) {
                         self.participantGroupModel.create({
                             name: req.body.name,
-                            description: req.body.description
+                            description: req.body.description !== undefined ? req.body.description : ""
                         }, function (err: Error, group: any) {
                             platoon.addParticipantGroups(group, function (err: Error) {
                                 return err != null
