@@ -20,8 +20,9 @@ import { UserSettingsService } from './user-settings/user-settings.service';
 import { EventCreatorService } from "./admin-page/event-creator.service";
 import { EventListingComponent } from './event-listing/event-listing.component';
 import { EventDetailsService } from "./event-details/event-details.service";
-import { EventCreatorComponentComponent } from './admin-page/event-creator-component/event-creator-component.component';
+import { EventCreatorComponent } from './admin-page/event-creator/event-creator.component';
 import { GroupModalComponent } from './event-details/group-modal/group-modal.component';
+import { OrganizationHandlerComponent } from './admin-page/organization-handler/organization-handler.component';
 
 @NgModule({
   declarations: [
@@ -29,8 +30,9 @@ import { GroupModalComponent } from './event-details/group-modal/group-modal.com
     RoutedComponents,
     NavBarComponent,
     EventListingComponent, 
-    EventCreatorComponentComponent,
-    GroupModalComponent
+    EventCreatorComponent,
+    GroupModalComponent,
+    OrganizationHandlerComponent
   ],
   imports: [
     BrowserModule,

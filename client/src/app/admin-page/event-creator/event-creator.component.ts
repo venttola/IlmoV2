@@ -6,10 +6,10 @@ import { Organizer } from "../../organizer.model";
 import { EventCreatorService } from "../event-creator.service";
 @Component({
   selector: 'event-creator-component',
-  templateUrl: './event-creator-component.component.html',
-  styleUrls: ['./event-creator-component.component.css']
+  templateUrl: './event-creator.component.html',
+  styleUrls: ['./event-creator.component.css']
 })
-export class EventCreatorComponentComponent implements OnInit {
+export class EventCreatorComponent implements OnInit {
 
   	@Input() newEvent: Event;
 	@Input() platoons: Platoon[];
