@@ -178,6 +178,7 @@ module Route {
         * @apiError DatabaseReadError Product data could not be read from the database
         */
 		public getEventProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
 			let groupId = req.body.groupId;
 			let eventId = req.body.eventId;
 			let username = req.params.username;
@@ -190,7 +191,6 @@ module Route {
 
 				// Get group payment - there should be only one
 				group.getGroupPayment(function (err: Error, groupPayment: any) {
-
 					// Get all user payments
 					user.getUserPayments(function (err: Error, userPayments: any) {
 
@@ -199,6 +199,8 @@ module Route {
 
 						// Get event products
 						self.eventService.getEventProducts(eventId).then((eventProducts: any) => {
+
+							
 							if (payments.length > 0) {
 								let userProdSelections: any = [];
 								payments.forEach((pm: any) => pm.productSelections.forEach((p: any) => userProdSelections.push(p)));
@@ -217,9 +219,9 @@ module Route {
 
 									return res.status(200).json(eventProducts);
 								}
-							} else {
-								return res.status(200).json(eventProducts);
 							}
+							
+							return res.status(200).json(eventProducts);
 						});
 					});
 				});
