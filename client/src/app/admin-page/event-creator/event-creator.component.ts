@@ -4,6 +4,7 @@ import { Event } from "../../event.model";
 import { Platoon } from "../../platoon.model";
 import { Organization } from "../../organization.model";
 import { EventCreatorService } from "../event-creator.service";
+
 @Component({
   selector: 'event-creator-component',
   templateUrl: './event-creator.component.html',

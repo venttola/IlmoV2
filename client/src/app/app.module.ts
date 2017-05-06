@@ -23,6 +23,7 @@ import { EventDetailsService } from "./event-details/event-details.service";
 import { EventCreatorComponent } from './admin-page/event-creator/event-creator.component';
 import { GroupModalComponent } from './event-details/group-modal/group-modal.component';
 import { OrganizationHandlerComponent } from './admin-page/organization-handler/organization-handler.component';
+import { OrganizationService } from "./admin-page/organization-handler/organization.service";
 
 @NgModule({
   declarations: [
@@ -51,7 +52,9 @@ import { OrganizationHandlerComponent } from './admin-page/organization-handler/
     SignupService,
     UserSettingsService,
     EventCreatorService,
-    EventDetailsService
+    EventDetailsService,
+    OrganizationService
+
      ],
   bootstrap: [AppComponent]
 })
