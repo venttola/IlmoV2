@@ -15,6 +15,7 @@ import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
 import * as eventRoutes from "./routes/event";
 import * as groupRoutes from "./routes/group";
+import * as organizationRoutes from "./routes/organization";
 
 class Server {
 	public app: express.Application;
@@ -83,7 +84,7 @@ class Server {
 		this.setUserRoutes(router);
 		this.setEventRoutes(router);
 		this.setGroupRoutes(router);
-
+		this.setOrganizationRoutes(router);
 		this.app.use(bodyparser.json());
 		this.app.use(router);
 	}
@@ -161,6 +162,18 @@ class Server {
 		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
 		router.delete(this.API_PREFIX + "/group/:group/:username/moderator", groupRoute.removeModerator);
 		router.get(this.API_PREFIX + "/group/:group/:username/products", groupRoute.getMemberProducts);
+	}
+	private setOrganizationRoutes(router: express.Router) {
+		let models = this.handler.getModels();
+
+		let organizationRoute: organizationRoutes.OrganizationRoutes =
+			new organizationRoutes.OrganizationRoutes(
+					this.userService,
+					models.Organization
+				);
+		router.get(this.API_PREFIX + "/organizations", organizationRoute.getOrganizations);
+		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
+		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganizationMembers);
 	}
 }
 

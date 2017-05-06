@@ -14,9 +14,9 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 	*/
 	module Route {
 		export class OrganizationRoutes {
-			constructor(private userService: UserService,
-				private organizationModel: any,
-				private saltRounds: number) {
+			constructor(
+                private userService: UserService,
+				private organizationModel: any) {
 
 			}
 
@@ -30,7 +30,7 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
         * @apiError {JSON} Missing fields or erroneus IBAN account number
         */
         public addOrganization = (req: express.Request, res: express.Response) => {
-        	if (!ibantools.isValidIban(req.body.bankAccount)) {
+        	if (!ibantools.isValidIBAN(req.body.bankAccount)) {
         		let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.DATABASE_INSERTION);
         		return res.status(500).send(errorMsg);
         	}
