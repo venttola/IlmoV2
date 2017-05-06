@@ -8,16 +8,6 @@ import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { EventService } from "../services/eventservice";
 
-/*
-	GET /api/user/:username 
-	PATCH /api/user/:username/credentials 
-	PATCH /api/user/:username/detail
-	GET /api/user/:username/products
-	POST /api/user/:username/product
-	DELETE /api/user/:username/product
-	POST /api/user/:username/group
-	DELETE /api/user/:username/group
-*/
 module Route {
 	export class UserRoutes {
 		constructor(
@@ -27,6 +17,7 @@ module Route {
 			private discountModel: any,
 			private participantGroupModel: any,
 			private userPayment: any,
+			private productSelectionModel: any,
 			private saltRounds: number
 		) {
 
@@ -240,31 +231,14 @@ module Route {
 
 			let groupId = req.body.groupId;
 			let products = req.body.products;
+			let productIds = products.map((p: any) => p[0]);
+			let discountIds = products.map((p: any) => p[1]);
 
-			// TODO: Create product selections and add them to payments
-
-
-			return res.status(204).send();
-		}
-
-		/**
-        * @api {post} /api/user/:username/product Add user product
-        * @apiName Add user product
-        * @apiGroup User
-        * @apiParam {String} username Username
-        * @apiParam {JSON} productId {productId: 1}
-        * @apiSuccess (204) -
-        * @apiError NotFound ERROR: User was not found
-		* @apiError NotFound ERROR: Product was not found
-		* @apiError NotFound ERROR: Group was not found
-		* @apiError DatabaseReadError ERROR: Product data could not be read from database
-        * @apiError DatabaseUpdateError ERROR: User Payment update failed
-        */
-		public addProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			let productIds = req.body.products; // List of product ids
-			let groupId = req.body.groupId;
-
-			Promise.all([this.getProductsFromDb(productIds), this.userService.getUser(req.params.username), this.getGroup(groupId)]).then((results: any) => {
+			Promise.all([
+				this.getProductsFromDb(productIds),
+				this.userService.getUser(req.params.username),
+				this.getGroup(groupId)
+			]).then((results: any) => {
 				let products = results[0];
 				let user = results[1];
 				let group = results[2];
@@ -277,25 +251,35 @@ module Route {
 						let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
 						return res.status(500).send(errorMsg);
 					} else {
+
 						let firstOpenPayment = payments.find((p: any) => !p.isPaid);
 
 						// If there's open payments, add products to existing one
 						if (firstOpenPayment) {
-							self.addPaymentProducts(payments[0], products).then((result: any) => res.status(204).send())
-								.catch((err: APIError) => {
+
+							self.removeOldProducts(firstOpenPayment).then((result: any) => {
+								console.log("Removed: " + JSON.stringify(result));
+
+								self.addPaymentProducts(firstOpenPayment, products, discountIds).then((result2: any) => {
+									console.log("DONE 1234" + result2);
+									return res.status(204).send();
+								}).catch((err: APIError) => {
 									return res.status(err.statusCode).send(err.message);
 								});
+							});
 						} else {
 							// Create new user payment
 							paymentModel.create({
 								isPaid: false
 							}, function (err: Error, payment: any) {
+
 								if (err) {
 									let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_INSERTION);
 									return res.status(500).send(errorMsg);
 								} else {
+
 									// Add products to newly created user payment
-									self.addPaymentProducts(payment, products).then((result: any) => {
+									self.addPaymentProducts(payment, products, discountIds).then((result: any) => {
 										group.getGroupPayment(function (err: Error, groupPayment: any) {
 											if (err) {
 												let errorMsg = ErrorHandler.getErrorMsg("Group payment", ErrorType.NOT_FOUND);
@@ -320,10 +304,9 @@ module Route {
 												}
 											});
 										});
-									})
-										.catch((err: APIError) => {
-											return res.status(err.statusCode).send(err.message);
-										});
+									}).catch((err: APIError) => {
+										return res.status(err.statusCode).send(err.message);
+									});
 								}
 							});
 						}
@@ -332,17 +315,72 @@ module Route {
 			});
 		}
 
-		private addPaymentProducts = (payment: any, products: any) => {
-			return new Promise((resolve, reject) => {
-				payment.addProducts(products, function (err: Error) {
-					if (err) {
-						let errorMsg = ErrorHandler.getErrorMsg("User Payment", ErrorType.DATABASE_UPDATE);
-						reject(new DatabaseError(ErrorType.DATABASE_UPDATE, errorMsg));
-					} else {
-						resolve(true);
-					}
-				});
+		private removeOldProducts = (payment: any) => {
+			console.log("selections: " + JSON.stringify(payment));
+			let promises: any = [];
+
+			payment.productSelections.forEach((ps: any) =>
+				promises.push(new Promise((resolve, reject) => {
+					payment.removeProductSelections(ps, function (err: Error) {
+						ps.remove(function (err: Error) {
+							if (err) {
+								console.log("rejecting");
+								reject(err);
+							}
+
+							console.log("resolved remove");
+							resolve(payment);
+						});
+					});
+				})));
+
+			return Promise.all(promises);
+		}
+
+		private addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
+			let selectionPromises: any = [];
+
+			products.forEach((p: any) => {
+				selectionPromises.push(new Promise((resolve, reject) => {
+					this.productSelectionModel.create({}, function (err: Error, ps: any) {
+						ps.setProduct(p, function (err: Error) {
+							console.log("setProduct");
+							let disc = p.discounts.find((d: any) => discountIds.some((di: any) => di === d.id));
+							console.log("disc: " + JSON.stringify(disc));
+
+							if (disc) {
+								console.log("Setting discount");
+								ps.setDiscount(disc, function (err: Error) {
+									console.log("setDiscount");
+									payment.addProductSelections(ps, function (err: Error) {
+
+										console.log("addProductSelections");
+										if (err) {
+											console.log("final error");
+											reject(err);
+										}
+
+										resolve(true);
+									});
+								});
+							} else {
+								payment.addProductSelections(ps, function (err: Error) {
+
+									console.log("addProductSelections");
+									if (err) {
+										console.log("final error");
+										reject(err);
+									}
+
+									resolve(true);
+								});
+							}
+						});
+					});
+				}));
 			});
+
+			return Promise.all(selectionPromises);
 		}
 
 		/**
