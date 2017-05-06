@@ -6,7 +6,7 @@ import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 
 import { Platoon } from "../platoon.model";
-import { Organizer } from "../organizer.model";
+import { Organization } from "../organization.model";
 import { Event } from "../event.model";
 import { AuthorizedHttpService } from "../authorizedhttp.service";
 
@@ -19,21 +19,19 @@ export class EventCreatorService extends AuthorizedHttpService {
 		this.eventsUrl = this.urlBase + "events/";
 	}
 
-	public createEvent(event: Event, platoons: Platoon[], organizer: Organizer): Observable<any> {
+	public createEvent(event: Event, platoons: Platoon[], organization: Organization): Observable<any> {
 		return this.http.post(this.eventsUrl, JSON.stringify(event), {headers: this.headers}).
 		map(this.extractEventData).
 		flatMap((resultEvent) => {
 
 			console.log("do we even get here. id is " + resultEvent.id);
 			let resultPlatoons = this.addPlatoons(resultEvent.id, platoons);
-			let resultOrganization = this.setOrganization(resultEvent.id, organizer);
+			let resultOrganization = this.setOrganization(resultEvent.id, organization);
 			console.log("Platoons result");
 			console.log(resultPlatoons);
 			return Observable.forkJoin(resultPlatoons, resultOrganization);
 		}).
 		catch(this.handleError);
-		//Organizer adding is missing, since no backend route yet exists
-		//Observable.forkJoin([eventResult]);
 
 	}
 	public addPlatoons(eventId: number, platoons: Platoon[]): Observable <any>{
@@ -44,9 +42,9 @@ export class EventCreatorService extends AuthorizedHttpService {
 		catch(this.handleError);
 
 	}
-	public setOrganization (eventId: number, organizer: Organizer): Observable<any>{
-		return this.http.post(this.eventsUrl + eventId + "/organization", JSON.stringify(organizer), {headers: this.headers}).
-		map(this.extractOrganizerData).
+	public setOrganization (eventId: number, organization: Organization): Observable<any>{
+		return this.http.post(this.eventsUrl + eventId + "/organization", JSON.stringify(organization), {headers: this.headers}).
+		map(this.extractOrganizationData).
 		catch(this.handleError);
 	}
 	protected extractEventData(res: Response): Event{
@@ -64,9 +62,9 @@ export class EventCreatorService extends AuthorizedHttpService {
 		}
 		return platoonList;
 	}
-	protected extractOrganizerData(res: Response): Organizer{
+	protected extractOrganizationData(res: Response): Organization{
 		let body = res.json();
 		console.log("Extract eventData" + body);
-		return Organizer.fromJSON(body.data.event);
+		return Organization.fromJSON(body.data.event);
 	}
 }
