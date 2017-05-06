@@ -1,4 +1,5 @@
 export class ParticipantGroup {
+    id: number;
     name: string;
     description?: string;
     platoonId?: number;

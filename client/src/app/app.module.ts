@@ -13,7 +13,7 @@ import { Routing, RoutedComponents } from './app.routing';
 import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
-import { EventService} from "./event.service";
+import { EventService } from "./event.service";
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
 import { UserSettingsService } from './user-settings/user-settings.service';
@@ -22,15 +22,21 @@ import { EventListingComponent } from './event-listing/event-listing.component';
 import { EventDetailsService } from "./event-details/event-details.service";
 import { EventCreatorComponentComponent } from './admin-page/event-creator-component/event-creator-component.component';
 import { GroupModalComponent } from './event-details/group-modal/group-modal.component';
+import { EventSignupComponent } from './event-signup/event-signup.component';
+import { ParticipantGroupService } from "./event-details/participant-group.service";
+import { ProductRowComponent } from './event-signup/product-row/product-row.component';
+import { EventSignupService } from "./event-signup/event-signup.service";
 
 @NgModule({
   declarations: [
     AppComponent,
     RoutedComponents,
     NavBarComponent,
-    EventListingComponent, 
+    EventListingComponent,
     EventCreatorComponentComponent,
-    GroupModalComponent
+    GroupModalComponent,
+    EventSignupComponent,
+    ProductRowComponent
   ],
   imports: [
     BrowserModule,
@@ -49,8 +55,10 @@ import { GroupModalComponent } from './event-details/group-modal/group-modal.com
     SignupService,
     UserSettingsService,
     EventCreatorService,
-    EventDetailsService
-     ],
+    EventDetailsService,
+    ParticipantGroupService,
+    EventSignupService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

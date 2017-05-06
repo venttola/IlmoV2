@@ -6,6 +6,7 @@ import * as bcrypt from "bcrypt";
 import { DatabaseHandler } from "../models/databasehandler";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
+import { EventService } from "../services/eventservice";
 
 /*
 	GET /api/user/:username 
@@ -19,8 +20,15 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 */
 module Route {
 	export class UserRoutes {
-		constructor(private userService: UserService, private productModel: any,
-			private participantGroupModel: any, private userPayment: any, private saltRounds: number) {
+		constructor(
+			private userService: UserService,
+			private eventService: EventService,
+			private productModel: any,
+			private discountModel: any,
+			private participantGroupModel: any,
+			private userPayment: any,
+			private saltRounds: number
+		) {
 
 		}
 
@@ -165,6 +173,78 @@ module Route {
 				.catch((err: APIError) => {
 					return res.status(err.statusCode).send(err.message);
 				});
+		}
+
+		/**
+        * @api {get} /api/user/:username/products/:eventId Get user products by event
+        * @apiName Get user products by event
+        * @apiGroup User
+        * @apiParam {String} username Username
+		* @apiParam {String} eventId Event identifier
+        * @apiSuccess {JSON} List of user products
+        * @apiError NotFound ERROR: User was not found
+		* @apiError NotFound ERROR: User was not found
+        * @apiError DatabaseReadError Product data could not be read from the database
+        */
+		public getEventProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			let groupId = req.body.groupId;
+			let eventId = req.body.eventId;
+			let username = req.params.username;
+
+			let self = this;
+
+			Promise.all([this.userService.getUser(username), this.getGroup(groupId)]).then((results: any) => {
+				let user = results[0];
+				let group = results[1];
+
+				// Get group payment - there should be only one
+				group.getGroupPayment(function (err: Error, groupPayment: any) {
+
+					// Get all user payments
+					user.getUserPayments(function (err: Error, userPayments: any) {
+
+						// Get user payments related to this group payment
+						let payments = userPayments.filter((p: any) => groupPayment[0].userPayments.some((x: any) => p.id === x.id));
+
+						// Get event products
+						self.eventService.getEventProducts(eventId).then((eventProducts: any) => {
+							if (payments.length > 0) {
+								let userProdSelections: any = [];
+								payments.forEach((pm: any) => pm.productSelections.forEach((p: any) => userProdSelections.push(p)));
+
+								if (userProdSelections.length > 0) {
+									eventProducts.map((e: any) => {
+										let p = userProdSelections.find((ups: any) => ups.product_id === e.id);
+										if (p) {
+											e.selected = true;
+
+											if (p.discount_id && p.discount_id != null) {
+												e.discounts.find((d: any) => d.id === p.discount_id).selected = true;
+											}
+										}
+									});
+
+									return res.status(200).json(eventProducts);
+								}
+							} else {
+								return res.status(200).json(eventProducts);
+							}
+						});
+					});
+				});
+			});
+		}
+
+		public signup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			console.log(req.body);
+
+			let groupId = req.body.groupId;
+			let products = req.body.products;
+
+			// TODO: Create product selections and add them to payments
+
+
+			return res.status(204).send();
 		}
 
 		/**

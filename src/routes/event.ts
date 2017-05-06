@@ -132,7 +132,8 @@ module Route {
                             let errorMsg = ErrorHandler.getErrorMsg("Event product data", ErrorType.DATABASE_READ);
                             return res.status(500).send(errorMsg);
                         } else {
-                            return res.status(200).send(prods);
+                            console.log(prods);
+                            return res.status(200).json(prods);
                         }
                     });
                 }
