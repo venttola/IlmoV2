@@ -132,7 +132,8 @@ module Route {
                             let errorMsg = ErrorHandler.getErrorMsg("Event product data", ErrorType.DATABASE_READ);
                             return res.status(500).send(errorMsg);
                         } else {
-                            return res.status(200).send(prods);
+                            console.log(prods);
+                            return res.status(200).json(prods);
                         }
                     });
                 }
@@ -246,6 +247,8 @@ module Route {
                             name: req.body.name,
                             description: req.body.description !== undefined ? req.body.description : ""
                         }, function (err: Error, group: any) {
+                            // TODO: Create group payment here
+
                             platoon.addParticipantGroups(group, function (err: Error) {
                                 return err != null
                                     ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))

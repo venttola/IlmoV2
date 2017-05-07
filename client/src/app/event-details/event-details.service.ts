@@ -7,6 +7,7 @@ import "rxjs/add/operator/map";
 import { EventDetails } from "./event-details.model";
 
 import { AuthorizedHttpService } from "../authorizedhttp.service";
+import { Product } from "../event-signup/product";
 @Injectable()
 export class EventDetailsService extends AuthorizedHttpService {
 	eventUrl: string;
@@ -17,11 +18,19 @@ export class EventDetailsService extends AuthorizedHttpService {
 	}
 
 	public getEventDetails(id: number): Observable<EventDetails> {
-		return this.http.get(this.eventUrl + id, { headers: this.headers }).
-			map(this.extractData).
+		return this.http.get(this.eventUrl + id, { headers: this.headers })
+			.map(this.extractData).
 			catch(this.handleError);
 	}
-	
+
+	// public getEventProducts(id: number): Observable<Product[]> {
+	// 	return this.http.get(this.eventUrl + id + "/product", { headers: this.headers })
+	// 		.map((res: Response) => {
+	// 			return res.json().map(d => Product.fromJSON(d));
+	// 		})
+	// 		.catch(err => this.handleError(err));
+	// }
+
 	protected extractData(res: Response) {
 		let body = res.json();
 		let eventDetails = new EventDetails(body.data);

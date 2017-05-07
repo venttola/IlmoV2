@@ -1,0 +1,20 @@
+.product {
+    background-color: darkgrey;
+    width: 100%;
+}
+
+.product-name, .selection {
+    display: inline-block;
+}
+
+.product-name {
+    width: 95%;
+    padding-left: 1%;
+}
+
+.discount-section {
+    display: block;
+    background-color: white !important;
+    color: black;
+    padding-left: 1%;
+}

@@ -95,17 +95,20 @@ export class DatabaseHandler {
 		db.models.Event.hasMany("platoons", db.models.Platoon);
 
 		db.models.GroupPayment.hasOne("payee", db.models.ParticipantGroup, {}, { reverse: "GroupPayment" });
-		db.models.GroupPayment.hasMany("userPayments", db.models.UserPayments);
+		db.models.GroupPayment.hasMany("userPayments", db.models.UserPayments, {}, { autoFetch: true });
 
-		db.models.Product.hasMany("discounts", db.models.Discount, {}, { reverse: "product" });
-		db.models.UserPayment.hasMany("products", db.models.Product);
+		db.models.Product.hasMany("discounts", db.models.Discount, {}, { reverse: "product", autoFetch: true });
+		db.models.UserPayment.hasMany("productSelections", db.models.ProductSelection, {}, { autoFetch: true });
+
+		db.models.ProductSelection.hasOne("discount", db.models.Discount, {}, { autoFetch: true });
+		db.models.ProductSelection.hasOne("product", db.models.Product, {}, { autoFetch: true });
 
 		//Refactored to UserPaymets.
 		// TODO: update all routes
 		//db.models.User.hasMany("products", db.models.Product);
 		db.models.User.hasMany("moderatedGroups", db.models.ParticipantGroup, {}, { reverse: "moderator" });
 		db.models.User.hasMany("userPayments", db.models.UserPayment, {}, { reverse: "payee" });
-		db.models.User.hasMany("organizations", db.models.Organization, {}, { reverse: "member"});
+		db.models.User.hasMany("organizations", db.models.Organization, {}, { reverse: "member" });
 
 		db.models.User.extendsTo("admin", {});
 

@@ -6,21 +6,20 @@ import * as bcrypt from "bcrypt";
 import { DatabaseHandler } from "../models/databasehandler";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
+import { EventService } from "../services/eventservice";
 
-/*
-	GET /api/user/:username 
-	PATCH /api/user/:username/credentials 
-	PATCH /api/user/:username/detail
-	GET /api/user/:username/products
-	POST /api/user/:username/product
-	DELETE /api/user/:username/product
-	POST /api/user/:username/group
-	DELETE /api/user/:username/group
-*/
 module Route {
 	export class UserRoutes {
-		constructor(private userService: UserService, private productModel: any,
-			private participantGroupModel: any, private userPayment: any, private saltRounds: number) {
+		constructor(
+			private userService: UserService,
+			private eventService: EventService,
+			private productModel: any,
+			private discountModel: any,
+			private participantGroupModel: any,
+			private userPayment: any,
+			private productSelectionModel: any,
+			private saltRounds: number
+		) {
 
 		}
 
@@ -168,27 +167,81 @@ module Route {
 		}
 
 		/**
-        * @api {post} /api/user/:username/product Add user product
-        * @apiName Add user product
+        * @api {get} /api/user/:username/products/:eventId Get user products by event
+        * @apiName Get user products by event
         * @apiGroup User
         * @apiParam {String} username Username
-        * @apiParam {JSON} productId {productId: 1}
-        * @apiSuccess (204) -
+		* @apiParam {String} eventId Event identifier
+        * @apiSuccess {JSON} List of user products
         * @apiError NotFound ERROR: User was not found
-		* @apiError NotFound ERROR: Product was not found
-		* @apiError NotFound ERROR: Group was not found
-		* @apiError DatabaseReadError ERROR: Product data could not be read from database
-        * @apiError DatabaseUpdateError ERROR: User Payment update failed
+		* @apiError NotFound ERROR: User was not found
+        * @apiError DatabaseReadError Product data could not be read from the database
         */
-		public addProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			let productIds = req.body.products; // List of product ids
+		public getEventProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let groupId = req.body.groupId;
+			let eventId = req.body.eventId;
+			let username = req.params.username;
 
-			Promise.all([this.getProductsFromDb(productIds), this.userService.getUser(req.params.username), this.getGroup(groupId)]).then((results: any) => {
+			let self = this;
+
+			Promise.all([this.userService.getUser(username), this.getGroup(groupId)]).then((results: any) => {
+				let user = results[0];
+				let group = results[1];
+
+				// Get group payment - there should be only one
+				group.getGroupPayment(function (err: Error, groupPayment: any) {
+
+					// Get all user payments
+					user.getUserPayments(function (err: Error, userPayments: any) {
+
+						// Get user payments related to this group payment
+						let userPaymentsInGroup = userPayments.filter((p: any) => groupPayment[0].userPayments.some((x: any) => p.id === x.id));
+
+						// Get event products
+						self.eventService.getEventProducts(eventId).then((eventProducts: any) => {
+
+							if (userPaymentsInGroup.length > 0) {
+								let userProdSelections: any = [];
+								userPaymentsInGroup.forEach((pm: any) => pm.productSelections.forEach((p: any) => userProdSelections.push(p)));
+
+								// Mark products as selected from event productlist which are selected by the user
+								if (userProdSelections.length > 0) {
+									eventProducts.map((e: any) => {
+										let prod = userProdSelections.find((ups: any) => ups.product_id === e.id);
+
+										if (prod) {
+											e.selected = true;
+											// Mark discount as selected
+											if (prod.discount_id && prod.discount_id != null) {
+												e.discounts.find((d: any) => d.id === prod.discount_id).selected = true;
+											}
+										}
+									});
+								}
+							}
+
+							return res.status(200).json(eventProducts);
+						});
+					});
+				});
+			});
+		}
+
+		// TODO: apiDocs
+		public signup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			let groupId = req.body.groupId;
+			let products = req.body.products;
+			let productIds = products.map((p: any) => p[0]);
+			let discountIds = products.map((p: any) => p[1]);
+
+			Promise.all([
+				this.getProductsFromDb(productIds),
+				this.userService.getUser(req.params.username),
+				this.getGroup(groupId)
+			]).then((results: any) => {
 				let products = results[0];
 				let user = results[1];
 				let group = results[2];
-
 				let paymentModel = this.userPayment;
 				let self = this;
 
@@ -199,12 +252,19 @@ module Route {
 					} else {
 						let firstOpenPayment = payments.find((p: any) => !p.isPaid);
 
-						// If there's open payments, add products to existing one
+						// If there's open payments, add products to that one
 						if (firstOpenPayment) {
-							self.addPaymentProducts(payments[0], products).then((result: any) => res.status(204).send())
-								.catch((err: APIError) => {
+
+							// Remove old product selections
+							self.removeOldProducts(firstOpenPayment).then((result: any) => {
+
+								// Add new product selections
+								self.addPaymentProducts(firstOpenPayment, products, discountIds).then((empty: any) => {
+									return res.status(204).send();
+								}).catch((err: APIError) => {
 									return res.status(err.statusCode).send(err.message);
 								});
+							});
 						} else {
 							// Create new user payment
 							paymentModel.create({
@@ -215,7 +275,7 @@ module Route {
 									return res.status(500).send(errorMsg);
 								} else {
 									// Add products to newly created user payment
-									self.addPaymentProducts(payment, products).then((result: any) => {
+									self.addPaymentProducts(payment, products, discountIds).then((result: any) => {
 										group.getGroupPayment(function (err: Error, groupPayment: any) {
 											if (err) {
 												let errorMsg = ErrorHandler.getErrorMsg("Group payment", ErrorType.NOT_FOUND);
@@ -240,10 +300,9 @@ module Route {
 												}
 											});
 										});
-									})
-										.catch((err: APIError) => {
-											return res.status(err.statusCode).send(err.message);
-										});
+									}).catch((err: APIError) => {
+										return res.status(err.statusCode).send(err.message);
+									});
 								}
 							});
 						}
@@ -252,17 +311,46 @@ module Route {
 			});
 		}
 
-		private addPaymentProducts = (payment: any, products: any) => {
-			return new Promise((resolve, reject) => {
-				payment.addProducts(products, function (err: Error) {
-					if (err) {
-						let errorMsg = ErrorHandler.getErrorMsg("User Payment", ErrorType.DATABASE_UPDATE);
-						reject(new DatabaseError(ErrorType.DATABASE_UPDATE, errorMsg));
-					} else {
-						resolve(true);
-					}
-				});
+		private removeOldProducts = (payment: any) => {
+			let promises: any = [];
+
+			payment.productSelections.forEach((ps: any) =>
+				promises.push(new Promise((resolve, reject) => {
+
+					// Dereference product selections from payment
+					payment.removeProductSelections(ps, function (err: Error) {
+						// Delete product selections
+						ps.remove((err: Error) => err ? reject(err) : resolve(payment));
+					});
+				})));
+
+			return Promise.all(promises);
+		}
+
+		private addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
+			let selectionPromises: any = [];
+
+			products.forEach((p: any) => {
+				selectionPromises.push(new Promise((resolve, reject) => {
+					this.productSelectionModel.create({}, function (err: Error, ps: any) {
+						ps.setProduct(p, function (err: Error) {
+							let disc = p.discounts.find((d: any) => discountIds.some((di: any) => di === d.id));
+
+							if (disc) {
+								ps.setDiscount(disc, (err: Error) =>
+									err ? reject(err)
+										: payment.addProductSelections(ps, (err: Error) =>
+											err ? reject(err)
+												: resolve(true)));
+							} else {
+								payment.addProductSelections(ps, (err: Error) => err ? reject(err) : resolve(true));
+							}
+						});
+					});
+				}));
 			});
+
+			return Promise.all(selectionPromises);
 		}
 
 		/**
@@ -321,14 +409,12 @@ module Route {
 							return res.status(204).send();
 						}
 					});
-				})
-					.catch((err: APIError) => {
-						return res.status(err.statusCode).send(err.message);
-					});
-			})
-				.catch((err: APIError) => {
+				}).catch((err: APIError) => {
 					return res.status(err.statusCode).send(err.message);
 				});
+			}).catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
+			});
 		}
 
 		/**

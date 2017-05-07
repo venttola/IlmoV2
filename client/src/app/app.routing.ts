@@ -13,6 +13,7 @@ import { MainPageComponent } from "./main-page/main-page.component";
 import { AdminPageComponent } from "./admin-page/admin-page.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
 import { EventDetailsComponent } from "./event-details/event-details.component";
+import { EventSignupComponent } from "./event-signup/event-signup.component";
 
 const appRoutes: Routes = [
   {
@@ -45,6 +46,11 @@ const appRoutes: Routes = [
   {
     path: "events/:id",
     component: EventDetailsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "events/:eventId/group/:groupId",
+    component: EventSignupComponent,
     canActivate: [AuthGuard]
   },
   {
