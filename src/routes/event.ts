@@ -247,6 +247,8 @@ module Route {
                             name: req.body.name,
                             description: req.body.description !== undefined ? req.body.description : ""
                         }, function (err: Error, group: any) {
+                            // TODO: Create group payment here
+
                             platoon.addParticipantGroups(group, function (err: Error) {
                                 return err != null
                                     ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))
