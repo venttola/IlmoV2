@@ -12,7 +12,8 @@
 
   <ul *ngIf="selectedPlatoon" class="participantgroup-list">
     <li *ngFor="let g of showableGroups">
-      <div class="group-item unselectable clickable" (click)="onSelectGroup(g)">{{ g.name }}</div>
+      <!--<a [routerLink]="['/events', event.id]" class="text-success">Ilmoittautuminen auki</a>  -->
+      <div class="group-item unselectable clickable" (click)="onSelectGroup(g)"><a [routerLink]="['/events', eventDetails?.event.id, 'group', g.id]">{{ g.name }}</a></div>
     </li>
   </ul>
 

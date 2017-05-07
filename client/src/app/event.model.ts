@@ -5,11 +5,11 @@ export class Event {
 	endDate: Date;
 	description: string;
 	registerationOpen: boolean;
-	constructor(){
+	constructor() {
 		this.name = "";
 		this.registerationOpen = false;
 	}
-	static fromJSON (json: any): Event{
+	static fromJSON(json: any): Event {
 		let event = Object.create(Event.prototype);
 		Object.assign(event, json);
 		return event;

@@ -10,6 +10,7 @@ import { DatabaseHandler } from "./models/databasehandler";
 import { PriviledgeChecker } from "./middleware/priviledgechecker";
 import { UserService } from "./services/userservice";
 import { OrganizationService } from "./services/organizationservice";
+import { EventService } from "./services/eventservice";
 
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
@@ -27,6 +28,7 @@ class Server {
 	private handler: DatabaseHandler;
 	private priviledgeChecker: PriviledgeChecker;
 	private userService: UserService;
+	private eventService: EventService;
 	private organizationService: OrganizationService;
 
 	constructor() {
@@ -44,6 +46,7 @@ class Server {
 		connection.then((conn: any) => {
 			let models = this.handler.getModels();
 			this.userService = new UserService(models.User);
+			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
 			this.setRoutes();
 		}).catch((err: Error) => {
@@ -103,9 +106,12 @@ class Server {
 		let userRoute: userRoutes.UserRoutes =
 			new userRoutes.UserRoutes(
 				this.userService,
+				this.eventService,
 				models.Product,
+				models.Discount,
 				models.ParticipantGroup,
 				models.UserPayment,
+				models.ProductSelection,
 				this.SALT_ROUNDS
 			);
 
@@ -115,7 +121,8 @@ class Server {
 		router.patch(userApiPrefix + "/credentials", userRoute.setUserCredentials);
 		router.patch(userApiPrefix + "/detail", userRoute.setUserInfo);
 		router.get(userApiPrefix + "/products", userRoute.getProducts);
-		router.post(userApiPrefix + "/product", userRoute.addProducts);
+		router.post(userApiPrefix + "/event/products", userRoute.getEventProducts);
+		router.post(userApiPrefix + "/event/signup", userRoute.signup);
 		router.delete(userApiPrefix + "/product", userRoute.removeProduct);
 		router.post(userApiPrefix + "/group", userRoute.addGroup);
 		router.delete(userApiPrefix + "/group", userRoute.removeGroup);
@@ -158,6 +165,7 @@ class Server {
 			);
 
 		//router.post(this.API_PREFIX + "/group", groupRoute.addGroup);
+		router.get(this.API_PREFIX + "/group/:group", groupRoute.getParticipantGroup);
 		router.delete(this.API_PREFIX + "/group/:group/:username", groupRoute.removeMember);
 		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
 		router.delete(this.API_PREFIX + "/group/:group/:username/moderator", groupRoute.removeModerator);

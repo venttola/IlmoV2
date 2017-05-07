@@ -1,0 +1,12 @@
+.event-signup {
+    text-align: center;
+}
+
+.participantgroup-section, .product-sections {
+    text-align: left;
+}
+
+.product-list {
+    list-style-type: none;
+    padding: 0;
+}

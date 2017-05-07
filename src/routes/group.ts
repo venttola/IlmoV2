@@ -9,6 +9,16 @@ module Route {
 
         }
 
+        public getParticipantGroup = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group;
+
+            this.getGroup(groupId).then((group) => {
+                return res.status(200).json(group);
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+
         /**
         * @api {post} api/group Adds new group
         * @apiName New group

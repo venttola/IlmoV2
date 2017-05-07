@@ -1,0 +1,23 @@
+<div class="event-signup">
+  <h1>Ilmoittauminen</h1>
+
+  <div class="participantgroup-section">
+    <h4>Ryhmä</h4>
+    <div>{{participantGroup?.name}}</div>
+    <div class="group-description">
+      {{participantGroup?.description}}
+    </div>
+  </div>
+
+  <div class="product-sections">
+    <h4>Tuotteet</h4>
+    <ul class="product-list">
+      <li *ngFor="let p of products">
+        <app-product-row [product]="p"></app-product-row>
+      </li>
+    </ul>
+  </div>
+
+  <button type="button" class="btn btn-primary" (click)="onSubmit()">Ilmottaudu</button>
+
+</div>

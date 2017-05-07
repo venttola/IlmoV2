@@ -13,7 +13,7 @@ import { Routing, RoutedComponents } from './app.routing';
 import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
-import { EventService} from "./event.service";
+import { EventService } from "./event.service";
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
 import { UserSettingsService } from './user-settings/user-settings.service';
@@ -25,6 +25,11 @@ import { GroupModalComponent } from './event-details/group-modal/group-modal.com
 import { OrganizationHandlerComponent } from './admin-page/organization-handler/organization-handler.component';
 import { OrganizationService } from "./admin-page/organization-handler/organization.service";
 
+import { EventSignupComponent } from './event-signup/event-signup.component';
+import { ParticipantGroupService } from "./event-details/participant-group.service";
+import { ProductRowComponent } from './event-signup/product-row/product-row.component';
+import { EventSignupService } from "./event-signup/event-signup.service";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,6 +38,8 @@ import { OrganizationService } from "./admin-page/organization-handler/organizat
     EventListingComponent, 
     EventCreatorComponent,
     GroupModalComponent,
+    EventSignupComponent,
+    ProductRowComponent,
     OrganizationHandlerComponent
   ],
   imports: [
@@ -53,9 +60,10 @@ import { OrganizationService } from "./admin-page/organization-handler/organizat
     UserSettingsService,
     EventCreatorService,
     EventDetailsService,
-    OrganizationService
-
-     ],
+    OrganizationService,
+    ParticipantGroupService,
+    EventSignupService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
