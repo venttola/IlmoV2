@@ -139,6 +139,7 @@ class Server {
 				models.Product,
 				models.Platoon,
 				models.ParticipantGroup,
+				models.GroupPayment,
 				this.userService,
 				this.organizationService
 			);

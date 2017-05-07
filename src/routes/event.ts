@@ -31,6 +31,7 @@ module Route {
                     private productModel: any,
                     private platoonModel: any,
                     private participantGroupModel: any,
+                    private groupPaymentModel: any,
                     private userService: UserService,
                     private organizationService: OrganizationService) {
         }
@@ -224,7 +225,7 @@ module Route {
         * @apiParam {JSON} name {name: "testiryhmä"}
         * @apiParam {JSON} description {description: "Joku ryhmä"}
         * @apiParam {JSON} platoonId {platoonId: 1}
-        * @apiSuccess (200) Platoon identified by platoonId
+        * @apiSuccess (200) Group identified by group.Id
         * @apiError DatabaseReadError ERROR: Event data could not be read from the database
         * @apiError DatabaseInsertionError ERROR: ParticipantGroup insertion failed
         * @apiError NotFound ERROR: Event was not found
@@ -250,9 +251,23 @@ module Route {
                             // TODO: Create group payment here
 
                             platoon.addParticipantGroups(group, function (err: Error) {
-                                return err != null
-                                    ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))
-                                    : res.status(200).json(platoon);
+                                if (err != null) {
+                                    return res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE));
+                                } else {
+                                    self.groupPaymentModel.create({
+                                        paidOn: null
+                                    }, function (err: Error, payment: any) {
+                                        if (err != null) {
+                                            return res.status(500).send(ErrorHandler.getErrorMsg("GroupPayment", ErrorType.DATABASE_UPDATE));
+                                        } else {
+                                            payment.setPayee(group, function(err: Error){
+                                                return err != null
+                                                ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE)) 
+                                                : res.status(200).json(group);
+                                            });
+                                        }
+                                    });
+                                }
                             });
                         });
                     } else {
