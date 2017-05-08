@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { EventService } from "../event.service";
+import { AuthService } from "../authentication/auth.service";
 import { Event } from "../event.model"; 
 @Component({
   selector: "event-listing",
@@ -10,7 +11,8 @@ import { Event } from "../event.model";
 export class EventListingComponent implements OnInit {
   private events: Event[];
   error: any;
-  constructor(private eventService: EventService) {
+  constructor(private eventService: EventService,
+              private authService: AuthService) {
   }
   ngOnInit() {
   	this.getEvents();

@@ -11,6 +11,9 @@
 				<div *ngIf ="!event.registerationOpen"> 	
 					<p class="text-danger">Ilmoittautuminen kiinni </p>
 				</div>
+				<div *ngIf ="authService.isAdmin()"> 	
+					<a [routerLink]="['/events', event.id, 'manage']" class="text-warning">Hallinnoi</a>
+				</div>
 			</div>
 		</div>
 	</div>

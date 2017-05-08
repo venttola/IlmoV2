@@ -14,6 +14,7 @@ import { AdminPageComponent } from "./admin-page/admin-page.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
 import { EventDetailsComponent } from "./event-details/event-details.component";
 import { EventSignupComponent } from "./event-signup/event-signup.component";
+import { EventManagementComponent } from "./admin-page/event-management/event-management.component";
 
 const appRoutes: Routes = [
   {
@@ -54,6 +55,11 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: "events/:eventId/manage",
+    component: EventManagementComponent,
+    canActivate: [AdminGuard]
+  },
+  {
     path: "**",
     redirectTo: "",
     pathMatch: "full"
@@ -68,4 +74,5 @@ export const RoutedComponents = [FrontPageComponent,
                                  LoginComponent,
                                  SignupComponent,
                                  UserSettingsComponent,
-                                 EventDetailsComponent];
+                                 EventDetailsComponent,
+                                 EventManagementComponent];

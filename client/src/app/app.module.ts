@@ -24,6 +24,7 @@ import { EventCreatorComponent } from './admin-page/event-creator/event-creator.
 import { GroupModalComponent } from './event-details/group-modal/group-modal.component';
 import { OrganizationHandlerComponent } from './admin-page/organization-handler/organization-handler.component';
 import { OrganizationService } from "./admin-page/organization-handler/organization.service";
+import { EventManagementService } from "./admin-page/event-management/event-management.service";
 
 import { EventSignupComponent } from './event-signup/event-signup.component';
 import { ParticipantGroupService } from "./event-details/participant-group.service";
@@ -62,7 +63,8 @@ import { EventSignupService } from "./event-signup/event-signup.service";
     EventDetailsService,
     OrganizationService,
     ParticipantGroupService,
-    EventSignupService
+    EventSignupService,
+    EventManagementService
   ],
   bootstrap: [AppComponent]
 })
