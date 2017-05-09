@@ -18,6 +18,7 @@ module Route {
 			private participantGroupModel: any,
 			private userPayment: any,
 			private productSelectionModel: any,
+			private groupPaymentModel: any,
 			private saltRounds: number
 		) {
 
@@ -190,13 +191,11 @@ module Route {
 
 				// Get group payment - there should be only one
 				group.getGroupPayment(function (err: Error, groupPayment: any) {
-
 					// Get all user payments
 					user.getUserPayments(function (err: Error, userPayments: any) {
-
 						// Get user payments related to this group payment
 						let userPaymentsInGroup = userPayments.filter((p: any) => groupPayment[0].userPayments.some((x: any) => p.id === x.id));
-
+						console.log(userPaymentsInGroup);
 						// Get event products
 						self.eventService.getEventProducts(eventId).then((eventProducts: any) => {
 
@@ -208,6 +207,7 @@ module Route {
 								if (userProdSelections.length > 0) {
 									eventProducts.map((e: any) => {
 										let prod = userProdSelections.find((ups: any) => ups.product_id === e.id);
+										console.log("Prod: " + prod);
 
 										if (prod) {
 											e.selected = true;
@@ -309,6 +309,64 @@ module Route {
 					}
 				});
 			});
+		}
+
+		public getSignUps = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			let username = req.params.username;
+
+			this.userService.getUser(username).then((user: any) => {
+				user.getUserPayments((err: Error, userPayments: any) => {
+					if (err) {
+						let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_READ);
+						return res.status(500).send(errorMsg);
+					}
+
+					this.fetchSignUpDetails(userPayments).then((details: any) => res.status(200).json(details));
+				}).catch((err: APIError) => {
+					return res.status(err.statusCode).send(err.message);
+				});
+			});
+		}
+
+		private fetchSignUpDetails = (userPayments: any) => {
+			let promises: any[] = [];
+
+			userPayments.forEach((up: any) => {
+				promises.push(new Promise((resolve, reject) => {
+					up.getPayment((err: Error, groupPayment: any) => {
+						if (err) {
+							reject(err);
+						}
+
+						groupPayment[0].getPayee((err: Error, group: any) => {
+							if (err) {
+								reject(err);
+							}
+
+							group.getPlatoon((err: Error, platoon: any) => {
+								if (err) {
+									reject(err);
+								}
+
+								platoon[0].getEvent((err: Error, event: any) => {
+									if (err) {
+										reject(err);
+									}
+
+									resolve({
+										eventId: event[0].id,
+										eventName: event[0].name,
+										groupId: group.id,
+										groupName: group.name
+									});
+								});
+							});
+						});
+					});
+				}));
+			});
+
+			return Promise.all(promises);
 		}
 
 		private removeOldProducts = (payment: any) => {

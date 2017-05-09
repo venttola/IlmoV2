@@ -112,6 +112,7 @@ class Server {
 				models.ParticipantGroup,
 				models.UserPayment,
 				models.ProductSelection,
+				models.GroupPayment,
 				this.SALT_ROUNDS
 			);
 
@@ -123,6 +124,7 @@ class Server {
 		router.get(userApiPrefix + "/products", userRoute.getProducts);
 		router.post(userApiPrefix + "/event/products", userRoute.getEventProducts);
 		router.post(userApiPrefix + "/event/signup", userRoute.signup);
+		router.get(userApiPrefix + "/event/signup", userRoute.getSignUps);
 		router.delete(userApiPrefix + "/product", userRoute.removeProduct);
 		router.post(userApiPrefix + "/group", userRoute.addGroup);
 		router.delete(userApiPrefix + "/group", userRoute.removeGroup);

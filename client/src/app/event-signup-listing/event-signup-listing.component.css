@@ -1,0 +1,21 @@
+.signup-table {
+    background-color: white;
+    color: black;
+    width: 100%;
+}
+
+.signup-table td:first-child, .signup-table th:first-child {
+    padding-left: 1%;
+}
+
+.signup-table td:last-child, .signup-table th:last-child {
+    padding-right: 2%;
+}
+
+.event-name {
+    width: 25%;
+}
+
+.edit-button {
+    float: right;
+}

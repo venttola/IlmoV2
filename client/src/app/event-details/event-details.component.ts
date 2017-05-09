@@ -60,9 +60,10 @@ export class EventDetailsComponent implements OnInit {
     this.group.platoonId = this.selectedPlatoon;
 
     this.eventService.addGroup(this.group, this.eventDetails.event.id)
-      .subscribe((platoon: Platoon) => {
-        platoon.participantGroups.push(this.group);
-        this.groupsByPlatoon.set(platoon.id, platoon.participantGroups);
+      .subscribe((group: ParticipantGroup) => {
+        console.log(group);
+
+        this.groupsByPlatoon.get(this.selectedPlatoon).push(group);
         this.showableGroups = this.groupsByPlatoon.get(this.selectedPlatoon);
         this.modal.hide();
       }, 

@@ -25,6 +25,7 @@ export class EventSignupComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
+    // TODO: Refactor this
     this.route.params
       .switchMap((params: Params) =>
         this.participantGroupService.getGroup(+params["groupId"])
@@ -38,22 +39,18 @@ export class EventSignupComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.products);
-
     let prods = this.products
       .filter((p: Product) => p.selected === true);
 
     let prodIds = prods.map((p: Product) => {
       let discounts = p.discounts.filter((d: Discount) => d.selected === true);
-      
       let discountId: number = discounts && discounts.length > 0 ? discounts[0].id : null;
-      console.log("discountId:" + discountId);
+
       return [p.id, discountId];
     });
 
-    this.eventSignupService.saveSignup(this.participantGroup.id, prodIds).subscribe((res: any) => {
-      // TODO: Redirect to "own signups" view
-      this.router.navigate(["main"]);
-    });
+    this.eventSignupService.saveSignup(this.participantGroup.id, prodIds).subscribe((res: any) => 
+      this.router.navigate(["signups"])
+    );
   }
 }

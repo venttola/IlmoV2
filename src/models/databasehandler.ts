@@ -88,14 +88,14 @@ export class DatabaseHandler {
 		db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
 		db.models.ParticipantGroup.hasMany("groupModerator", db.models.User);
 
-		db.models.Platoon.hasMany("participantGroups", db.models.ParticipantGroup, {}, { autoFetch: true });
+		db.models.Platoon.hasMany("participantGroups", db.models.ParticipantGroup, {}, { autoFetch: true, reverse: "platoon" });
 
 		db.models.Event.hasMany("products", db.models.Product, {}, { reverse: "events" });
 		db.models.Event.hasOne("organization", db.models.Organization);
-		db.models.Event.hasMany("platoons", db.models.Platoon);
+		db.models.Event.hasMany("platoons", db.models.Platoon, {}, { reverse: "event" });
 
-		db.models.GroupPayment.hasOne("payee", db.models.ParticipantGroup, {}, { reverse: "GroupPayment" });
-		db.models.GroupPayment.hasMany("userPayments", db.models.UserPayments, {}, { autoFetch: true });
+		db.models.GroupPayment.hasOne("payee", db.models.ParticipantGroup, {}, { reverse: "groupPayment" });
+		db.models.GroupPayment.hasMany("userPayments", db.models.UserPayment, {}, { reverse: "payment", autoFetch: true });
 
 		db.models.Product.hasMany("discounts", db.models.Discount, {}, { reverse: "product", autoFetch: true });
 		db.models.UserPayment.hasMany("productSelections", db.models.ProductSelection, {}, { autoFetch: true });
