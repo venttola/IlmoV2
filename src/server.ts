@@ -53,7 +53,6 @@ class Server {
 		}).catch((err: Error) => {
 			console.log(err);
 		});
-		
 		this.app = express();
 		this.app.use(cors(corsOptions));
 	}
