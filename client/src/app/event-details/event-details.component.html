@@ -1,6 +1,6 @@
 <div class="event-details">
   <h1>{{ eventDetails?.event.name }}</h1>
-  <div class="dates">{{ eventDetails?.event.startDate }} - {{ eventDetails?.event.endDate }}</div>
+  <div class="dates">{{ eventDetails?.event.startDate | date }} - {{ eventDetails?.event.endDate | date }}</div>
 
   <div class="description">{{ eventDetails?.event.description }}</div>
 
@@ -12,7 +12,6 @@
 
   <ul *ngIf="selectedPlatoon" class="participantgroup-list">
     <li *ngFor="let g of showableGroups">
-      <!--<a [routerLink]="['/events', event.id]" class="text-success">Ilmoittautuminen auki</a>  -->
       <div class="group-item unselectable clickable" (click)="onSelectGroup(g)"><a [routerLink]="['/events', eventDetails?.event.id, 'group', g.id]">{{ g.name }}</a></div>
     </li>
   </ul>

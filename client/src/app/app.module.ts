@@ -30,6 +30,8 @@ import { EventSignupComponent } from './event-signup/event-signup.component';
 import { ParticipantGroupService } from "./event-details/participant-group.service";
 import { ProductRowComponent } from './event-signup/product-row/product-row.component';
 import { EventSignupService } from "./event-signup/event-signup.service";
+import { EventSignupListingComponent } from './event-signup-listing/event-signup-listing.component';
+import { SignupListingService } from "./event-signup-listing/signup-listing.service";
 
 @NgModule({
   declarations: [
@@ -41,7 +43,8 @@ import { EventSignupService } from "./event-signup/event-signup.service";
     GroupModalComponent,
     EventSignupComponent,
     ProductRowComponent,
-    OrganizationHandlerComponent
+    OrganizationHandlerComponent,
+    EventSignupListingComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +67,8 @@ import { EventSignupService } from "./event-signup/event-signup.service";
     OrganizationService,
     ParticipantGroupService,
     EventSignupService,
-    EventManagementService
+    EventManagementService,
+    SignupListingService
   ],
   bootstrap: [AppComponent]
 })

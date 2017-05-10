@@ -23,9 +23,9 @@ export class EventService extends AuthorizedHttpService {
     return this.http.get(this.eventsUrl, { headers: this.headers }).map(this.extractData).catch(this.handleError);
   }
 
-  addGroup(group: ParticipantGroup, eventId: number): Observable<Platoon> {
+  addGroup(group: ParticipantGroup, eventId: number): Observable<ParticipantGroup> {
     return this.http.post(`${this.eventsUrl}/${eventId}/group`, JSON.stringify(group), { headers: this.headers })
-      .map((r: Response) => Platoon.fromJSON(r.json()))
+      .map((r: Response) => ParticipantGroup.fromJSON(r.json()))
       .catch(this.handleError);
   }
 

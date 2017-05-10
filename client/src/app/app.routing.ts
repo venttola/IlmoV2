@@ -15,6 +15,7 @@ import { UserSettingsComponent } from "./user-settings/user-settings.component";
 import { EventDetailsComponent } from "./event-details/event-details.component";
 import { EventSignupComponent } from "./event-signup/event-signup.component";
 import { EventManagementComponent } from "./admin-page/event-management/event-management.component";
+import { EventSignupListingComponent } from "./event-signup-listing/event-signup-listing.component";
 
 const appRoutes: Routes = [
   {
@@ -58,6 +59,11 @@ const appRoutes: Routes = [
     path: "events/:eventId/manage",
     component: EventManagementComponent,
     canActivate: [AdminGuard]
+  },
+  {
+    path: "signups",
+    component: EventSignupListingComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: "**",

@@ -1,0 +1,21 @@
+<div>
+  <h4>Omat ilmottautumiset</h4>
+  <table class="signup-table">
+    <thead>
+      <tr>
+        <th class="event-name">Tapahtuma</th>
+        <th>Ryhmä</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let s of signupDetails">
+        <td class="event-name">{{s.eventName}}</td>
+        <td>{{s.groupName}}</td>
+        <td class="edit-button"><button type="button" class="btn btn-primary" [routerLink]="['/events/', s.eventId, 'group', s.groupId]">Muokkaa</button></td>
+      </tr>
+    </tbody>
+
+  </table>
+</div>
