@@ -1,4 +1,4 @@
-import Promise from "ts-promise";
+//import Promise from "ts-promise";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
 module Service {

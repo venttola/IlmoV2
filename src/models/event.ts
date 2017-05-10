@@ -1,6 +1,6 @@
 "use strict";
 
-export = function (db: any) {
+export function Event (db: any) {
 	var event = db.define("Event", {
 		name: { type: "text", required: true },
 		startDate: { type: "date", time: false, required: true }, // Check if there is a more elegant way.

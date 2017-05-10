@@ -1,5 +1,5 @@
 import * as express from "express";
-import Promise from "ts-promise";
+//import Promise from "ts-promise";
 import { UserService } from "../services/userservice";
 import { OrganizationService } from "../services/organizationservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
@@ -262,7 +262,7 @@ module Route {
                                         } else {
                                             payment.setPayee(group, function(err: Error){
                                                 return err != null
-                                                ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE)) 
+                                                ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))
                                                 : res.status(200).json(group);
                                             });
                                         }

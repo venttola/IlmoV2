@@ -1,11 +1,11 @@
 "use strict";
 
-import Promise from "ts-promise";
+//import Promise from "ts-promise";
 import * as express from "express";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 
-import { DatabaseHandler } from "../models/databasehandler";
+import { DatabaseHandler } from "../databasehandler";
 module Route {
 
     export class AuthRoutes {

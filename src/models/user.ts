@@ -1,5 +1,5 @@
 "use strict";
-export = function(db: any) {
+export function User(db: any) {
 	var user = db.define("User", {
 		email: {type: "text", required: true},
 		password: {type: "text", required: true}, // Look into how to save this safely

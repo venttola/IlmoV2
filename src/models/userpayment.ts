@@ -1,6 +1,6 @@
 "use strict";
 
-export = function(db: any) {
+export function UserPayment(db: any) {
 	var userPayment = db.define("UserPayment", {
 		paidOn: {type: "date"},
 		isPaid: {type: "boolean"}

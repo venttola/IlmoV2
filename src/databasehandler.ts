@@ -2,7 +2,8 @@
 var orm = require("orm");
 var fs = require("fs");
 var path = require("path");
-import Promise from "ts-promise";
+//import Promise from "ts-promise";
+import * as Models from "./models/models";
 export class DatabaseHandler {
 	private dbConnection: any;
 	private models: any;
@@ -29,45 +30,25 @@ export class DatabaseHandler {
 	}
 
 	public syncDbModels() {
-		return new Promise((resolve: any, reject: any) => {
-			console.log("Connecting to database");
-			let files = [];
-			this.connectToDb().then((db: any) => {
-				var modelsFolder = path.join(__dirname, "/../models");
-				fs
-					.readdirSync(modelsFolder)
-					.filter(function (file: any) {
-						return file !== path.basename(module.filename);
-					})
-					.forEach(function (file: any) {
-						db.load(path.join(modelsFolder, file), function (err: String) {
-							if (err) {
-								console.error(err);
-								throw err;
-							}
-						});
-
-						console.log("Synced " + file + " with the database");
+			console.log("Retry with the database");
+			return new Promise((resolve: any, reject: any) => {
+				console.log("boero aeasd");
+				this.connectToDb().then((db: any) => {
+					console.log("Starting sync");
+					Models.defineModels(db);
+					this.updateModelReferences(db);
+					// Generate the tables, does not drop the old ones
+					db.sync(function (err: string) {
+						if (err) {
+							reject(err);
+						}
 					});
-
-				this.updateModelReferences(db);
-
-				// Generate the tables, does not drop the old ones
-				db.sync(function (err: string) {
-					if (err) {
-						throw err;
-					}
+					this.dbConnection = db;
+					this.models = db.models;
+					console.log("Models synced with database");
+					return resolve(db);
 				});
-
-				this.dbConnection = db;
-				this.models = db.models;
-				console.log("Models synced with database");
-
-				return db;
-			}).then((db: any) => {
-				resolve(db);
 			});
-		});
 	}
 
 	private connectToDb() {
@@ -83,6 +64,7 @@ export class DatabaseHandler {
 	}
 
 	private updateModelReferences(db: any) {
+		console.log("Updating references");
 		db.models.Discount.hasOne("product", db.models.Product, {}, { reverse: "discounts" });
 
 		db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });

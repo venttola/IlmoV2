@@ -1,12 +1,12 @@
 "use strict";
 
 import * as express from "express";
-import Promise from "ts-promise";
+//import Promise from "ts-promise";
 import * as bodyparser from "body-parser";
 import * as jwt from "express-jwt";
 import * as cors from "cors";
 
-import { DatabaseHandler } from "./models/databasehandler";
+import { DatabaseHandler } from "./databasehandler";
 import { PriviledgeChecker } from "./middleware/priviledgechecker";
 import { UserService } from "./services/userservice";
 import { OrganizationService } from "./services/organizationservice";
@@ -49,12 +49,11 @@ class Server {
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
 			this.setRoutes();
+			this.priviledgeChecker = new PriviledgeChecker();
 		}).catch((err: Error) => {
 			console.log(err);
 		});
-
-		this.priviledgeChecker = new PriviledgeChecker();
-
+		
 		this.app = express();
 		this.app.use(cors(corsOptions));
 	}

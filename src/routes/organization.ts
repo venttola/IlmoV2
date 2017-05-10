@@ -1,10 +1,9 @@
 "use strict";
 import * as express from "express";
-import Promise from "ts-promise";
+//import Promise from "ts-promise";
 import * as bcrypt from "bcrypt";
 var ibantools = require("ibantools");
 
-import { DatabaseHandler } from "../models/databasehandler";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 

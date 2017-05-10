@@ -1,9 +1,8 @@
 "use strict";
 
 import * as express from "express";
-import Promise from "ts-promise";
+//import Promise from "ts-promise";
 import * as bcrypt from "bcrypt";
-import { DatabaseHandler } from "../models/databasehandler";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { EventService } from "../services/eventservice";

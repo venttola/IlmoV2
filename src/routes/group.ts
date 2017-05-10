@@ -1,5 +1,5 @@
 import * as express from "express";
-import Promise from "ts-promise";
+//import Promise from "ts-promise";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 

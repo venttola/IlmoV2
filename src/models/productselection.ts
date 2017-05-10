@@ -1,4 +1,4 @@
 "use strict";
-export = function(db: any) {
+export function ProductSelection(db: any) {
 	var productselection = db.define("ProductSelection", {});
 };
