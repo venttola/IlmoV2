@@ -8,6 +8,12 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 import { EventService } from "../services/eventservice";
 
 module Route {
+	class SignUpData {
+		signedUp: boolean;
+		group: any;
+		eventProducts: any;
+	}
+
 	export class UserRoutes {
 		constructor(
 			private userService: UserService,
@@ -160,27 +166,18 @@ module Route {
 						return res.status(200).send(prods);
 					}
 				});
-			})
-				.catch((err: APIError) => {
-					return res.status(err.statusCode).send(err.message);
-				});
+			}).catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
+			});
 		}
 
-		/**
-        * @api {get} /api/user/:username/products/:eventId Get user products by event
-        * @apiName Get user products by event
-        * @apiGroup User
-        * @apiParam {String} username Username
-		* @apiParam {String} eventId Event identifier
-        * @apiSuccess {JSON} List of user products
-        * @apiError NotFound ERROR: User was not found
-		* @apiError NotFound ERROR: User was not found
-        * @apiError DatabaseReadError Product data could not be read from the database
-        */
-		public getEventProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+		// TODO: Apidocs
+		public getEventSignUpData = (req: express.Request, res: express.Response) => {
 			let groupId = req.body.groupId;
 			let eventId = req.body.eventId;
 			let username = req.params.username;
+
+			let signUpData: SignUpData = new SignUpData();
 
 			let self = this;
 
@@ -188,13 +185,17 @@ module Route {
 				let user = results[0];
 				let group = results[1];
 
+				signUpData.group = group;
+
 				// Get group payment - there should be only one
 				group.getGroupPayment(function (err: Error, groupPayment: any) {
 					// Get all user payments
 					user.getUserPayments(function (err: Error, userPayments: any) {
 						// Get user payments related to this group payment
 						let userPaymentsInGroup = userPayments.filter((p: any) => groupPayment[0].userPayments.some((x: any) => p.id === x.id));
-						console.log(userPaymentsInGroup);
+
+						userPaymentsInGroup.length > 0 ? signUpData.signedUp = true : signUpData.signedUp = false;
+
 						// Get event products
 						self.eventService.getEventProducts(eventId).then((eventProducts: any) => {
 
@@ -219,10 +220,14 @@ module Route {
 								}
 							}
 
-							return res.status(200).json(eventProducts);
+							signUpData.eventProducts = eventProducts;
+							signUpData.group.groupPayment = undefined;
+							return res.status(200).json(signUpData);
 						});
 					});
 				});
+			}).catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
 			});
 		}
 
@@ -324,6 +329,55 @@ module Route {
 				}).catch((err: APIError) => {
 					return res.status(err.statusCode).send(err.message);
 				});
+			});
+		}
+
+		public cancelSignup = (req: express.Request, res: express.Response) => {
+			console.log("Canceling signup");
+
+			let username = req.params.username;
+			let groupId = req.params.groupId;
+
+			Promise.all([this.userService.getUser(username), this.getGroup(groupId)]).then((result: any) => {
+				let user = result[0];
+				let group = result[1];
+
+				group.getGroupPayment((err: Error, groupPayment: any) => {
+					groupPayment[0].getUserPayments((err: Error, userPayments: any) => {
+						if (err) {
+							return res.status(500).send(err.message);
+						}
+
+						let promises: any[] = [];
+
+						userPayments.forEach((up: any) => promises.push(new Promise((resolve, reject) => {
+							up.getPayee((err: Error, payeeUser: any) => {
+								if (err) {
+									reject(err);
+								}
+
+								if (payeeUser[0].id === user.id) {
+									groupPayment[0].removeUserPayments(up, (err: Error) => {
+										if (err) {
+											reject(err);
+										}
+
+										up.remove((err: Error) => err ? reject(err) : resolve(true));
+									});
+								}
+
+								resolve(true);
+							});
+						})));
+
+						Promise.all(promises).then((result: any) => res.status(204).send())
+							.catch((err: APIError) => {
+								return res.status(err.statusCode).send(err.message);
+							});
+					});
+				});
+			}).catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
 			});
 		}
 

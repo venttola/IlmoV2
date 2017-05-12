@@ -19,3 +19,8 @@
 .edit-button {
     float: right;
 }
+
+button:hover {
+    cursor: pointer;
+    cursor: hand;
+}

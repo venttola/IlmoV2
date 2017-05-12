@@ -9,9 +9,7 @@ import { SignupListingService } from "./signup-listing.service";
 })
 export class EventSignupListingComponent implements OnInit {
 
-  signupDetails: SignupDetails[] = [
-    new SignupDetails(1, "TEST EVENT", 1, "TEST GROUP")
-  ];
+  signupDetails: SignupDetails[] = [];
 
   constructor(private signupListingService: SignupListingService) { }
 

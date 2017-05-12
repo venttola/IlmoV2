@@ -120,8 +120,9 @@ class Server {
 		router.patch(userApiPrefix + "/credentials", userRoute.setUserCredentials);
 		router.patch(userApiPrefix + "/detail", userRoute.setUserInfo);
 		router.get(userApiPrefix + "/products", userRoute.getProducts);
-		router.post(userApiPrefix + "/event/products", userRoute.getEventProducts);
 		router.post(userApiPrefix + "/event/signup", userRoute.signup);
+		router.delete(userApiPrefix + "/event/group/:groupId", userRoute.cancelSignup);
+		router.post(userApiPrefix + "/event/data", userRoute.getEventSignUpData);
 		router.get(userApiPrefix + "/event/signup", userRoute.getSignUps);
 		router.delete(userApiPrefix + "/product", userRoute.removeProduct);
 		router.post(userApiPrefix + "/group", userRoute.addGroup);

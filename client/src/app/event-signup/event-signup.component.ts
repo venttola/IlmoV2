@@ -8,6 +8,18 @@ import { Product } from "./product";
 import { EventSignupService } from "./event-signup.service";
 import { Discount } from "./discount";
 
+export class SignUpData {
+  signedUp: boolean;
+  group: ParticipantGroup;
+  eventProducts: Product[];
+
+  static fromJSON(json: any): SignUpData {
+    let data = Object.create(SignUpData.prototype);
+    Object.assign(data, json);
+    return data;
+  }
+}
+
 @Component({
   selector: 'app-event-signup',
   templateUrl: './event-signup.component.html',
@@ -19,22 +31,20 @@ export class EventSignupComponent implements OnInit {
 
   private products: Product[] = [];
 
+  private signedUp: boolean = false;
+
   constructor(private route: ActivatedRoute,
     private eventSignupService: EventSignupService,
     private participantGroupService: ParticipantGroupService,
     private router: Router) { }
 
   ngOnInit() {
-    // TODO: Refactor this
     this.route.params
-      .switchMap((params: Params) =>
-        this.participantGroupService.getGroup(+params["groupId"])
-          .merge(this.eventSignupService.getProducts(+params["groupId"], +params["eventId"])))
-      .subscribe((res: any) => {
-        console.log(res);
-        (res instanceof ParticipantGroup)
-          ? this.participantGroup = res
-          : this.products = res;
+      .switchMap((params: Params) => this.eventSignupService.getSignUpData(+params["groupId"], +params["eventId"]))
+      .subscribe((data: SignUpData) => {
+        this.signedUp = data.signedUp;
+        this.participantGroup = data.group;
+        this.products = data.eventProducts;
       });
   }
 
@@ -49,8 +59,17 @@ export class EventSignupComponent implements OnInit {
       return [p.id, discountId];
     });
 
-    this.eventSignupService.saveSignup(this.participantGroup.id, prodIds).subscribe((res: any) => 
+    this.eventSignupService.saveSignup(this.participantGroup.id, prodIds).subscribe((res: any) =>
       this.router.navigate(["signups"])
     );
+  }
+
+  isSignedUp() {
+    return this.signedUp;
+  }
+
+  cancelSignUp() {
+    this.eventSignupService.cancelSignup(this.participantGroup.id)
+      .subscribe((success: boolean) => this.router.navigate(["signups"]));
   }
 }

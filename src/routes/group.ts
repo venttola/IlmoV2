@@ -12,7 +12,8 @@ module Route {
         public getParticipantGroup = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
 
-            this.getGroup(groupId).then((group) => {
+            this.getGroup(groupId).then((group: any) => {
+                group.groupPayment = undefined;
                 return res.status(200).json(group);
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);

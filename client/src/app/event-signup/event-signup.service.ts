@@ -6,29 +6,31 @@ import { Product } from "./product";
 
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
+import { SignUpData } from "./event-signup.component";
 
 @Injectable()
 export class EventSignupService extends AuthorizedHttpService {
 
-  constructor(protected http: Http) {
-    super(http);
-  }
-  
-	public getProducts(groupId: number, eventId: number): Observable<Product[]> {
+	constructor(protected http: Http) {
+		super(http);
+	}
+
+	public getSignUpData(groupId: number, eventId: number): Observable<SignUpData> {
 		let username = localStorage.getItem("user");
 		let data = {
 			"groupId": groupId,
 			"eventId": eventId
 		};
 
-		return this.http.post("/api/user/" + username + "/event/products", data, { headers: this.headers })
+		return this.http.post("/api/user/" + username + "/event/data", data, { headers: this.headers })
 			.map((res: Response) => {
-				return res.json().map(d => Product.fromJSON(d));
+				let body = res.json();
+				return SignUpData.fromJSON(body);
 			})
 			.catch(err => this.handleError(err));
 	}
 
-  public saveSignup(groupId: number, products: any[]) {
+	public saveSignup(groupId: number, products: any[]) {
 		let username = localStorage.getItem("user");
 
 		let data = {
@@ -43,5 +45,12 @@ export class EventSignupService extends AuthorizedHttpService {
 				return res.status === 204;
 			})
 			.catch(err => this.handleError(err));
-  }
+	}
+
+	public cancelSignup(groupId: number): Observable<boolean> {
+		let username = localStorage.getItem("user");
+		return this.http.delete("/api/user/" + username + "/event/group/" + groupId, { headers: this.headers })
+			.map((res: Response) => res.status == 204)
+			.catch(err => this.handleError(err));
+	}
 }

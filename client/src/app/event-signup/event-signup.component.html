@@ -18,6 +18,11 @@
     </ul>
   </div>
 
-  <button type="button" class="btn btn-primary" (click)="onSubmit()">Ilmottaudu</button>
-
+  <div class="actions">
+    <button *ngIf="!isSignedUp()" type="button" class="btn btn-primary" (click)="onSubmit()">Ilmottaudu</button>
+    <div *ngIf="isSignedUp()">
+      <button type="button" class="btn btn-primary" (click)="onSubmit()">Päivitä tiedot</button>
+      <button type="button" class="btn btn-danger" (click)="cancelSignUp()">Peru ilmottautuminen</button>
+    </div>
+  </div>
 </div>
