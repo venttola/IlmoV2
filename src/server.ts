@@ -183,7 +183,7 @@ class Server {
 				);
 		router.get(this.API_PREFIX + "/organizations", organizationRoute.getOrganizations);
 		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
-		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganizationMembers);
+		router.post(this.API_PREFIX + "/organizations/:organization/members", organizationRoute.addOrganizationMembers);
 	}
 }
 

@@ -26,6 +26,7 @@ export class OrganizationService extends AuthorizedHttpService {
 	public createOrganization (organization: Organization, members: OrganizationMember[]): Observable<any>{
 		return this.addOrganization(organization).
 			   flatMap((resultOrganization) => {
+				   console.log("adding members");
 			   	return this.addOrganizationMembers(resultOrganization.id, members);
 		}).catch(this.handleError);
 
@@ -44,7 +45,7 @@ export class OrganizationService extends AuthorizedHttpService {
 
 	}
 	public addOrganizationMembers(organizationId: number, members: OrganizationMember[]) {
-		return this.http.post(this.organizationUrl + organizationId.toString + "/members" , JSON.stringify(members), {headers: this.headers}).
+		return this.http.post(this.organizationUrl + organizationId.toString() + "/members", JSON.stringify(members), {headers: this.headers}).
 		map(this.extractOrganizationData).
 		catch(this.handleError);
 

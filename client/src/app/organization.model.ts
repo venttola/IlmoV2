@@ -8,8 +8,10 @@ export class Organization {
 		this.bankAccount = "";
 	}
 	static fromJSON (json: any): Organization{
+		console.log("json: " + JSON.stringify(json));
+
 		let organization = Object.create(Organization.prototype);
-		Object.assign(Organization, json);
+		Object.assign(organization, json);
 		return organization;
 	}
 }

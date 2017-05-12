@@ -198,21 +198,19 @@ module Route {
         public setOrganization = (req: express.Request, res: express.Response) => {
             let eventId = req.params.event;
             let organizationName = req.body.name;
+
             this.getEvent(eventId).then((event: any) => {
                 this.organizationService.getOrganization(organizationName).then((organization: any) => {
-                    return new Promise((resolve, reject) => {
-                        event.setOrganization(organization, function (err: Error) {
-                            if (err) {
-                                let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-                                reject(new DatabaseError(500, msg));
-                            } else {
-                                resolve(organization);
-                            }
-                        });
+                    event.setOrganization(organization, function (err: Error) {
+                        if (err) {
+                            let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                            return res.status(500).send(err.message);
+                        } else {
+                            let jsonData = { data: { organization: organization } };
+                            return res.status(200).json(jsonData);
+                        }
                     });
                 });
-            }).then((organization: any) => {
-                return res.status(200).json(JSON.stringify({ data: { organization: organization } }));
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
@@ -261,8 +259,8 @@ module Route {
                                             console.log(payment);
                                             payment.setPayee(group, function (err: Error) {
                                                 return err != null
-                                                ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))
-                                                : res.status(200).json(group);
+                                                    ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))
+                                                    : res.status(200).json(group);
                                             });
                                         }
                                     });
@@ -316,11 +314,11 @@ module Route {
         * @apiError DatabaseInsertionError ERROR: Platoon insertion failed
         */
 
-        //TODO: Currently hangs if platoons is empty.
         public addPlatoons = (req: express.Request, res: express.Response) => {
             let eventId = req.params.event;
             let platoons = req.body.platoons;
             let self = this;
+
             self.getEvent(eventId).then((event: any) => {
                 return new Promise((resolve, reject) => {
                     let platoonList = new Array();
@@ -336,11 +334,12 @@ module Route {
                     }
                 });
             }).then((platoonList: any) => {
-                return res.status(200).json(JSON.stringify({ data: { platoons: platoonList } }));
+                return res.status(200).json(platoonList);
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
         }
+
         private getProduct = (productId: Number) => {
             return new Promise((resolve, reject) => {
                 this.productModel.one({ id: productId }, function (err: Error, product: any) {

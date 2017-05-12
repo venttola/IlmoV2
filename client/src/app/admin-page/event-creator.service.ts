@@ -54,17 +54,16 @@ export class EventCreatorService extends AuthorizedHttpService {
 	}
 	protected extractPlatoonData(res: Response){
 		let body = res.json();
-		console.log("Extract platoonData" + body);
-		let platoons = body.platoons;
+		console.log("Extract platoonData" + JSON.stringify(body));
+
 		let platoonList = new Array<Platoon>();
-		for (let platoon of platoons){
-			platoonList.push(Platoon.fromJSON(platoon));
-		}
+		res.json().map(platoon => platoonList.push(Platoon.fromJSON(platoon)));
+
 		return platoonList;
 	}
 	protected extractOrganizationData(res: Response): Organization{
 		let body = res.json();
-		console.log("Extract eventData" + body);
-		return Organization.fromJSON(body.data.event);
+		console.log("Extract organizationData: " + JSON.stringify(body.data.organization));
+		return Organization.fromJSON(body.data.organization);
 	}
 }
