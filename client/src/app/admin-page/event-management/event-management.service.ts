@@ -12,11 +12,22 @@ import { Event } from "../../event.model";
 import { AuthorizedHttpService } from "../../authorizedhttp.service";
 @Injectable()
 export class EventManagementService extends AuthorizedHttpService {
+	eventsUrl: string;
+	constructor(protected http: Http) {
+		super(http);
+		this.eventsUrl = this.urlBase + "events/";
+	}
 
-  constructor(protected http: Http) {
-  	super(http); 
-  }
+	public openSignup(eventId: number): Observable<boolean> {
+		return this.http.post(this.eventsUrl + eventId + "/opensignup", {}, {headers: this.headers}).
+		map(this.extractData).
+		catch(this.handleError);
+	}
 
-  
+	public closeSignup(eventId: number): Observable<boolean> {
+		return this.http.post(this.eventsUrl + eventId + "/closesignup", {}, {headers: this.headers}).
+		map(this.extractData).
+		catch(this.handleError);
+	}
 
 }

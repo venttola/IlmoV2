@@ -148,7 +148,7 @@ module Route {
         * @apiParam {Number} event Events unique ID
         * @apiParam {JSON} name {name: "Product name"}
         * @apiParam {JSON} price {price: "Product price"}
-        * @apiSuccess (204) -
+        * @apiSuccess (200) JSON {id: 1, name: "Product name", price: "Product price"}
         * @apiError DatabaseInsertionError ERROR: Product data insertion failed
         * @apiError NotFound ERROR: Event was not found
         * @apiError DatabaseInsertionError ERROR: Adding product to event failed
@@ -158,7 +158,6 @@ module Route {
             let eventId = req.params.event;
             let productName = req.body.name;
             let productPrice = req.body.price;
-
             this.getEvent(eventId).then((event: any) => {
                 this.productModel.create({
                     name: productName,
@@ -211,6 +210,42 @@ module Route {
                         }
                     });
                 });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+        //TODO apidoc
+        public openRegisteration = (req: express.Request, res: express.Response) => {
+             let eventId = req.params.event;
+
+            this.getEvent(eventId).then((event: any) => {
+               event.registerationOpen = true;
+                    event.save(function (err: Error) {
+                        if (err) {
+                            let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                            return res.status(500).send(err.message);
+                        } else {
+                            return res.status(200).json(JSON.stringify({"registerationOpen": event.registerationOpen}));
+                        }
+                    });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+         //TODO apidoc
+        public closeRegisteration = (req: express.Request, res: express.Response) => {
+             let eventId = req.params.event;
+
+            this.getEvent(eventId).then((event: any) => {
+               event.registerationOpen = false;
+                    event.save(function (err: Error) {
+                        if (err) {
+                            let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                            return res.status(500).send(err.message);
+                        } else {
+                            return res.status(200).json(JSON.stringify({"registerationOpen": event.registerationOpen}));
+                        }
+                    });
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });

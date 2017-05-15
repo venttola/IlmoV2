@@ -37,4 +37,6 @@
 		</div>
 	</div>
 	<button type="submit" class="btn btn-success" (click)="updateEvent()" >Päivitä tapahtuma</button>
+	<button type="button" class="btn btn-success" *ngIf=!event.registerationOpen (click)="openSignup()">Avaa ilmoittautuminen</button>
+	<button type="button" class="btn btn-success" *ngIf=event.registerationOpen (click)="closeSignup()">Sulje ilmoittautuminen</button>
 </form>

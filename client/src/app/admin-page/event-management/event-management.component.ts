@@ -57,6 +57,26 @@ export class EventManagementComponent implements OnInit {
 		},
 		error => this.error =<any>error);
 	}
+	public openSignup(){
+		this.route.params.
+		switchMap((params: Params) => this.eventManagementService.openSignup(+params["eventId"])).
+		subscribe((isOpen: boolean) => {
+			console.log(isOpen);
+			//this.event.registerationOpen = isOpen;
+		},
+		error => this.error =<any>error);
+
+	}
+	public closeSignup(){
+		this.route.params.
+		switchMap((params: Params) => this.eventManagementService.closeSignup(+params["eventId"])).
+		subscribe((isOpen: boolean) => {
+			console.log(isOpen);
+			//this.event.registerationOpen = isOpen;
+		},
+		error => this.error =<any>error);
+
+	}
 	updateEvent(){
 		console.log(this.eventDetails);
 		console.log("foo");
