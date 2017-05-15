@@ -5,10 +5,12 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 
-import { Platoon } from "../platoon.model";
-import { Organization } from "../organization.model";
-import { Event } from "../event.model";
-import { AuthorizedHttpService } from "../authorizedhttp.service";
+import { Platoon } from "../../platoon.model";
+import { Organization } from "../../organization.model";
+import { Event } from "../../event.model";
+import { Product } from "../../event-signup/product";
+
+import { AuthorizedHttpService } from "../../authorizedhttp.service";
 
 @Injectable()
 export class EventCreatorService extends AuthorizedHttpService {
@@ -19,7 +21,7 @@ export class EventCreatorService extends AuthorizedHttpService {
 		this.eventsUrl = this.urlBase + "events/";
 	}
 
-	public createEvent(event: Event, platoons: Platoon[], organization: Organization): Observable<any> {
+	public createEvent(event: Event, platoons: Platoon[], organization: Organization, products: Product[]): Observable<any> {
 		return this.http.post(this.eventsUrl, JSON.stringify(event), {headers: this.headers}).
 		map(this.extractEventData).
 		flatMap((resultEvent) => {
@@ -47,6 +49,13 @@ export class EventCreatorService extends AuthorizedHttpService {
 		map(this.extractOrganizationData).
 		catch(this.handleError);
 	}
+
+	public addProduct(eventId: number, product: Product): Observable<Product>{
+		return this.http.post(this.eventsUrl + eventId + "/product", JSON.stringify(product), {headers: this.headers}).
+		map(this.extractProductData).
+		catch(this.handleError);
+	}
+
 	protected extractEventData(res: Response): Event{
 		let body = res.json();
 		console.log("Extract eventData" + body);
@@ -65,5 +74,10 @@ export class EventCreatorService extends AuthorizedHttpService {
 		let body = res.json();
 		console.log("Extract organizationData: " + JSON.stringify(body.data.organization));
 		return Organization.fromJSON(body.data.organization);
+	}
+	protected extractProductData(res: Response): Product{
+		let body = res.json();
+		console.log("Extract product data: " + JSON.stringify(body.data.product));
+		return Product.fromJSON(body.data.product);
 	}
 }

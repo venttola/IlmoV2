@@ -19,17 +19,19 @@ export class EventDetailsService extends AuthorizedHttpService {
 
 	public getEventDetails(id: number): Observable<EventDetails> {
 		return this.http.get(this.eventUrl + id, { headers: this.headers })
-			.map(this.extractData).
-			catch(this.handleError);
+		.map(this.extractData).
+		catch(this.handleError);
 	}
 
-	// public getEventProducts(id: number): Observable<Product[]> {
-	// 	return this.http.get(this.eventUrl + id + "/product", { headers: this.headers })
-	// 		.map((res: Response) => {
-	// 			return res.json().map(d => Product.fromJSON(d));
-	// 		})
-	// 		.catch(err => this.handleError(err));
-	// }
+	public getEventProducts(id: number): Observable<Product[]> {
+		console.log("Getting products");
+		console.log(this.eventUrl + id + "/product");
+		return this.http.get(this.eventUrl + id + "/product", { headers: this.headers })
+		.map((res: Response) => {
+			return res.json().map(d => Product.fromJSON(d));
+		})
+		.catch(err => this.handleError(err));
+	}
 
 	protected extractData(res: Response) {
 		let body = res.json();
@@ -37,5 +39,4 @@ export class EventDetailsService extends AuthorizedHttpService {
 		console.log(eventDetails);
 		return eventDetails;
 	}
-
 }

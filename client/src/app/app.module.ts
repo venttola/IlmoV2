@@ -17,7 +17,7 @@ import { EventService } from "./event.service";
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
 import { UserSettingsService } from './user-settings/user-settings.service';
-import { EventCreatorService } from "./admin-page/event-creator.service";
+import { EventCreatorService } from "./admin-page/event-creator/event-creator.service";
 import { EventListingComponent } from './event-listing/event-listing.component';
 import { EventDetailsService } from "./event-details/event-details.service";
 import { EventCreatorComponent } from './admin-page/event-creator/event-creator.component';

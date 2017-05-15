@@ -1,3 +1,40 @@
-<div>
-	event-management works!
-</div>
+
+<h1>{{ eventDetails?.event.name }}</h1>
+<form>
+	<h4>Muokkaa  tietoja</h4>
+	<div class="form-group">
+		<label for="name" class="sr-only">Nimi:</label>
+		<input type="name" class="form-control" placeholder="Nimi" id="name" [(ngModel)]="event.name" name="name"/>
+	</div>
+	<div class="form-group">
+		<label for="starDate" class="sr-only">Alkupäivämäärä:</label>
+		<input type="date" class="form-control" placeholder="Alkupäivämäärä" id="starDate" [(ngModel)]="event.startDate" name="starDate"/>
+	</div>
+	<div class="form-group">
+		<label for="endDate" class="sr-only">Loppupäivämäärä:</label>
+		<input type="date" class="form-control" placeholder="Loppupäivämäärä" id="endDate" [(ngModel)]="event.endDate" name="endDate"/>
+	</div>
+	<div class="form-group">
+		<label for="description" class="sr-only">Kuvaus:</label>
+		<input type="text" class="form-control" placeholder="Lyhytkuvaus" id="description" [(ngModel)]="event.description" name="description"/>                  
+	</div>
+	<h5>Osapuolet</h5>
+	<button class="btn btn-success" (click) ="addInputForPlatoon()">+</button>
+	<button class="btn btn-success" (click) ="removeInputForPlatoon()">-</button>
+	<div *ngFor="let platoon of newPlatoons; let i = index; trackBy: trackPlatoons" class="form-group">
+		<label  for="platoon{{i}}" class="sr-only">Osapuoli1:</label>
+		<input type="text" class="form-control" placeholder="Osapuoli" id="platoon{{i}}"  [(ngModel)]="platoon.name" name="platoon{{i}}"/>
+	</div>
+	<h5>Tuotteet</h5>
+	<button class="btn btn-success" (click) ="addInputForProduct()">+</button>
+	<button class="btn btn-success" (click) ="removeInputForProduct()">-</button>
+	<div *ngFor="let product of newProducts; let i = index; trackBy: trackProducts" class="form-group">
+		<div class="input-group">
+			<label  for="productName{{i}}">Tuote:</label>
+			<input type="text" class="form-control" placeholder="Tuote" id="productName{{i}}"  [(ngModel)]="product.name" name="productName{{i}}"/>
+			<label  for="productPrice{{i}}">Hinta:</label>
+			<input type="text" class="form-control" placeholder="Hinta" id="productPrice{{i}}"  [(ngModel)]="product.price" name="productPrice{{i}}"/>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-success" (click)="updateEvent()" >Päivitä tapahtuma</button>
+</form>

@@ -17,4 +17,6 @@ export class EventManagementService extends AuthorizedHttpService {
   	super(http); 
   }
 
+  
+
 }

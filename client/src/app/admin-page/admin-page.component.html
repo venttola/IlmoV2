@@ -1,9 +1,17 @@
+<div class="btn-group" role="group">
+	<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#eventCreator" aria-expanded="false" aria-controls="eventCreator">Lisää uusi tapahtuma</button>
 
-<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#eventCreator" aria-expanded="false" aria-controls="eventCreator">Lisää uusi tapahtuma</button>
-<div class="collapse" id="eventCreator">
-    <event-creator-component></event-creator-component>
+	<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#organizationAdder" aria-expanded="false" aria-controls="organizationAdder">Lisää uusi organisaatio</button>
+
+	<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Lisää uusi tapahtuma</button>
 </div>
-
-<organization-handler></organization-handler>
-
-<event-listing></event-listing>
+<div class="collapse" id="organizationAdder">
+	<organization-handler></organization-handler>
+</div>
+<div class="collapse" id="eventCreator">
+	<event-creator-component></event-creator-component>
+</div>
+<div class="collapse" id="events">
+	<event-listing></event-listing>
+	
+</div>
