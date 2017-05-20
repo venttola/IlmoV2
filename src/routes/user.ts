@@ -191,6 +191,11 @@ module Route {
 				group.getGroupPayment(function (err: Error, groupPayment: any) {
 					// Get all user payments
 					user.getUserPayments(function (err: Error, userPayments: any) {
+						if (err) {
+							let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
+							return res.status(500).send(errorMsg);
+						}
+
 						// Get user payments related to this group payment
 						let userPaymentsInGroup = userPayments.filter((p: any) => groupPayment[0].userPayments.some((x: any) => p.id === x.id));
 
@@ -207,7 +212,6 @@ module Route {
 								if (userProdSelections.length > 0) {
 									eventProducts.map((e: any) => {
 										let prod = userProdSelections.find((ups: any) => ups.product_id === e.id);
-										console.log("Prod: " + prod);
 
 										if (prod) {
 											e.selected = true;
@@ -223,6 +227,8 @@ module Route {
 							signUpData.eventProducts = eventProducts;
 							signUpData.group.groupPayment = undefined;
 							return res.status(200).json(signUpData);
+						}).catch((err: APIError) => {
+							return res.status(err.statusCode).send(err.message);
 						});
 					});
 				});
@@ -326,8 +332,6 @@ module Route {
 					}
 
 					this.fetchSignUpDetails(userPayments).then((details: any) => res.status(200).json(details));
-				}).catch((err: APIError) => {
-					return res.status(err.statusCode).send(err.message);
 				});
 			});
 		}
