@@ -54,9 +54,23 @@
     margin-bottom: 1%;
 }
 
+.group-item > .group-link {
+    color: white;
+    text-decoration: none;
+}
+
 .group-item {
     margin: 0 auto;
     width: 50%;
     background-color: #5D5C5C;
     text-align: center;
+}
+
+.group-item:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+.group-item:hover .group-link {
+    color: black !important;
 }

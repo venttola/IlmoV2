@@ -47,10 +47,6 @@ export class EventDetailsComponent implements OnInit {
     this.showableGroups = this.groupsByPlatoon.get(p.id);
   }
 
-  onSelectGroup(g: ParticipantGroup) {
-    // TODO: Link to signup form
-  }
-
   onNewGroup() {
     this.group = new ParticipantGroup();
     this.modal.show();
