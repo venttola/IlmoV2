@@ -32,6 +32,7 @@ import { ProductRowComponent } from './event-signup/product-row/product-row.comp
 import { EventSignupService } from "./event-signup/event-signup.service";
 import { EventSignupListingComponent } from './event-signup-listing/event-signup-listing.component';
 import { SignupListingService } from "./event-signup-listing/signup-listing.service";
+import { GroupModerationComponent } from './group-moderation/group-moderation.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { SignupListingService } from "./event-signup-listing/signup-listing.serv
     EventSignupComponent,
     ProductRowComponent,
     OrganizationHandlerComponent,
-    EventSignupListingComponent
+    EventSignupListingComponent,
+    GroupModerationComponent
   ],
   imports: [
     BrowserModule,
