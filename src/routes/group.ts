@@ -182,6 +182,24 @@ module Route {
             });
         }
 
+        //TODO: Apidocs
+        public getModeratedGroups = (req: express.Request, res: express.Response) => {
+            let username = req.params.username;
+
+            this.userService.getUser(username).then((user: any) => {
+                user.getModeratedGroups((err: Error, groups: any) => {
+                    if (err) {
+                        let msg = ErrorHandler.getErrorMsg("Moderated groups", null);
+                        return res.status(500).send(msg);
+                    }
+
+                    return res.status(200).json(groups);
+                });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+
         private getGroup = (groupId: Number) => {
             return new Promise((resolve, reject) => {
                 this.groupModel.one({ id: groupId }, function (err: Error, group: any) {

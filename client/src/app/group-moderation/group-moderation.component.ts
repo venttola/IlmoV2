@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ParticipantGroup } from "../event-details/participantgroup.model";
+import { GroupModerationService } from "./group-moderation.service";
 
 @Component({
   selector: 'app-group-moderation',
@@ -7,9 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GroupModerationComponent implements OnInit {
 
-  constructor() { }
+  moderatedGroups: ParticipantGroup[] = [];
+
+  constructor(private groupModerationService: GroupModerationService) { }
 
   ngOnInit() {
+    this.groupModerationService.getModeratedGroups().subscribe(groups => this.moderatedGroups = groups);
   }
 
 }

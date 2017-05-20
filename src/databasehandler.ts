@@ -68,7 +68,6 @@ export class DatabaseHandler {
 		db.models.Discount.hasOne("product", db.models.Product, {}, { reverse: "discounts" });
 
 		db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
-		db.models.ParticipantGroup.hasMany("groupModerator", db.models.User);
 
 		db.models.Platoon.hasMany("participantGroups", db.models.ParticipantGroup, {}, { autoFetch: true, reverse: "platoon" });
 

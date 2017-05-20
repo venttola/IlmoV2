@@ -55,7 +55,7 @@ export class EventDetailsComponent implements OnInit {
   onSubmit() {
     this.group.platoonId = this.selectedPlatoon;
 
-    this.eventService.addGroup(this.group, this.eventDetails.event.id)
+    this.eventService.createGroup(this.group, this.eventDetails.event.id)
       .subscribe((group: ParticipantGroup) => {
         console.log(group);
 

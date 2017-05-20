@@ -33,6 +33,7 @@ import { EventSignupService } from "./event-signup/event-signup.service";
 import { EventSignupListingComponent } from './event-signup-listing/event-signup-listing.component';
 import { SignupListingService } from "./event-signup-listing/signup-listing.service";
 import { GroupModerationComponent } from './group-moderation/group-moderation.component';
+import { GroupModerationService } from "./group-moderation/group-moderation.service";
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { GroupModerationComponent } from './group-moderation/group-moderation.co
     ParticipantGroupService,
     EventSignupService,
     EventManagementService,
-    SignupListingService
+    SignupListingService,
+    GroupModerationService
   ],
   bootstrap: [AppComponent]
 })
