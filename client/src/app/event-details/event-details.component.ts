@@ -15,7 +15,7 @@ import { EventService } from "../event.service";
 @Component({
   selector: 'event-details',
   templateUrl: './event-details.component.html',
-  styleUrls: ['./event-details.component.css']
+  styleUrls: ['./event-details.component.css', '../styles/participantgroup-list.style.css']
 })
 export class EventDetailsComponent implements OnInit {
   eventDetails: EventDetails;
