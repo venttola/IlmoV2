@@ -200,6 +200,34 @@ module Route {
             });
         }
 
+        public getMembers = (req: express.Request, res: express.Response) => {
+            return res.status(204).send();
+        }
+
+        // Req is marked as type of any because Typescript compiler refuses to admit the existence of req.user attribute
+        public checkModerator = (req: any, res: express.Response, next: express.NextFunction) => {
+            let groupId = req.params.group;
+            let username = req.user.email;
+
+            Promise.all([this.userService.getUser(username), this.getGroup(groupId)]).then((results: any) => {
+                let user = results[0];
+                let group = results[1];
+
+                group.hasModerator(user, (err: Error, isModerator: boolean) => {
+                    if (err) {
+                        let msg = ErrorHandler.getErrorMsg("Moderation status", ErrorType.DATABASE_READ);
+                        return res.status(500).send(msg);
+                    } else if (!isModerator) {
+                        return res.status(403).send("You are not a moderator of this group");
+                    } else {
+                        next();
+                    }
+                });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+
         private getGroup = (groupId: Number) => {
             return new Promise((resolve, reject) => {
                 this.groupModel.one({ id: groupId }, function (err: Error, group: any) {

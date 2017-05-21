@@ -32,7 +32,6 @@ export class DatabaseHandler {
 	public syncDbModels() {
 			console.log("Retry with the database");
 			return new Promise((resolve: any, reject: any) => {
-				console.log("boero aeasd");
 				this.connectToDb().then((db: any) => {
 					console.log("Starting sync");
 					Models.defineModels(db);

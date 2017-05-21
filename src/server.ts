@@ -175,7 +175,13 @@ class Server {
 		router.delete(this.API_PREFIX + "/group/:group/:username/moderator", groupRoute.removeModerator);
 		router.get(this.API_PREFIX + "/group/:group/:username/products", groupRoute.getMemberProducts);
 		router.get(this.API_PREFIX + "/group/:username/moderation", groupRoute.getModeratedGroups);
+
+		router.use(this.API_PREFIX + "/group/:group/members", groupRoute.checkModerator);
+		router.get(this.API_PREFIX + "/group/:group/members", groupRoute.getMembers);
+
+		console.log("Group routes set");
 	}
+
 	private setOrganizationRoutes(router: express.Router) {
 		let models = this.handler.getModels();
 
