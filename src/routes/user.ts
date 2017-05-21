@@ -6,6 +6,7 @@ import * as bcrypt from "bcrypt";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { EventService } from "../services/eventservice";
+import { GroupService } from "../services/groupservice";
 
 module Route {
 	class SignUpData {
@@ -18,6 +19,7 @@ module Route {
 		constructor(
 			private userService: UserService,
 			private eventService: EventService,
+			private groupService: GroupService,
 			private productModel: any,
 			private discountModel: any,
 			private participantGroupModel: any,
@@ -181,7 +183,8 @@ module Route {
 
 			let self = this;
 
-			Promise.all([this.userService.getUser(username), this.getGroup(groupId)]).then((results: any) => {
+			// TODO: Use groupService.getGroupPayment instead of fetching group first and then grouppayment through it
+			Promise.all([this.userService.getUser(username), this.groupService.getGroup(groupId)]).then((results: any) => {
 				let user = results[0];
 				let group = results[1];
 
@@ -247,7 +250,7 @@ module Route {
 			Promise.all([
 				this.getProductsFromDb(productIds),
 				this.userService.getUser(req.params.username),
-				this.getGroup(groupId)
+				this.groupService.getGroup(groupId)
 			]).then((results: any) => {
 				let products = results[0];
 				let user = results[1];
@@ -342,7 +345,7 @@ module Route {
 			let username = req.params.username;
 			let groupId = req.params.groupId;
 
-			Promise.all([this.userService.getUser(username), this.getGroup(groupId)]).then((result: any) => {
+			Promise.all([this.userService.getUser(username), this.groupService.getGroup(groupId)]).then((result: any) => {
 				let user = result[0];
 				let group = result[1];
 
@@ -515,7 +518,7 @@ module Route {
 		public addGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let groupId = req.body.groupId;
 
-			this.getGroup(groupId).then((group: any) => {
+			this.groupService.getGroup(groupId).then((group: any) => {
 				this.userService.getUser(req.params.username).then((user: any) => {
 					group.addMembers(user, function (err: Error) {
 						if (err) {
@@ -546,7 +549,7 @@ module Route {
 		public removeGroup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let groupId = req.body.groupId;
 
-			this.getGroup(groupId).then((group: any) => {
+			this.groupService.getGroup(groupId).then((group: any) => {
 				this.userService.getUser(req.params.username).then((user: any) => {
 					group.removeMembers(user, function (err: Error) {
 						if (err) {
@@ -592,22 +595,6 @@ module Route {
 						reject(new DatabaseError(400, errorMsg));
 					} else {
 						return resolve(products);
-					}
-				});
-			});
-		}
-
-		private getGroup = (groupId: Number) => {
-			return new Promise((resolve, reject) => {
-				this.participantGroupModel.one({ id: groupId }, function (err: Error, group: any) {
-					if (err) {
-						let errorMsg = ErrorHandler.getErrorMsg("Group data", ErrorType.DATABASE_READ);
-						reject(new DatabaseError(500, errorMsg));
-					} else if (!group) {
-						let errorMsg = ErrorHandler.getErrorMsg("Group", ErrorType.NOT_FOUND);
-						reject(new DatabaseError(400, errorMsg));
-					} else {
-						return resolve(group);
 					}
 				});
 			});

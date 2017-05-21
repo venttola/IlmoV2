@@ -2,17 +2,20 @@ import * as express from "express";
 //import Promise from "ts-promise";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
+import { GroupService } from "../services/groupservice";
 
 module Route {
     export class GroupRoutes {
-        constructor(private groupModel: any, private userService: UserService) {
+        constructor(private groupModel: any,
+            private userService: UserService,
+            private groupService: GroupService) {
 
         }
 
         public getParticipantGroup = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
 
-            this.getGroup(groupId).then((group: any) => {
+            this.groupService.getGroup(groupId).then((group: any) => {
                 group.groupPayment = undefined;
                 return res.status(200).json(group);
             }).catch((err: APIError) => {
@@ -60,7 +63,7 @@ module Route {
             let groupId = req.params.group; // Group name or id?
             let username = req.params.username;
 
-            Promise.all([this.getGroup(groupId), this.userService.getUser(username)]).then(values => {
+            Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
                 let group: any = values[0];
                 let user: any = values[1];
 
@@ -94,7 +97,7 @@ module Route {
             let groupId = req.params.group;
             let username = req.body.username;
 
-            Promise.all([this.getGroup(groupId), this.userService.getUser(username)]).then(values => {
+            Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
                 let group: any = values[0];
                 let user: any = values[1];
 
@@ -128,7 +131,7 @@ module Route {
             let groupId = req.params.group;
             let username = req.params.username;
 
-            Promise.all([this.getGroup(groupId), this.userService.getUser(username)]).then(values => {
+            Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
                 let group: any = values[0];
                 let user: any = values[1];
 
@@ -162,7 +165,7 @@ module Route {
             let groupId = req.params.group;
             let username = req.params.username;
 
-            Promise.all([this.getGroup(groupId), this.userService.getUser(username)]).then(values => {
+            Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
                 let group: any = values[0];
                 let user: any = values[1];
 
@@ -201,7 +204,14 @@ module Route {
         }
 
         public getMembers = (req: express.Request, res: express.Response) => {
-            return res.status(204).send();
+            let groupId = req.params.group;
+
+            this.groupService.getGroupMembers(groupId).then((members: any) => {
+                console.log("Members: " + members);
+                return res.status(200).json(members);
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
         }
 
         // Req is marked as type of any because Typescript compiler refuses to admit the existence of req.user attribute
@@ -209,7 +219,7 @@ module Route {
             let groupId = req.params.group;
             let username = req.user.email;
 
-            Promise.all([this.userService.getUser(username), this.getGroup(groupId)]).then((results: any) => {
+            Promise.all([this.userService.getUser(username), this.groupService.getGroup(groupId)]).then((results: any) => {
                 let user = results[0];
                 let group = results[1];
 
@@ -225,22 +235,6 @@ module Route {
                 });
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
-            });
-        }
-
-        private getGroup = (groupId: Number) => {
-            return new Promise((resolve, reject) => {
-                this.groupModel.one({ id: groupId }, function (err: Error, group: any) {
-                    if (err) {
-                        let errorMsg = ErrorHandler.getErrorMsg("Group data", ErrorType.DATABASE_READ);
-                        reject(new DatabaseError(500, errorMsg));
-                    } else if (!group) {
-                        let errorMsg = ErrorHandler.getErrorMsg("Group", ErrorType.NOT_FOUND);
-                        reject(new DatabaseError(400, errorMsg));
-                    } else {
-                        return resolve(group);
-                    }
-                });
             });
         }
     }

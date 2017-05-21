@@ -17,6 +17,7 @@ import * as userRoutes from "./routes/user";
 import * as eventRoutes from "./routes/event";
 import * as groupRoutes from "./routes/group";
 import * as organizationRoutes from "./routes/organization";
+import { GroupService } from "./services/groupservice";
 
 class Server {
 	public app: express.Application;
@@ -30,6 +31,7 @@ class Server {
 	private userService: UserService;
 	private eventService: EventService;
 	private organizationService: OrganizationService;
+	private groupService: GroupService;
 
 	constructor() {
 		let config = require("./config.json");
@@ -48,6 +50,7 @@ class Server {
 			this.userService = new UserService(models.User);
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
+			this.groupService = new GroupService(models.ParticipantGroup);
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
 		}).catch((err: Error) => {
@@ -105,6 +108,7 @@ class Server {
 			new userRoutes.UserRoutes(
 				this.userService,
 				this.eventService,
+				this.groupService,
 				models.Product,
 				models.Discount,
 				models.ParticipantGroup,
@@ -165,7 +169,8 @@ class Server {
 		let groupRoute: groupRoutes.GroupRoutes =
 			new groupRoutes.GroupRoutes(
 				models.ParticipantGroup,
-				this.userService
+				this.userService,
+				this.groupService
 			);
 
 		//router.post(this.API_PREFIX + "/group", groupRoute.addGroup);
@@ -187,9 +192,9 @@ class Server {
 
 		let organizationRoute: organizationRoutes.OrganizationRoutes =
 			new organizationRoutes.OrganizationRoutes(
-					this.userService,
-					models.Organization
-				);
+				this.userService,
+				models.Organization
+			);
 		router.get(this.API_PREFIX + "/organizations", organizationRoute.getOrganizations);
 		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
 		router.post(this.API_PREFIX + "/organizations/:organization/members", organizationRoute.addOrganizationMembers);
