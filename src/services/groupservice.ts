@@ -47,11 +47,6 @@ module Service {
                             // Get only unique users, there can be multiple userpayments per user
                             let uniquePayees = payees.filter((value: any, index: any, self: any) => {
                                 return self.indexOf(value) === index;
-                            }).map((payee: any) => {
-                                return {
-                                    id: payee.id,
-                                    name: payee.firstname + " " + payee.lastname
-                                };
                             });
 
                             resolve(uniquePayees);

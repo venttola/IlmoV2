@@ -203,12 +203,49 @@ module Route {
             });
         }
 
+        // TODO: ApiDocs
         public getMembers = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
 
             this.groupService.getGroupMembers(groupId).then((members: any) => {
-                console.log("Members: " + members);
-                return res.status(200).json(members);
+                let memberInfos = members.map((payee: any) => {
+                    return {
+                        id: payee.id,
+                        name: payee.firstname + " " + payee.lastname
+                    };
+                });
+                return res.status(200).json(memberInfos);
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+
+        // TODO: ApiDocs
+        public getMemberPayments = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group;
+            let memberId: number = +req.params.member;
+
+            this.groupService.getGroupMembers(groupId).then((members: any) => {
+                let member = members.find((m: any) => m.id === memberId);
+
+                return new Promise((resolve, reject) => {
+                    if (member == null) {
+                        let msg = ErrorHandler.getErrorMsg("User is not a member of the group", null);
+                        reject(new APIError(404, msg));
+                    } else {
+                        member.getUserPayments((err: Error, userPayments: any) => {
+                            return err ? reject(err) : resolve(userPayments);
+                        });
+                    }
+                });
+            }).then((userPayments: any[]) => {
+                console.log(userPayments);
+
+                let ups = userPayments.map((up: any) => {
+                    // TODO: Filter
+                });
+
+                return res.status(200).json(userPayments);
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });

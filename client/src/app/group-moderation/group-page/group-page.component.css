@@ -1,3 +1,16 @@
 h4 {
     text-align: center;
 }
+
+.remove-member-button {
+    display: inline-block;
+}
+
+.save-button {
+    float: right;
+    margin-right: 1%;
+}
+
+.cancel-button {
+    float: right;
+}

@@ -181,8 +181,10 @@ class Server {
 		router.get(this.API_PREFIX + "/group/:group/:username/products", groupRoute.getMemberProducts);
 		router.get(this.API_PREFIX + "/group/:username/moderation", groupRoute.getModeratedGroups);
 
-		router.use(this.API_PREFIX + "/group/:group/members", groupRoute.checkModerator);
-		router.get(this.API_PREFIX + "/group/:group/members", groupRoute.getMembers);
+		// Moderator routes
+		router.use(this.API_PREFIX + "/group/:group/moderator/*", groupRoute.checkModerator);
+		router.get(this.API_PREFIX + "/group/:group/moderator/members", groupRoute.getMembers);
+		router.get(this.API_PREFIX + "/group/:group/moderator/userpayment/:member", groupRoute.getMemberPayments);
 
 		console.log("Group routes set");
 	}

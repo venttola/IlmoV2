@@ -36,3 +36,7 @@
 .group-item:hover .group-link {
     color: black !important;
 }
+
+.group-modal-footer {
+    width: 100%;
+}

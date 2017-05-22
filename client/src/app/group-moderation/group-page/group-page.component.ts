@@ -5,6 +5,7 @@ import { ActivatedRoute, Params } from "@angular/router";
 import { GroupModerationService } from "../group-moderation.service";
 import { Member } from "../member";
 import { GroupModalComponent } from "../../event-details/group-modal/group-modal.component";
+import { UserPayment } from "../userpayment";
 
 @Component({
   selector: 'app-group-page',
@@ -14,6 +15,8 @@ import { GroupModalComponent } from "../../event-details/group-modal/group-modal
 export class GroupPageComponent implements OnInit {
 
   selectedMember: Member;
+  selectedMemberPayments: UserPayment[];
+
   participantGroup: ParticipantGroup;
   members: any[] = [];
 
@@ -35,9 +38,11 @@ export class GroupPageComponent implements OnInit {
   }
 
   onSelectMember(member: Member) {
-    console.log(member);
     this.selectedMember = member;
-    console.log(this.selectedMember);
+    this.groupModerationService.getMemberPayments(this.participantGroup.id, this.selectedMember.id)
+      .subscribe((userPayments: UserPayment[]) => this.selectedMemberPayments = userPayments,
+      (error: any) => console.log(error));
+      
     this.modal.show();
   }
 }
