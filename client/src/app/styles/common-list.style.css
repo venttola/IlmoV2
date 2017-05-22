@@ -12,12 +12,12 @@
     cursor: hand;
 }
 
-.participantgroup-list {
+.common-list {
     list-style-type: none;
     padding: 0;
 }
 
-.participantgroup-list > li {
+.common-list > li {
     margin-bottom: 1%;
 }
 

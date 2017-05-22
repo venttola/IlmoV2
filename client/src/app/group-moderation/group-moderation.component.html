@@ -1,6 +1,6 @@
 <h4>Hallittavat osallistujaryhmät</h4>
 
-<ul *ngIf="moderatedGroups.length > 0" class="participantgroup-list">
+<ul *ngIf="moderatedGroups.length > 0" class="common-list">
   <li *ngFor="let g of moderatedGroups">
     <div class="group-item unselectable clickable" [routerLink]="['/groups', g.id]"><a class="group-link">{{ g.name }}</a></div>
   </li>

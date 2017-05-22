@@ -75,7 +75,7 @@ const appRoutes: Routes = [
   {
     path: "groups/:groupId",
     component: GroupPageComponent,
-    canActivate: [AuthGuard] // TODO: Change to ModeratorGuard
+    canActivate: [AuthGuard]
   },
   {
     path: "**",

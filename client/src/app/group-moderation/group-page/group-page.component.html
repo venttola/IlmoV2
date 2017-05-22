@@ -1,3 +1,41 @@
-<p>
-  group-page works!
-</p>
+<h4 *ngIf="participantGroup">Ryhmän {{participantGroup.name}} jäsenet</h4>
+
+<ul *ngIf="members.length > 0" class="common-list">
+  <li *ngFor="let m of members">
+    <div class="group-item unselectable clickable" (click)="onSelectMember(m)">
+      <p>{{ m.name }}</p>
+    </div>
+  </li>
+</ul>
+
+<div *ngIf="members.length === 0">
+  <p>Ei jäseniä</p>
+</div>
+
+<app-group-modal>
+  <div class="group-modal-header">
+    <h4>{{selectedMember?.name}}</h4>
+  </div>
+  <div class="group-modal-body">
+    <div class="payment-section">
+      <h5>Maksut</h5>
+    </div>
+    <div class="payment-status">
+      <div>
+        <span>Maksettu moderaattorille</span>
+        <input type="checkbox" />
+      </div>
+      <div>
+        <span>Maksettu organisaatiolle</span>
+        <input type="checkbox" />
+      </div>
+    </div>
+  </div>
+  <div class="group-modal-footer">
+    <div class="moderator-actions">
+      <button type="button" class="btn btn-danger">Poista ryhmästä</button>
+      <button type="button" class="btn btn-primary">Tallenna</button>
+      <button type="button" class="btn btn-primary">Peruuta</button>
+    </div>
+  </div>
+</app-group-modal>

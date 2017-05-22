@@ -5,7 +5,7 @@ import { GroupModerationService } from "./group-moderation.service";
 @Component({
   selector: 'app-group-moderation',
   templateUrl: './group-moderation.component.html',
-  styleUrls: ['./group-moderation.component.css', '../styles/participantgroup-list.style.css']
+  styleUrls: ['./group-moderation.component.css', '../styles/common-list.style.css']
 })
 export class GroupModerationComponent implements OnInit {
 
