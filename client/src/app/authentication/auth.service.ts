@@ -13,7 +13,6 @@ export class AuthService {
     console.log(user, token);
     localStorage.setItem("id_token", token);
     localStorage.setItem("user", user);
-
   }
   public login(): void {
     //  this.lock.show();
@@ -42,6 +41,24 @@ export class AuthService {
     }
     else {
       return false;
+    }
+  }
+  public getModeratedGroups(): any {
+    if(localStorage.getItem("id_token")){
+      let token = this.jwtHelper.decodeToken(localStorage.getItem("id_token"));
+      return token.moderatedGroups;
+    }
+    else {
+      return [];
+    }
+  }
+  public getOrganizationMemberships(): any {
+    if(localStorage.getItem("id_token")){
+      let token = this.jwtHelper.decodeToken(localStorage.getItem("id_token"));
+      return token.organizationMemberships;
+    }
+    else {
+      return [];
     }
   }
 }
