@@ -4,7 +4,7 @@
 import * as express from "express";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
-import { AuthService } from "../services/authservice"; 
+import { AuthService } from "../services/authservice";
 import { DatabaseHandler } from "../databasehandler";
 module Route {
 
@@ -30,9 +30,7 @@ module Route {
         public login = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             let self = this;
             let email: string = req.body.email;
-            //let password: string = new Buffer(req.body.password, "base64").toString();
             let password: string = req.body.password;
-            let superSecret: string = this.superSecret;
             if (!email) {
                 return res.status(400).send("Error: Missing username!\n");
             } else if (!password) {
@@ -45,27 +43,38 @@ module Route {
                 } else {
                     bcrypt.compare(password, result.password, function (err: any, success: any) {
                         if (success) {
-                            self.checkIfAdmin(result).then((isAdmin: any) => {
-                                //Create the token for auth
-                                let options: any =  {"expiresIn": "1h"};
+                            Promise.all([self.authService.checkIfAdmin(email),
+                                         self.authService.getModeratedGroups(email),
+                                         self.authService.getOrganizationMemberships(email)]).
+                                         then((values: any) => {
+                                    let isAdmin = values[0];
+                                    let moderatedGroups = values[1];
+                                    let organizationMemberships = values[2];
+                                    //Create the token for auth
+                                    let options: any =  {"expiresIn": "1h"};
 
-                                let userInfo: any = {
-                                    "email": email,
-                                    "admin": isAdmin
-                                };
+                                    let userInfo: any = {
+                                        "email": email,
+                                        "admin": isAdmin,
+                                        "moderatedGroups": JSON.stringify(moderatedGroups),
+                                        "organizationMemberships": JSON.stringify(organizationMemberships)
+                                    };
 
-                                console.log(options);
-                                let token = jwt.sign(userInfo, superSecret, options);
-                                let response: any = JSON.stringify({
-                                    success: true,
-                                    message: "Login successfully",
-                                    token: token,
-                                    moderatedGroups: this.au
+                                    jwt.sign(userInfo, self.superSecret, options, function(err: any, token: any ){
+                                        if (err) {
+                                            console.log(err);
+                                             return res.status(500).send(err);
+
+                                        } else {
+                                            let response: any = JSON.stringify({
+                                                success: true,
+                                                token: token
+                                            });
+                                            res.header("Content-Type", "application/json");
+                                            return res.json(response);
+                                        }
+                                    });
                                 });
-
-                                res.header("Content-Type", "application/json");
-                                return res.json(response);
-                            });
 
                         } else {
                             return res.status(403).send("Error: Incorrect password!\n");
@@ -138,24 +147,6 @@ module Route {
                     });
                 }
             });
-        }
-
-        private checkIfAdmin = (user: any) => {
-            return new Promise((resolve, reject) => {
-                user.hasAdmin(function (err: any, isAdmin: Boolean) {
-                    if (err && err.literalCode !== "NOT_FOUND") {
-                        console.log("ERROR OCCURED: " + err);
-                        return reject(err);
-                    } else {
-                        console.log("User '" + user.email + "' admin status: " + isAdmin);
-                        return resolve(isAdmin);
-                    }
-                });
-            });
-        }
-        private stringToDate = (dateStr: string): Date => {
-            let splitDob: any = dateStr.split("-");
-            return new Date(splitDob[2], splitDob[1] - 1, splitDob[0]);
         }
     }
 }
