@@ -42,7 +42,26 @@ export class GroupPageComponent implements OnInit {
     this.groupModerationService.getMemberPayments(this.participantGroup.id, this.selectedMember.id)
       .subscribe((userPayments: UserPayment[]) => this.selectedMemberPayments = userPayments,
       (error: any) => console.log(error));
-      
+
     this.modal.show();
+  }
+
+  onRemoveMember() {
+    console.log("Removing member");
+
+    this.groupModerationService.removeMember(this.participantGroup.id, this.selectedMember.id)
+      .subscribe((members: Member[]) => {
+        console.log("members: " + JSON.stringify(members));
+        this.members = members;
+        this.modal.hide();
+      });
+  }
+
+  onReceiptPayment() {
+    console.log("Updating payment status");
+  }
+
+  onCloseModal() {
+    this.modal.hide();
   }
 }

@@ -38,4 +38,11 @@ export class GroupModerationService extends AuthorizedHttpService {
         return this.extractData(res).map(d => UserPayment.fromJSON(d));
       }).catch(this.handleError);
   }
+
+  removeMember(groupId: number, memberId: number): Observable<Member[]> {
+    return this.http.delete("/api/group/" + groupId + "/moderator/" + memberId, { headers: this.headers })
+      .map((res: Response) => {
+        return this.extractData(res).map(d => Member.fromJSON(d));
+      }).catch(this.handleError);
+  }
 }

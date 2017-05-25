@@ -111,23 +111,14 @@ module Route {
         */
         public removeMember = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group; // Group name or id?
-            let username = req.params.username;
+            let memberId: number = +req.params.member;
 
-            Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
-                let group: any = values[0];
-                let user: any = values[1];
-
-                group.removeMembers(user, function (err: Error) {
-                    if (err) {
-                        let msg = ErrorHandler.getErrorMsg("Member", ErrorType.DATABASE_DELETE);
-                        return res.status(500).send(msg);
-                    } else {
-                        return res.status(204).send();
-                    }
+            this.groupService.removeMember(groupId, memberId)
+                .then((currentMembers: any[]) => {
+                    return res.status(200).json(currentMembers);
+                }).catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
                 });
-            }).catch((err: APIError) => {
-                return res.status(err.statusCode).send(err.message);
-            });
         }
 
         /**
@@ -211,29 +202,29 @@ module Route {
         * @apiError DatabaseReadError ERROR: User was not found
         * @apiError DatabaseConstraintError ERROR: User is not a member of the group
         */
-        public getMemberProducts = (req: express.Request, res: express.Response) => {
-            let groupId = req.params.group;
-            let username = req.params.username;
+        // public getMemberProducts = (req: express.Request, res: express.Response) => {
+        //     let groupId = req.params.group;
+        //     let username = req.params.username;
 
-            Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
-                let group: any = values[0];
-                let user: any = values[1];
+        //     Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
+        //         let group: any = values[0];
+        //         let user: any = values[1];
 
-                group.hasMembers(user, function (err: Error) {
-                    if (err) {
-                        let msg = ErrorHandler.getErrorMsg("User is not a member of the group", null);
-                        return res.status(500).send(msg);
-                    } else {
-                        // TODO: Check that this is correct (assuming user belongs only to one group)
-                        user.getProducts(function (err: Error, prods: any) {
-                            return res.status(200).send(prods);
-                        });
-                    }
-                });
-            }).catch((err: APIError) => {
-                return res.status(err.statusCode).send(err.message);
-            });
-        }
+        //         group.hasMembers(user, function (err: Error) {
+        //             if (err) {
+        //                 let msg = ErrorHandler.getErrorMsg("User is not a member of the group", null);
+        //                 return res.status(500).send(msg);
+        //             } else {
+        //                 // TODO: Check that this is correct (assuming user belongs only to one group)
+        //                 user.getProducts(function (err: Error, prods: any) {
+        //                     return res.status(200).send(prods);
+        //                 });
+        //             }
+        //         });
+        //     }).catch((err: APIError) => {
+        //         return res.status(err.statusCode).send(err.message);
+        //     });
+        // }
 
         //TODO: Apidocs
         public getModeratedGroups = (req: express.Request, res: express.Response) => {
