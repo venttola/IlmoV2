@@ -18,7 +18,37 @@
   </div>
   <div class="group-modal-body">
     <div class="payment-section">
-      <h5>Maksut</h5>
+      <div *ngFor="let payment of selectedMemberPayments">
+        <div *ngIf="payment.isPaid === true" class="paid-payments">
+          <h5>Maksetut tuotteet</h5>
+          <hr>
+          <div class="productlist-header">
+            <div class="product">Tuote</div>
+            <div class="discount">Alennus</div>
+            <div class="final-price">Lopullinen hinta</div>
+          </div>
+          <div *ngFor="let p of payment.products" class="paid">
+            <div class="product">{{p.product.name}} ({{p.product.price}} €)</div>
+            <div class="discount">{{p.discount.name}} ({{p.discount.amount}} €)</div>
+            <div class="final-price">{{ p.product.price - p.discount.amount }} €</div>
+          </div>
+        </div>
+
+        <div *ngIf="payment.isPaid === false" class="unpaid-payments">
+          <h5>Maksamattomat tuotteet</h5>
+          <hr>
+          <div class="productlist-header">
+            <div class="product">Tuote</div>
+            <div class="discount">Alennus</div>
+            <div class="final-price">Lopullinen hinta</div>
+          </div>
+          <div *ngFor="let p of payment.products" class="not-paid">
+            <div class="product">{{p.product.name}} ({{p.product.price}} €)</div>
+            <div class="discount">{{p.discount.name}} ({{p.discount.amount}} €)</div>
+            <div class="final-price">{{ p.product.price - p.discount.amount }} €</div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="payment-status">
       <div>

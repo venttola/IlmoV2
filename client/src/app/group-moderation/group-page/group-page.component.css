@@ -14,3 +14,29 @@ h4 {
 .cancel-button {
     float: right;
 }
+
+.paid {
+    background-color: grey;
+}
+
+.not-paid {
+
+}
+
+.product {
+    display: inline-block;
+    width: 50%;
+}
+
+.discount {
+    display: inline-block;
+}
+
+.final-price {
+    display: inline-block;
+    float: right;
+}
+
+.productlist-header {
+    font-weight: bold;
+}
