@@ -169,6 +169,8 @@ class Server {
 		let groupRoute: groupRoutes.GroupRoutes =
 			new groupRoutes.GroupRoutes(
 				models.ParticipantGroup,
+				models.Product,
+				models.Discount,
 				this.userService,
 				this.groupService
 			);

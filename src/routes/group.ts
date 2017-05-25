@@ -5,8 +5,58 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 import { GroupService } from "../services/groupservice";
 
 module Route {
+    class DiscountInfo {
+        id: number;
+        name: string;
+        amount: number;
+
+        constructor(id: number, name: string, amount: number) {
+            this.id = id;
+            this.name = name;
+            this.amount = amount;
+        }
+    }
+
+    class ProductInfo {
+        id: number;
+        name: string;
+        price: number;
+
+        constructor(id: number, name: string, price: number) {
+            this.id = id;
+            this.name = name;
+            this.price = price;
+        }
+    }
+
+    class ProductSelectionInfo {
+        product: ProductInfo;
+        discount: DiscountInfo;
+
+        constructor(prodInfo: ProductInfo, discInfo: DiscountInfo) {
+            this.product = prodInfo;
+            this.discount = discInfo;
+        }
+    }
+
+    class PaymentInfo {
+        id: number;
+        products: ProductSelectionInfo[];
+        isPaid: boolean;
+        paidOn: Date;
+
+        constructor(id: number, prods: ProductSelectionInfo[], isPaid: boolean, paidOn: Date) {
+            this.id = id;
+            this.products = prods;
+            this.isPaid = isPaid;
+            this.paidOn = paidOn;
+        }
+    }
+
     export class GroupRoutes {
         constructor(private groupModel: any,
+            private productModel: any,
+            private discountModel: any,
             private userService: UserService,
             private groupService: GroupService) {
 
@@ -221,6 +271,7 @@ module Route {
         }
 
         // TODO: ApiDocs
+        // TODO: Error checking
         public getMemberPayments = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
             let memberId: number = +req.params.member;
@@ -238,14 +289,41 @@ module Route {
                         });
                     }
                 });
-            }).then((userPayments: any[]) => {
-                console.log(userPayments);
+            }).then((userPayments: any) => {
+                let productPromises = userPayments.map((up: any) => {
+                    return new Promise((resolve, reject) => {
+                        let promises = up.productSelections.map((ps: any) => {
+                            return new Promise((resolve, reject) => {
+                                this.productModel.one({ id: ps.product_id }, (err: Error, product: any) => {
+                                    ps.product = product;
 
-                let ups = userPayments.map((up: any) => {
-                    // TODO: Filter
+                                    this.discountModel.one({ id: ps.discount_id }, (err: Error, discount: any) => {
+                                        ps.discount = discount;
+                                        resolve(up);
+                                    });
+                                });
+                            });
+                        });
+
+                        Promise.all(promises).then((results: any) => {
+                            resolve(results);
+                        });
+                    });
                 });
 
-                return res.status(200).json(userPayments);
+                return Promise.all(productPromises);
+            }).then((finalPayments: any) => {
+                let mappedPayments = finalPayments.map((fp: any) => {
+                    let prodSelectionInfos = fp[0].productSelections.map((ps: any) => {
+                        let discountInfo = new DiscountInfo(ps.discount.id, ps.discount.name, ps.discount.amount);
+                        let productInfo = new ProductInfo(ps.product.id, ps.product.name, ps.product.price);
+                        return new ProductSelectionInfo(productInfo, discountInfo);
+                    });
+
+                    return new PaymentInfo(fp[0].id, prodSelectionInfos, fp[0].isPaid, fp[0].paidOn);
+                });
+
+                return res.status(200).json(mappedPayments);
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
