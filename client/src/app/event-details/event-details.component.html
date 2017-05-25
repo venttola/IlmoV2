@@ -16,12 +16,12 @@
     </li>
   </ul>
 
-  <button class="btn btn-primary create-group-button" (click)="onNewGroup()" [hidden]="selectedPlatoon == null">Ilmoita uusi ryhmä</button>
+  <button class="btn btn-primary create-group-button" (click)="onNewGroup()" [hidden]="selectedPlatoon == null">Lisää uusi ryhmä</button>
 </div>
 
 <app-group-modal>
   <div class="group-modal-header">
-    <b>Ilmottautuminen</b>
+    <b>Lisää uusi ryhmä</b>
   </div>
   <div class="group-modal-body form-group">
     <form (ngSubmit)="onSubmit()" #groupForm="ngForm">
@@ -33,7 +33,7 @@
         <label for="description">Kuvaus</label>
         <input type="text" class="form-control" id="description" [(ngModel)]="group.description" name="description">
       </div>
-      <button type="submit" class="btn btn-primary" [disabled]="!groupForm.form.valid">Ilmottaudu</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!groupForm.form.valid">Lisää</button>
       <button type="button" class="btn btn-default" (click)="modal.hide()">Peruuta</button>
     </form>
   </div>
