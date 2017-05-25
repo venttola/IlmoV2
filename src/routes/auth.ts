@@ -4,14 +4,15 @@
 import * as express from "express";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
-
+import { AuthService } from "../services/authservice"; 
 import { DatabaseHandler } from "../databasehandler";
 module Route {
 
     export class AuthRoutes {
-        constructor(private handler: DatabaseHandler,
-            private superSecret: string,
-            private saltRounds: number) {
+        constructor(private superSecret: string,
+                    private saltRounds: number,
+                    private userModel: any,
+                    private authService: AuthService) {
             console.log("Creating authroutes");
         }
         /**
@@ -32,14 +33,13 @@ module Route {
             //let password: string = new Buffer(req.body.password, "base64").toString();
             let password: string = req.body.password;
             let superSecret: string = this.superSecret;
-            let userModel = this.handler.getModels().User;
             if (!email) {
                 return res.status(400).send("Error: Missing username!\n");
             } else if (!password) {
                 return res.status(400).send("Error: Missing password!\n");
             }
 
-            userModel.one({ email: email }, function (err: any, result: any) {
+            self.userModel.one({ email: email }, function (err: any, result: any) {
                 if (!result) {
                     return res.status(400).send("Error: Username not found!\n");
                 } else {
@@ -53,12 +53,14 @@ module Route {
                                     "email": email,
                                     "admin": isAdmin
                                 };
+
                                 console.log(options);
                                 let token = jwt.sign(userInfo, superSecret, options);
                                 let response: any = JSON.stringify({
                                     success: true,
                                     message: "Login successfully",
-                                    token: token
+                                    token: token,
+                                    moderatedGroups: this.au
                                 });
 
                                 res.header("Content-Type", "application/json");
@@ -85,6 +87,7 @@ module Route {
         * @apiError {JSON} Missing fields 
         */
         public signup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            let self = this;
             console.log(req.body);
             console.log(req.body.email);
             if (!req.body.email ||
@@ -94,7 +97,6 @@ module Route {
                 !req.body.dob) {
                 return res.status(400).send("Error: Missing data \n");
             }
-            let self = this;
             let email: string = req.body.email;
             //let password: string = new Buffer (req.body.password, "base64").toString();
             let password: string = req.body.password;
@@ -103,11 +105,10 @@ module Route {
             console.log(req.body.dob);
             let dob: string = req.body.dob;
             console.log(req.body.dob);
-            let userModel = this.handler.getModels().User;
             let saltRounds: number = this.saltRounds;
             console.log("Checking username " + email);
             console.log("Amount of saltRounds. " + this.saltRounds);
-            userModel.one({ email: email }, function (err: any, user: any) {
+            self.userModel.one({ email: email }, function (err: any, user: any) {
                 console.log("Result of user query: " + user);
                 if (user) {
                     return res.status(400).send("Error: Username in use \n");
@@ -116,7 +117,7 @@ module Route {
                         if (err) {
                             console.log(err);
                         } else {
-                            userModel.create({
+                            self.userModel.create({
                                 email: email,
                                 password: hash,
                                 firstname: firstname,

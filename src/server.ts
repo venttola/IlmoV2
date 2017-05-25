@@ -11,6 +11,7 @@ import { PriviledgeChecker } from "./middleware/priviledgechecker";
 import { UserService } from "./services/userservice";
 import { OrganizationService } from "./services/organizationservice";
 import { EventService } from "./services/eventservice";
+import { AuthService } from "./services/authservice";
 
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
@@ -30,6 +31,7 @@ class Server {
 	private userService: UserService;
 	private eventService: EventService;
 	private organizationService: OrganizationService;
+	private authService: AuthService;
 
 	constructor() {
 		let config = require("./config.json");
@@ -48,6 +50,7 @@ class Server {
 			this.userService = new UserService(models.User);
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
+			this.authService = new AuthService(this.userService);
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
 		}).catch((err: Error) => {
@@ -91,7 +94,8 @@ class Server {
 	}
 
 	private setAuthRoutes(router: express.Router) {
-		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes(this.handler, this.SECRET, this.SALT_ROUNDS);
+		let models = this.handler.getModels();
+		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes(this.SECRET, this.SALT_ROUNDS, models.User, this.authService);
 		router.post(this.API_PREFIX + "/signup", authRoute.signup);
 		router.post(this.API_PREFIX + "/login", authRoute.login);
 	}
