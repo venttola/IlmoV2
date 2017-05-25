@@ -27,16 +27,12 @@ module Route {
         * @apiError {JSON} Missing Fields
         */
         public login = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            console.log(req.body);
-            console.log(req.body.email);
-            console.log(req.body.password);
             let self = this;
             let email: string = req.body.email;
             //let password: string = new Buffer(req.body.password, "base64").toString();
             let password: string = req.body.password;
             let superSecret: string = this.superSecret;
             let userModel = this.handler.getModels().User;
-            console.log(email + ":" + password);
             if (!email) {
                 return res.status(400).send("Error: Missing username!\n");
             } else if (!password) {
@@ -104,8 +100,9 @@ module Route {
             let password: string = req.body.password;
             let firstname: string = req.body.firstname;
             let lastname: string = req.body.lastname;
-            let dob: Date = self.stringToDate(req.body.dob);
-            console.log(dob);
+            console.log(req.body.dob);
+            let dob: string = req.body.dob;
+            console.log(req.body.dob);
             let userModel = this.handler.getModels().User;
             let saltRounds: number = this.saltRounds;
             console.log("Checking username " + email);
@@ -124,7 +121,7 @@ module Route {
                                 password: hash,
                                 firstname: firstname,
                                 lastname: lastname,
-                                dob: new Date(dob),
+                                dob: dob,
                                 allergies: ""
                             }, function (err: any, result: any) {
                                 if (err) {
