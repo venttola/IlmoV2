@@ -3,5 +3,5 @@ import { DiscountInfo } from "../event-signup/discount";
 
 export class ProductSelection {
     product: ProductInfo;
-    discount: DiscountInfo;
+    discount?: DiscountInfo;
 }

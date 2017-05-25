@@ -66,7 +66,7 @@ export class DatabaseHandler {
 		console.log("Updating references");
 		db.models.Discount.hasOne("product", db.models.Product, {}, { reverse: "discounts" });
 
-		db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
+		//db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
 
 		db.models.Platoon.hasMany("participantGroups", db.models.ParticipantGroup, {}, { autoFetch: true, reverse: "platoon" });
 

@@ -312,16 +312,18 @@ module Route {
                 });
 
                 return Promise.all(productPromises);
-            }).then((finalPayments: any) => {
+            }).then((finalPayments: any[]) => {
                 let mappedPayments = finalPayments.map((fp: any) => {
                     let prodSelectionInfos = fp[0].productSelections.map((ps: any) => {
-                        let discountInfo = new DiscountInfo(ps.discount.id, ps.discount.name, ps.discount.amount);
-                        let productInfo = new ProductInfo(ps.product.id, ps.product.name, ps.product.price);
+                        let discountInfo: any = ps.discount ? new DiscountInfo(ps.discount.id, ps.discount.name, ps.discount.amount) : null;
+                        let productInfo: any = new ProductInfo(ps.product.id, ps.product.name, ps.product.price);
+
                         return new ProductSelectionInfo(productInfo, discountInfo);
                     });
 
                     return new PaymentInfo(fp[0].id, prodSelectionInfos, fp[0].isPaid, fp[0].paidOn);
                 });
+
 
                 return res.status(200).json(mappedPayments);
             }).catch((err: APIError) => {
