@@ -16,6 +16,7 @@ import { AuthorizedHttpService } from "../../authorizedhttp.service";
 export class EventCreatorService extends AuthorizedHttpService {
 	eventsUrl: string;
 	resultEvent: Event;
+	error: any;
 	constructor(protected http: Http) {
 		super(http);
 		this.eventsUrl = this.urlBase + "events/";
@@ -29,6 +30,11 @@ export class EventCreatorService extends AuthorizedHttpService {
 			console.log("do we even get here. id is " + resultEvent.id);
 			let resultPlatoons = this.addPlatoons(resultEvent.id, platoons);
 			let resultOrganization = this.setOrganization(resultEvent.id, organization);
+			let resultProducts: Product[] = new Array<Product>();
+			for (let product of products){
+				this.addProduct(resultEvent.id, product).subscribe((resultProduct => resultProducts.push(resultProduct)),
+				error => this.error = error );
+			}
 			console.log("Platoons result");
 			console.log(resultPlatoons);
 			return Observable.forkJoin(resultPlatoons, resultOrganization);
