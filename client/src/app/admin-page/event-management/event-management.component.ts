@@ -60,8 +60,9 @@ export class EventManagementComponent implements OnInit {
 	public openSignup(){
 		this.route.params.
 		switchMap((params: Params) => this.eventManagementService.openSignup(+params["eventId"])).
-		subscribe((isOpen: boolean) => {
-			console.log(isOpen);
+		subscribe((result: any) => {
+			this.event.registerationOpen = result;
+			console.log(result);
 			//this.event.registerationOpen = isOpen;
 		},
 		error => this.error =<any>error);
@@ -70,8 +71,9 @@ export class EventManagementComponent implements OnInit {
 	public closeSignup(){
 		this.route.params.
 		switchMap((params: Params) => this.eventManagementService.closeSignup(+params["eventId"])).
-		subscribe((isOpen: boolean) => {
-			console.log(isOpen);
+		subscribe((result: any) => {
+			this.event.registerationOpen = result.registerationOpen;
+			console.log(result);
 			//this.event.registerationOpen = isOpen;
 		},
 		error => this.error =<any>error);
