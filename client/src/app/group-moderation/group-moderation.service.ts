@@ -45,4 +45,17 @@ export class GroupModerationService extends AuthorizedHttpService {
         return this.extractData(res).map(d => Member.fromJSON(d));
       }).catch(this.handleError);
   }
+
+  receiptPayment(groupId: number, memberId: number): Observable<UserPayment[]> {
+    let data = {
+      groupId: groupId,
+      memberId: memberId,
+    };
+
+    return this.http.post("/api/group/" + groupId + "/moderator/userpayment", data, { headers: this.headers })
+      .map((res: Response) => {
+        console.log(res);
+        return this.extractData(res).map(d => UserPayment.fromJSON(d));
+      }).catch(this.handleError);
+  }
 }

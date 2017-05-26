@@ -40,7 +40,10 @@ export class GroupPageComponent implements OnInit {
   onSelectMember(member: Member) {
     this.selectedMember = member;
     this.groupModerationService.getMemberPayments(this.participantGroup.id, this.selectedMember.id)
-      .subscribe((userPayments: UserPayment[]) => this.selectedMemberPayments = userPayments,
+      .subscribe((userPayments: UserPayment[]) => {
+        console.log(userPayments);
+        this.selectedMemberPayments = userPayments;
+      },
       (error: any) => console.log(error));
 
     this.modal.show();
@@ -59,6 +62,16 @@ export class GroupPageComponent implements OnInit {
 
   onReceiptPayment() {
     console.log("Updating payment status");
+    this.groupModerationService.receiptPayment(this.participantGroup.id, this.selectedMember.id)
+      .subscribe((userPayments: UserPayment[]) => {
+        console.log(userPayments);
+        this.selectedMemberPayments = userPayments;
+      },
+      (error: any) => console.log(error));
+  }
+
+  onAddModerator() {
+    console.log("Adding moderator");
   }
 
   onCloseModal() {

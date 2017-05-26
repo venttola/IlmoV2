@@ -55,8 +55,37 @@ module Service {
             });
         }
 
+        public receiptMemberPayment(groupId: number, memberId: number) {
+            console.log(JSON.stringify("groupId: " + groupId));
+            console.log(JSON.stringify("memberId: " + memberId));
+
+            return new Promise((resolve, reject) => {
+                this.getAllMemberPayments(groupId)
+                    .then((userPayments: any[]) => {
+                        console.log(JSON.stringify("userPayments: " + JSON.stringify(userPayments)));
+                        let unpaidPayments = userPayments.filter((up: any) => up.payeeId === memberId)
+                            .map((up: any) => new Promise((resolve, reject) => {
+                                if (!up.isPaid) {
+                                    up.paidOn = new Date();
+                                    up.isPaid = true;
+
+                                    up.save((err: Error) => {
+                                        if (err) {
+                                            reject(err);
+                                        } else {
+                                            resolve(up);
+                                        }
+                                    });
+                                }
+                            }));
+
+                        Promise.all(unpaidPayments).then((paidPayments: any) => resolve(paidPayments));
+                    });
+            });
+        }
+
         // TODO: Combine with getGroupMembers
-        private getMemberPayments = (groupId: number) => {
+        private getAllMemberPayments = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.getGroupPayment(groupId)
                     .then((groupPayment: any) => new Promise((resolve, reject) => {
@@ -80,7 +109,7 @@ module Service {
 
         public removeMember = (groupId: number, memberId: number) => {
             return new Promise((resolve, reject) => {
-                this.getMemberPayments(groupId).then((res: any) => {
+                this.getAllMemberPayments(groupId).then((res: any) => {
                     let memberPayments = res.filter((p: any) => p.payeeId === memberId);
                     let removePromises = memberPayments.map((mp: any) => new Promise((resolve, reject) => {
                         // Remove payment's product selections

@@ -226,6 +226,15 @@ module Route {
         //     });
         // }
 
+        public receiptPayment = (req: express.Request, res: express.Response) => {
+            this.groupService.receiptMemberPayment(req.body.groupId, req.body.memberId)
+                .then((paidPayments: any) => {
+                    return this.getPaymentProducts(paidPayments);
+                }).then((payments: any) => {
+                    return res.status(200).json(this.mapPaymentProducts(payments));
+                });
+        }
+
         //TODO: Apidocs
         public getModeratedGroups = (req: express.Request, res: express.Response) => {
             let username = req.params.username;
@@ -281,42 +290,9 @@ module Route {
                     }
                 });
             }).then((userPayments: any) => {
-                let productPromises = userPayments.map((up: any) => {
-                    return new Promise((resolve, reject) => {
-                        let promises = up.productSelections.map((ps: any) => {
-                            return new Promise((resolve, reject) => {
-                                this.productModel.one({ id: ps.product_id }, (err: Error, product: any) => {
-                                    ps.product = product;
-
-                                    this.discountModel.one({ id: ps.discount_id }, (err: Error, discount: any) => {
-                                        ps.discount = discount;
-                                        resolve(up);
-                                    });
-                                });
-                            });
-                        });
-
-                        Promise.all(promises).then((results: any) => {
-                            resolve(results);
-                        });
-                    });
-                });
-
-                return Promise.all(productPromises);
+                return this.getPaymentProducts(userPayments);
             }).then((finalPayments: any[]) => {
-                let mappedPayments = finalPayments.map((fp: any) => {
-                    let prodSelectionInfos = fp[0].productSelections.map((ps: any) => {
-                        let discountInfo: any = ps.discount ? new DiscountInfo(ps.discount.id, ps.discount.name, ps.discount.amount) : null;
-                        let productInfo: any = new ProductInfo(ps.product.id, ps.product.name, ps.product.price);
-
-                        return new ProductSelectionInfo(productInfo, discountInfo);
-                    });
-
-                    return new PaymentInfo(fp[0].id, prodSelectionInfos, fp[0].isPaid, fp[0].paidOn);
-                });
-
-
-                return res.status(200).json(mappedPayments);
+                return res.status(200).json(this.mapPaymentProducts(finalPayments));
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
@@ -343,6 +319,47 @@ module Route {
                 });
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
+            });
+        }
+
+        private getPaymentProducts = (userPayments: any) => {
+            let productPromises = userPayments.map((up: any) => {
+                return new Promise((resolve, reject) => {
+                    let promises = up.productSelections.map((ps: any) => {
+                        console.log("ADDING");
+                        return new Promise((resolve, reject) => {
+                            this.productModel.one({ id: ps.product_id }, (err: Error, product: any) => {
+                                ps.product = product;
+
+                                this.discountModel.one({ id: ps.discount_id }, (err: Error, discount: any) => {
+                                    ps.discount = discount;
+
+                                    console.log("UP:  " + JSON.stringify(up));
+                                    resolve(up);
+                                });
+                            });
+                        });
+                    });
+
+                    Promise.all(promises).then((results: any) => {
+                        resolve(results);
+                    });
+                });
+            });
+
+            return Promise.all(productPromises);
+        }
+
+        private mapPaymentProducts = (finalPayments: any[]) => {
+            return finalPayments.map((fp: any) => {
+                let prodSelectionInfos = fp[0].productSelections.map((ps: any) => {
+                    let discountInfo: any = ps.discount ? new DiscountInfo(ps.discount.id, ps.discount.name, ps.discount.amount) : null;
+                    let productInfo: any = new ProductInfo(ps.product.id, ps.product.name, ps.product.price);
+
+                    return new ProductSelectionInfo(productInfo, discountInfo);
+                });
+
+                return new PaymentInfo(fp[0].id, prodSelectionInfos, fp[0].isPaid, fp[0].paidOn);
             });
         }
     }
