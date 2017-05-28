@@ -126,7 +126,7 @@ module Route {
         * @apiName Add a group moderator
         * @apiGroup Group
         * @apiParam {Number} group Group unique id
-        * @apiParam {JSON} username Username (email)
+        * @apiParam {JSON} memberId Member id
         * @apiSuccess (204) -
         * @apiError DatabaseReadError ERROR: Group data could not be read from the database
         * @apiError DatabaseReadError ERROR: Group was not found
@@ -136,18 +136,24 @@ module Route {
         */
         public addModerator = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
-            let username = req.body.username;
+            let memberId = req.body.memberId;
+            let self = this;
 
-            Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
+            Promise.all([this.groupService.getGroup(groupId), this.userService.getUserById(memberId)]).then(values => {
                 let group: any = values[0];
                 let user: any = values[1];
 
-                group.addGroupModerator(user, function (err: Error) {
+
+                group.addModerator(user, function (err: Error) {
                     if (err) {
                         let msg = ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_INSERTION);
                         return res.status(500).send(msg);
                     } else {
-                        return res.status(204).send();
+                        self.getMembers(groupId).then((memberInfos: any) =>
+                            res.status(200).json(memberInfos))
+                            .catch((err: APIError) => {
+                                return res.status(err.statusCode).send(err.message);
+                            });
                     }
                 });
             }).catch((err: APIError) => {
@@ -337,15 +343,12 @@ module Route {
             let productPromises = userPayments.map((up: any) => {
                 return new Promise((resolve, reject) => {
                     let promises = up.productSelections.map((ps: any) => {
-                        console.log("ADDING");
                         return new Promise((resolve, reject) => {
                             this.productModel.one({ id: ps.product_id }, (err: Error, product: any) => {
                                 ps.product = product;
 
                                 this.discountModel.one({ id: ps.discount_id }, (err: Error, discount: any) => {
                                     ps.discount = discount;
-
-                                    console.log("UP:  " + JSON.stringify(up));
                                     resolve(up);
                                 });
                             });

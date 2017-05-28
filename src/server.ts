@@ -177,8 +177,6 @@ class Server {
 
 		//router.post(this.API_PREFIX + "/group", groupRoute.addGroup);
 		router.get(this.API_PREFIX + "/group/:group", groupRoute.getParticipantGroup);
-		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
-		router.delete(this.API_PREFIX + "/group/:group/:username/moderator", groupRoute.removeModerator);
 		//router.get(this.API_PREFIX + "/group/:group/:username/products", groupRoute.getMemberProducts);
 		router.get(this.API_PREFIX + "/group/:username/moderation", groupRoute.getModeratedGroups);
 
@@ -188,6 +186,8 @@ class Server {
 		router.get(this.API_PREFIX + "/group/:group/moderator/userpayment/:member", groupRoute.getMemberPayments);
 		router.delete(this.API_PREFIX + "/group/:group/moderator/:member", groupRoute.removeMember);
 		router.post(this.API_PREFIX + "/group/:group/moderator/userpayment", groupRoute.receiptPayment);
+		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
+		router.delete(this.API_PREFIX + "/group/:group/:username/moderator", groupRoute.removeModerator);
 
 		console.log("Group routes set");
 	}

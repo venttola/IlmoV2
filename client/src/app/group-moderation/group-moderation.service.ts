@@ -60,6 +60,14 @@ export class GroupModerationService extends AuthorizedHttpService {
   }
 
   addModerator(groupId: number, memberId: number): Observable<Member[]> {
-    return null;
+    let data = {
+      memberId: memberId,
+    };
+
+    return this.http.patch("/api/group/" + groupId + "/moderator", data, { headers: this.headers })
+      .map((res: Response) => {
+        console.log(res);
+        return this.extractData(res).map(d => Member.fromJSON(d));
+      }).catch(this.handleError);
   }
 }

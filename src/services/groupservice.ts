@@ -30,7 +30,6 @@ module Service {
         }
 
         public getParticipantGroupMembers = (groupId: number) => {
-
             return new Promise((resolve, reject) => {
                 this.getParticipantGroupPayment(groupId)
                     .then((groupPayment: any) => new Promise((resolve, reject) => {

@@ -72,6 +72,24 @@ export class GroupPageComponent implements OnInit {
 
   onAddModerator() {
     console.log("Adding moderator");
+    this.groupModerationService.addModerator(this.participantGroup.id, this.selectedMember.id)
+      .subscribe((members: Member[]) => {
+        console.log("members: " + JSON.stringify(members));
+        this.members = members;
+
+        let selected = members.find((m: Member) => m.id === this.selectedMember.id);
+
+        if (selected) {
+          this.selectedMember = selected;
+        } else {
+          this.modal.hide();
+          this.selectedMember = null;
+        }
+      });
+  }
+
+  onRemoveModerator() {
+
   }
 
   onCloseModal() {
