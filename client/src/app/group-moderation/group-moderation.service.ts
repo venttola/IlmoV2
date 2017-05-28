@@ -70,4 +70,12 @@ export class GroupModerationService extends AuthorizedHttpService {
         return this.extractData(res).map(d => Member.fromJSON(d));
       }).catch(this.handleError);
   }
+
+  removeModerator(groupId: number, memberId: number): Observable<Member[]> {
+    return this.http.delete("/api/group/" + groupId + "/moderator/" + memberId + "/moderator", { headers: this.headers })
+      .map((res: Response) => {
+        console.log(res);
+        return this.extractData(res).map(d => Member.fromJSON(d));
+      }).catch(this.handleError);
+  }
 }

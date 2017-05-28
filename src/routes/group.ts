@@ -143,7 +143,6 @@ module Route {
                 let group: any = values[0];
                 let user: any = values[1];
 
-
                 group.addModerator(user, function (err: Error) {
                     if (err) {
                         let msg = ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_INSERTION);
@@ -176,18 +175,23 @@ module Route {
         */
         public removeModerator = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
-            let username = req.params.username;
+            let memberId = req.params.member;
+            let self = this;
 
-            Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
+            Promise.all([this.groupService.getGroup(groupId), this.userService.getUserById(memberId)]).then(values => {
                 let group: any = values[0];
                 let user: any = values[1];
 
-                group.removeGroupModerator(user, function (err: Error) {
+                group.removeModerator(user, function (err: Error) {
                     if (err) {
                         let msg = ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_DELETE);
                         return res.status(500).send(msg);
                     } else {
-                        return res.status(204).send();
+                        self.getMembers(groupId).then((memberInfos: any) =>
+                            res.status(200).json(memberInfos))
+                            .catch((err: APIError) => {
+                                return res.status(err.statusCode).send(err.message);
+                            });
                     }
                 });
             }).catch((err: APIError) => {

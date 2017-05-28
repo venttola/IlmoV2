@@ -89,7 +89,21 @@ export class GroupPageComponent implements OnInit {
   }
 
   onRemoveModerator() {
+    console.log("Removing moderator");
+    this.groupModerationService.removeModerator(this.participantGroup.id, this.selectedMember.id)
+      .subscribe((members: Member[]) => {
+        console.log("members: " + JSON.stringify(members));
+        this.members = members;
 
+        let selected = members.find((m: Member) => m.id === this.selectedMember.id);
+
+        if (selected) {
+          this.selectedMember = selected;
+        } else {
+          this.modal.hide();
+          this.selectedMember = null;
+        }
+      });
   }
 
   onCloseModal() {
