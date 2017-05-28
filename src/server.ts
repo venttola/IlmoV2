@@ -50,7 +50,7 @@ class Server {
 			this.userService = new UserService(models.User);
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
-			this.groupService = new GroupService(models.ParticipantGroup);
+			this.groupService = new GroupService(models.ParticipantGroup, this.userService);
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
 		}).catch((err: Error) => {

@@ -178,22 +178,9 @@ module Route {
             let memberId = req.params.member;
             let self = this;
 
-            Promise.all([this.groupService.getGroup(groupId), this.userService.getUserById(memberId)]).then(values => {
-                let group: any = values[0];
-                let user: any = values[1];
-
-                group.removeModerator(user, function (err: Error) {
-                    if (err) {
-                        let msg = ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_DELETE);
-                        return res.status(500).send(msg);
-                    } else {
-                        self.getMembers(groupId).then((memberInfos: any) =>
-                            res.status(200).json(memberInfos))
-                            .catch((err: APIError) => {
-                                return res.status(err.statusCode).send(err.message);
-                            });
-                    }
-                });
+            this.groupService.removeModerator(groupId, memberId).then((members: any) => {
+                console.log(members);
+                return res.status(200).json(members);
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });

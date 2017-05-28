@@ -2,7 +2,7 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 
 module Service {
     export class GroupService {
-        constructor(private groupModel: any) { }
+        constructor(private groupModel: any, private userService: any) { }
 
         public getGroup = (groupId: number) => {
             return new Promise((resolve, reject) => {
@@ -125,7 +125,7 @@ module Service {
                             ps.remove((err: Error) => err ? reject(err) : resolve(true));
                         }));
 
-                        // Remove member payment
+                        // Remove member payments
                         Promise.all(psRemovePromises).then((result: any) => {
                             mp.remove((err: Error) => {
                                 if (err) {
@@ -137,20 +137,46 @@ module Service {
                         });
                     }));
 
-                    return Promise.all(removePromises);
-                }).then((removed: any) => {
-                    return this.getParticipantGroupMembers(groupId);
+                    return Promise.all(removePromises).then((result: any) => new Promise((resolve, reject) => {
+                        this.removeModerator(groupId, memberId).then((members: any) => resolve(members));
+                    }));
                 }).then((updatedMembers: any) => {
-                    let userInfo = updatedMembers.map((up: any) => {
-                        return {
-                            id: up.id,
-                            name: up.firstname + " " + up.lastname
-                        };
-                    });
-
-                    resolve(userInfo);
+                    resolve(updatedMembers);
                 });
             });
+        }
+
+        public removeModerator = (groupId: number, memberId: number) => {
+            let self = this;
+
+            return Promise.all([this.getGroup(groupId), this.userService.getUserById(memberId)]).then(values => {
+                let group: any = values[0];
+                let user: any = values[1];
+
+                return new Promise((resolve, reject) => {
+                    group.removeModerator(user, function (err: Error) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            self.getParticipantGroupMembers(groupId).then((memberInfos: any) => {
+                                let userInfo = memberInfos.map((up: any) => {
+                                    console.log("up: " + JSON.stringify(up));
+                                    if (up) {
+                                        return {
+                                            id: up.id,
+                                            name: up.firstname + " " + up.lastname
+                                        };
+                                    }
+                                });
+
+                                resolve(userInfo);
+                            }).catch((err: APIError) => {
+                                reject(err);
+                            });
+                        }
+                    });
+                });
+            }).then((members: any) => members);
         }
 
         private getGroupModerators = (groupId: number) => {
