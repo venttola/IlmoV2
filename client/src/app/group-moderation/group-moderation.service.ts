@@ -58,4 +58,8 @@ export class GroupModerationService extends AuthorizedHttpService {
         return this.extractData(res).map(d => UserPayment.fromJSON(d));
       }).catch(this.handleError);
   }
+
+  addModerator(groupId: number, memberId: number): Observable<Member[]> {
+    return null;
+  }
 }

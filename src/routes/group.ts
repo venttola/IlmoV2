@@ -254,19 +254,30 @@ module Route {
         }
 
         // TODO: ApiDocs
-        public getMembers = (req: express.Request, res: express.Response) => {
+        public getGroupMembers = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
 
-            this.groupService.getGroupMembers(groupId).then((members: any) => {
-                let memberInfos = members.map((payee: any) => {
-                    return {
-                        id: payee.id,
-                        name: payee.firstname + " " + payee.lastname
-                    };
+            this.getMembers(groupId).then((memberInfos: any) =>
+                res.status(200).json(memberInfos))
+                .catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
                 });
-                return res.status(200).json(memberInfos);
-            }).catch((err: APIError) => {
-                return res.status(err.statusCode).send(err.message);
+        }
+
+        private getMembers = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.groupService.getParticipantGroupMembers(groupId).then((members: any) => {
+                    let memberInfos = members.map((payee: any) => {
+                        return {
+                            id: payee.id,
+                            name: payee.firstname + " " + payee.lastname,
+                            isModerator: payee.isModerator
+                        };
+                    });
+                    resolve(memberInfos);
+                }).catch((err: APIError) => {
+                    reject(err.message);
+                });
             });
         }
 
@@ -276,7 +287,7 @@ module Route {
             let groupId = req.params.group;
             let memberId: number = +req.params.member;
 
-            this.groupService.getGroupMembers(groupId).then((members: any) => {
+            this.groupService.getParticipantGroupMembers(groupId).then((members: any) => {
                 let member = members.find((m: any) => m.id === memberId);
 
                 return new Promise((resolve, reject) => {

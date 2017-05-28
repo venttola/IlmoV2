@@ -184,7 +184,7 @@ class Server {
 
 		// Moderator routes
 		router.use(this.API_PREFIX + "/group/:group/moderator/*", groupRoute.checkModerator);
-		router.get(this.API_PREFIX + "/group/:group/moderator/members", groupRoute.getMembers);
+		router.get(this.API_PREFIX + "/group/:group/moderator/members", groupRoute.getGroupMembers);
 		router.get(this.API_PREFIX + "/group/:group/moderator/userpayment/:member", groupRoute.getMemberPayments);
 		router.delete(this.API_PREFIX + "/group/:group/moderator/:member", groupRoute.removeMember);
 		router.post(this.API_PREFIX + "/group/:group/moderator/userpayment", groupRoute.receiptPayment);

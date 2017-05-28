@@ -14,27 +14,28 @@ module Service {
                         let errorMsg = ErrorHandler.getErrorMsg("Group", ErrorType.NOT_FOUND);
                         reject(new DatabaseError(400, errorMsg));
                     } else {
-                        return resolve(group);
+                        resolve(group);
                     }
                 });
             });
         }
 
-        public getGroupPayment = (groupId: number) => {
+        private getParticipantGroupPayment = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.getGroup(groupId)
                     .then((group: any) => group.getGroupPayment((err: Error, groupPayment: any) => {
-                        return err ? reject(err) : resolve(groupPayment);
+                        err ? reject(err) : resolve(groupPayment);
                     }));
             });
         }
 
-        public getGroupMembers = (groupId: number) => {
+        public getParticipantGroupMembers = (groupId: number) => {
+
             return new Promise((resolve, reject) => {
-                this.getGroupPayment(groupId)
+                this.getParticipantGroupPayment(groupId)
                     .then((groupPayment: any) => new Promise((resolve, reject) => {
                         groupPayment[0].getUserPayments((err: Error, userPayments: any) => {
-                            return err ? reject(err) : resolve(userPayments);
+                            err ? reject(err) : resolve(userPayments);
                         });
                     })).then((userPayments: any[]) => {
                         let promises = userPayments.map((up: any) => {
@@ -49,20 +50,28 @@ module Service {
                                 return self.indexOf(value) === index;
                             });
 
-                            resolve(uniquePayees);
+                            this.getGroupModerators(groupId).then((moderators: any) => {
+                                let moderatorIds = moderators.map((m: any) => m.id);
+
+                                uniquePayees.forEach((up: any) => {
+                                    if (moderatorIds.some((x: any) => x === up.id)) {
+                                        up.isModerator = true;
+                                    } else {
+                                        up.isModerator = false;
+                                    }
+                                });
+
+                                resolve(uniquePayees);
+                            });
                         });
                     });
             });
         }
 
         public receiptMemberPayment(groupId: number, memberId: number) {
-            console.log(JSON.stringify("groupId: " + groupId));
-            console.log(JSON.stringify("memberId: " + memberId));
-
             return new Promise((resolve, reject) => {
                 this.getAllMemberPayments(groupId)
                     .then((userPayments: any[]) => {
-                        console.log(JSON.stringify("userPayments: " + JSON.stringify(userPayments)));
                         let unpaidPayments = userPayments.filter((up: any) => up.payeeId === memberId)
                             .map((up: any) => new Promise((resolve, reject) => {
                                 if (!up.isPaid) {
@@ -87,7 +96,7 @@ module Service {
         // TODO: Combine with getGroupMembers
         private getAllMemberPayments = (groupId: number) => {
             return new Promise((resolve, reject) => {
-                this.getGroupPayment(groupId)
+                this.getParticipantGroupPayment(groupId)
                     .then((groupPayment: any) => new Promise((resolve, reject) => {
                         groupPayment[0].getUserPayments((err: Error, userPayments: any) => {
                             return err ? reject(err) : resolve(userPayments);
@@ -131,7 +140,7 @@ module Service {
 
                     return Promise.all(removePromises);
                 }).then((removed: any) => {
-                    return this.getGroupMembers(groupId);
+                    return this.getParticipantGroupMembers(groupId);
                 }).then((updatedMembers: any) => {
                     let userInfo = updatedMembers.map((up: any) => {
                         return {
@@ -145,6 +154,15 @@ module Service {
             });
         }
 
+        private getGroupModerators = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getGroup(groupId).then((group: any) => {
+                    group.getModerator((err: Error, moderators: any) => {
+                        err ? reject(err) : resolve(moderators);
+                    });
+                });
+            });
+        }
     }
 }
 
