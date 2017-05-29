@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Http, Response, Headers } from "@angular/http";
-import "rxjs/add/operator/toPromise";
+import { Observable } from "rxjs/Observable";
+import "rxjs/add/operator/catch";
+import "rxjs/add/operator/map";
+import "rxjs/add/observable/forkJoin";
 
 
 import { Credentials } from "./credentials.model";
@@ -11,33 +14,24 @@ const loginURL = "http://localhost:8080/api/login";
 @Injectable()
 export class LoginService{
 	headers : Headers;
+	credentials: Credentials;
 
-	constructor(private http: Http,
-				private authService: AuthService){
+	constructor(private http: Http){
 		this.headers =  new Headers( {"Content-Type": "application/json"});
 	}
 
-	public sendLoginRequest(credentials: Credentials): Promise<JSON> {
-		//console.log(JSON.stringify(credentials));
-		credentials.encodePassword();
-		return this.
-			   http.
-			   post(loginURL,
-			   		JSON.stringify(credentials),
-			   		{ headers: this.headers }).
-			   toPromise().
-			   then(response => {
-			   	let responseJSON : any = JSON.parse(response.json());
-			   	let token : any = responseJSON.token;
-			   	console.log (responseJSON.token);
-			   	this.authService.saveToken(credentials.email, token);
-
-			   	}).
-			   catch(this.handleError);
+	public sendLoginRequest(credentials: Credentials): Observable<any> {
+		this.credentials = credentials;
+		return this.http.post(loginURL, JSON.stringify(credentials), { headers: this.headers }).
+		map(this.handleLogin).
+		catch(this.handleError);
 	}
-	 private handleError(error: any): Promise<any> {
-        console.error("An error occurred", error);
-        return Promise.reject(error.message || error);
-    }
+	private handleLogin(res: Response): any {
+		return JSON.parse(res.json());
+	}
+	private handleError(error: any): Observable<any> {
+		console.error("An error occurred", error);
+		return Observable.throw(error.message || error);
+	}
 
 }

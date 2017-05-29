@@ -2,18 +2,16 @@
 <form (ngSubmit)="attemptLogin()" #loginForm="ngForm">
 	<h4 class="pb-2">Kirjaudu järjestelmään</h4>
 	<div class="form-group">
-		<input type="email" class="form-control" placeholder="Sähköposti" id="email" required [(ngModel)]="credentials.email" name="email" #email="ngModel"/>
+		<input type="email" class="form-control" placeholder="Sähköposti" id="email" required [(ngModel)]="credentials.email" name="email" #email="ngModel" ngModel email/>
 	</div>
-	 <div [hidden]="email.valid || email.pristine"
-             class="alert alert-danger">
-          Syötä sähköposti.
-        </div>
+	
 	<div class="form-group">
 		<input type="password" class="form-control" placeholder="Salasana" id="password" required [(ngModel)]="credentials.password" name="password"/>
 	</div>
-	<div [hidden]="email.valid || email.pristine"
-             class="alert alert-danger">
-          Syötä sähköposti.
-        </div>
 	<button type="submit" class="btn btn-primary btn-lg">Kirjaudu sisään</button>
+	<div id="errorbox" [hidden]="!errorMessage" class="alert alert-danger" >
+		{{errorMessage}}
+	</div>
+
 </form>
+	
