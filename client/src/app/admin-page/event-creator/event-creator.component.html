@@ -1,4 +1,4 @@
-<form>
+<form (ngSubmit)="createEvent()" #newEventForm="ngForm">
 	<h4>Luo uusi tapahtuma  </h4>
  <div class="form-group">
     <label for="name">Nimi:</label>
@@ -39,6 +39,6 @@
  <label for="organization">Järjestäjä:</label>
  <input type="text" class="form-control" placeholder="Nimi" id="organization" [(ngModel)]="organization.name" name="organization" required/>
 </div>
-<button type="submit" class="btn btn-success" (click)="createEvent()">Luo tapahtuma</button>
+<button type="submit" class="btn btn-success" >Luo tapahtuma</button>
 </form>
 

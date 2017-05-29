@@ -1,19 +1,19 @@
-	<form>
-		<h4>Anna uuden organisaation tiedot</h4>
-		<div class="form-group">
-			<label for="name">Organisaation nimi:</label>
-			<input type="name" class="form-control" placeholder="Sotahuuto Ry" id="name" [(ngModel)]="newOrganization.name" name="name"/>
-		</div>
-		<div class="form-group">
-			<label for="bankAccount">IBAN-tilinumero:</label>
-			<input type="text" class="form-control" placeholder="FI4250001510000023" id="bankAccount" [(ngModel)]="newOrganization.bankAccount" name="bankAccount"/>
-		</div>
-		<h5>Jäsenet</h5>
-		<button class="btn btn-success" (click) ="addInputForMember()">+</button>
-		<button class="btn btn-success" (click) ="removeInputForMember()">-</button>
-		<div *ngFor="let member of organizationMembers; let i = index; trackBy: trackMembers" class="form-group">
-			<input type="text" class="form-control" placeholder="Nimi" id="member{{i}}"  [(ngModel)]="member.name" name="member{{i}}"/>
-		</div>
-		<button type="submit" class="btn btn-success" (click)="addOrganization()">Lisää organisaatio</button>
-	</form>
+<form (ngSubmit)="addOrganization()" #organizationForm="ngForm">
+	<h4>Anna uuden organisaation tiedot</h4>
+	<div class="form-group">
+		<label for="name">Organisaation nimi:</label>
+		<input type="name" class="form-control" placeholder="Sotahuuto Ry" id="name" [(ngModel)]="newOrganization.name" name="name"/>
+	</div>
+	<div class="form-group">
+		<label for="bankAccount">IBAN-tilinumero:</label>
+		<input type="text" class="form-control" placeholder="FI4250001510000023" id="bankAccount" [(ngModel)]="newOrganization.bankAccount" name="bankAccount"/>
+	</div>
+	<h5>Jäsenet</h5>
+	<button class="btn btn-success" (click) ="addInputForMember()">+</button>
+	<button class="btn btn-success" (click) ="removeInputForMember()">-</button>
+	<div *ngFor="let member of organizationMembers; let i = index; trackBy: trackMembers" class="form-group">
+		<input type="text" class="form-control" placeholder="Nimi" id="member{{i}}"  [(ngModel)]="member.name" name="member{{i}}"/>
+	</div>
+	<button type="submit" class="btn btn-success">Lisää organisaatio</button>
+</form>
 

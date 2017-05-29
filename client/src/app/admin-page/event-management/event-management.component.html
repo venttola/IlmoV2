@@ -1,6 +1,6 @@
 
 <h1>{{ eventDetails?.event.name }}</h1>
-<form>
+<form (ngSubmit)="updateEvent()" #managedEventForm="ngForm">
 	<h4>Muokkaa  tietoja</h4>
 	<div class="form-group">
 		<label for="name" class="sr-only">Nimi:</label>
@@ -36,7 +36,7 @@
 			<input type="text" class="form-control" placeholder="Hinta" id="productPrice{{i}}"  [(ngModel)]="product.price" name="productPrice{{i}}"/>
 		</div>
 	</div>
-	<button type="submit" class="btn btn-success" (click)="updateEvent()" >Päivitä tapahtuma</button>
+	<button type="submit" class="btn btn-success" >Päivitä tapahtuma</button>
 	<button type="button" class="btn btn-success" *ngIf=!event.registerationOpen (click)="openSignup()">Avaa ilmoittautuminen</button>
 	<button type="button" class="btn btn-success" *ngIf=event.registerationOpen (click)="closeSignup()">Sulje ilmoittautuminen</button>
 </form>
