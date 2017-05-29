@@ -19,7 +19,7 @@ export class SignupData{
     	//Perform encoding
     	//this.password = btoa(this.password);
     }
-    public checkPasswordMatching(): boolean{
+    public passwordsMatching(): boolean{
     	return this.password == this.repassword;
     }
 }
