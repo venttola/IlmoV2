@@ -92,8 +92,10 @@ module Route {
         * @apiParam {JSON} firstname {firstname: "Matti"}
         * @apiParam {JSON} lastname {lastname: "Meikalainen"}
         * @apiParam {JSON} dob {dob: "20.12.1988"}
-        * @apiSuccess -
-        * @apiError {JSON} Missing fields 
+        * @apiSuccess 201
+        * @apiError 400 {JSON} Missing fields 
+        * @apiError 500 {JSON} Missing fields
+        * @apiError 409 {JSON} Username in use 
         */
         public signup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             let self = this;
@@ -107,7 +109,6 @@ module Route {
                 return res.status(400).send("Error: Missing data \n");
             }
             let email: string = req.body.email;
-            //let password: string = new Buffer (req.body.password, "base64").toString();
             let password: string = req.body.password;
             let firstname: string = req.body.firstname;
             let lastname: string = req.body.lastname;
@@ -120,7 +121,7 @@ module Route {
             self.userModel.one({ email: email }, function (err: any, user: any) {
                 console.log("Result of user query: " + user);
                 if (user) {
-                    return res.status(400).send("Error: Username in use \n");
+                    return res.status(409).send("Error: Username in use \n");
                 } else {
                     bcrypt.hash(password, saltRounds, function (err: any, hash: any) {
                         if (err) {
@@ -138,7 +139,7 @@ module Route {
                                     console.log("Error creating user: " + err);
                                     // TODO: Proper response
                                     // It's not a final one, but it's good to let the user know something went wrong.
-                                    return res.status(400).send("Failed to add user:" + err);
+                                    return res.status(500).send("Failed to add user:" + err);
                                 } else {
                                     return res.status(201).send("User added!");
                                 }
