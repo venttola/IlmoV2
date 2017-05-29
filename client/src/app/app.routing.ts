@@ -16,6 +16,8 @@ import { EventDetailsComponent } from "./event-details/event-details.component";
 import { EventSignupComponent } from "./event-signup/event-signup.component";
 import { EventManagementComponent } from "./admin-page/event-management/event-management.component";
 import { EventSignupListingComponent } from "./event-signup-listing/event-signup-listing.component";
+import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
+import { GroupPageComponent } from "./group-moderation/group-page/group-page.component";
 
 const appRoutes: Routes = [
   {
@@ -64,6 +66,16 @@ const appRoutes: Routes = [
     path: "signups",
     component: EventSignupListingComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: "moderation",
+    component: GroupModerationComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "groups/:groupId",
+    component: GroupPageComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: "**",

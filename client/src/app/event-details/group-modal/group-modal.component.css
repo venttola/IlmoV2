@@ -6,3 +6,9 @@
     color: black;
     margin-top: 10%;
 }
+
+@media(min-width: 576px) {
+  .modal-dialog {
+    max-width: 650px;
+  }  
+}

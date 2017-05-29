@@ -15,7 +15,7 @@ import { EventService } from "../event.service";
 @Component({
   selector: 'event-details',
   templateUrl: './event-details.component.html',
-  styleUrls: ['./event-details.component.css']
+  styleUrls: ['./event-details.component.css', '../styles/common-list.style.css']
 })
 export class EventDetailsComponent implements OnInit {
   eventDetails: EventDetails;
@@ -55,7 +55,7 @@ export class EventDetailsComponent implements OnInit {
   onSubmit() {
     this.group.platoonId = this.selectedPlatoon;
 
-    this.eventService.addGroup(this.group, this.eventDetails.event.id)
+    this.eventService.createGroup(this.group, this.eventDetails.event.id)
       .subscribe((group: ParticipantGroup) => {
         console.log(group);
 

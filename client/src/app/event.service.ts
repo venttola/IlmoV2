@@ -23,8 +23,15 @@ export class EventService extends AuthorizedHttpService {
     return this.http.get(this.eventsUrl, { headers: this.headers }).map(this.extractData).catch(this.handleError);
   }
 
-  addGroup(group: ParticipantGroup, eventId: number): Observable<ParticipantGroup> {
-    return this.http.post(`${this.eventsUrl}/${eventId}/group`, JSON.stringify(group), { headers: this.headers })
+  createGroup(group: ParticipantGroup, eventId: number): Observable<ParticipantGroup> {
+    let username = localStorage.getItem("user");
+    
+    let data = {
+      moderator: username,
+      group: group
+    };
+
+    return this.http.post(`${this.eventsUrl}/${eventId}/group`, JSON.stringify(data), { headers: this.headers })
       .map((r: Response) => ParticipantGroup.fromJSON(r.json()))
       .catch(this.handleError);
   }

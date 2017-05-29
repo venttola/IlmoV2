@@ -1,0 +1,71 @@
+<h4 *ngIf="participantGroup">Ryhmän {{participantGroup.name}} jäsenet</h4>
+
+<ul class="common-list">
+  <li *ngFor="let m of members">
+    <div class="group-item unselectable clickable" (click)="onSelectMember(m)">
+      <p>{{ m.name }}</p>
+    </div>
+  </li>
+</ul>
+
+<div *ngIf="members.length === 0">
+  <p>Ei jäseniä</p>
+</div>
+
+<app-group-modal>
+  <div class="group-modal-header">
+    <h4>{{selectedMember?.name}}</h4>
+  </div>
+  <div class="group-modal-body">
+    <div class="payment-section">
+      <!-- TODO: Copypasta lists, make a template -->
+      <div *ngFor="let payment of selectedMemberPayments">
+        <div *ngIf="payment.isPaid === true" class="paid-payments">
+          <h5>Maksetut tuotteet</h5>
+          <hr>
+          <div class="productlist-header">
+            <div class="product">Tuote</div>
+            <div class="discount">Alennus</div>
+            <div class="final-price">Lopullinen hinta</div>
+          </div>
+          <div *ngFor="let p of payment.products" class="paid">
+            <div class="product">{{p.product.name}} ({{p.product.price}} €)</div>
+            <div class="discount"><span *ngIf="p.discount !== null">{{ p.discount.name }} ({{ p.discount.amount }} €)</span></div>
+            <div class="final-price">
+              <span *ngIf="p.discount != null">{{ p.product.price - p.discount.amount }} €</span>
+              <span *ngIf="p.discount == null">{{ p.product.price }} €</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TODO: Copypasta lists, make a template -->
+        <div *ngIf="payment.isPaid === false" class="unpaid-payments">
+          <h5>Maksamattomat tuotteet</h5>
+          <hr>
+          <div class="productlist-header">
+            <div class="product">Tuote</div>
+            <div class="discount">Alennus</div>
+            <div class="final-price">Lopullinen hinta</div>
+          </div>
+          <div *ngFor="let p of payment.products" class="not-paid">
+            <div class="product">{{p.product.name}} ({{p.product.price}} €)</div>
+            <div class="discount"><span *ngIf="p.discount !== null">{{ p.discount.name }} ({{ p.discount.amount }} €)</span></div>
+            <div class="final-price">
+              <span *ngIf="p.discount != null">{{ p.product.price - p.discount.amount }} €</span>
+              <span *ngIf="p.discount == null">{{ p.product.price }} €</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="group-modal-footer">
+    <div class="moderator-actions">
+      <button type="button" class="btn btn-danger remove-member-button" (click)="onRemoveMember()">Poista ryhmästä</button>
+      <button *ngIf="selectedMember && !selectedMember.isModerator" type="button" class="btn btn-primary" (click)="onAddModerator()">Lisää moderaattoriksi</button>
+      <button *ngIf="selectedMember && selectedMember.isModerator === true" type="button" class="btn btn-danger" (click)="onRemoveModerator()">Poista moderaattori</button>
+      <button type="button" class="btn btn-primary" (click)="onReceiptPayment()">Kuittaa maksetuksi</button>
+      <button type="button" class="btn btn-primary cancel-button" (click)="onCloseModal()">Sulje</button>
+    </div>
+  </div>
+</app-group-modal>

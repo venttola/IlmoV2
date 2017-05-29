@@ -1,10 +1,12 @@
 import { Discount } from "./discount";
 
-export class Product {
+export class ProductInfo {
     id: number;
     name: string;
     price: number;
+}
 
+export class Product extends ProductInfo {
     selected: boolean;
 
     discounts: Discount[];

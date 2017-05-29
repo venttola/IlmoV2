@@ -18,6 +18,7 @@ import * as userRoutes from "./routes/user";
 import * as eventRoutes from "./routes/event";
 import * as groupRoutes from "./routes/group";
 import * as organizationRoutes from "./routes/organization";
+import { GroupService } from "./services/groupservice";
 
 class Server {
 	public app: express.Application;
@@ -32,6 +33,7 @@ class Server {
 	private eventService: EventService;
 	private organizationService: OrganizationService;
 	private authService: AuthService;
+	private groupService: GroupService;
 
 	constructor() {
 		let config = require("./config.json");
@@ -51,6 +53,8 @@ class Server {
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
 			this.authService = new AuthService(this.userService);
+			this.groupService = new GroupService(models.ParticipantGroup, this.userService);
+
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
 		}).catch((err: Error) => {
@@ -109,6 +113,7 @@ class Server {
 			new userRoutes.UserRoutes(
 				this.userService,
 				this.eventService,
+				this.groupService,
 				models.Product,
 				models.Discount,
 				models.ParticipantGroup,
@@ -169,24 +174,37 @@ class Server {
 		let groupRoute: groupRoutes.GroupRoutes =
 			new groupRoutes.GroupRoutes(
 				models.ParticipantGroup,
-				this.userService
+				models.Product,
+				models.Discount,
+				this.userService,
+				this.groupService
 			);
 
 		//router.post(this.API_PREFIX + "/group", groupRoute.addGroup);
 		router.get(this.API_PREFIX + "/group/:group", groupRoute.getParticipantGroup);
-		router.delete(this.API_PREFIX + "/group/:group/:username", groupRoute.removeMember);
+		//router.get(this.API_PREFIX + "/group/:group/:username/products", groupRoute.getMemberProducts);
+		router.get(this.API_PREFIX + "/group/:username/moderation", groupRoute.getModeratedGroups);
+
+		// Moderator routes
+		router.use(this.API_PREFIX + "/group/:group/moderator/*", groupRoute.checkModerator);
+		router.get(this.API_PREFIX + "/group/:group/moderator/members", groupRoute.getGroupMembers);
+		router.get(this.API_PREFIX + "/group/:group/moderator/userpayment/:member", groupRoute.getMemberPayments);
+		router.delete(this.API_PREFIX + "/group/:group/moderator/:member", groupRoute.removeMember);
+		router.post(this.API_PREFIX + "/group/:group/moderator/userpayment", groupRoute.receiptPayment);
 		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
-		router.delete(this.API_PREFIX + "/group/:group/:username/moderator", groupRoute.removeModerator);
-		router.get(this.API_PREFIX + "/group/:group/:username/products", groupRoute.getMemberProducts);
+		router.delete(this.API_PREFIX + "/group/:group/moderator/:member/moderator", groupRoute.removeModerator);
+
+		console.log("Group routes set");
 	}
+
 	private setOrganizationRoutes(router: express.Router) {
 		let models = this.handler.getModels();
 
 		let organizationRoute: organizationRoutes.OrganizationRoutes =
 			new organizationRoutes.OrganizationRoutes(
-					this.userService,
-					models.Organization
-				);
+				this.userService,
+				models.Organization
+			);
 		router.get(this.API_PREFIX + "/organizations", organizationRoute.getOrganizations);
 		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
 		router.post(this.API_PREFIX + "/organizations/:organization/members", organizationRoute.addOrganizationMembers);

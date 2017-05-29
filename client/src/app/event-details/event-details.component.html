@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <ul *ngIf="selectedPlatoon" class="participantgroup-list">
+  <ul *ngIf="selectedPlatoon" class="common-list">
     <li *ngFor="let g of showableGroups">
       <div class="group-item unselectable clickable" [routerLink]="['/events', eventDetails?.event.id, 'group', g.id]"><a class="group-link">{{ g.name }}</a></div>
     </li>

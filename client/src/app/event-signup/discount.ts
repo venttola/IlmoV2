@@ -1,8 +1,10 @@
-export class Discount {
+export class DiscountInfo {
     id: number;
     name: string;
     amount: number;
+}
 
+export class Discount extends DiscountInfo {
     selected: boolean = false;
 
     static fromJSON(json: any): Discount {

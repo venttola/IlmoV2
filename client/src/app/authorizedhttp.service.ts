@@ -11,10 +11,12 @@ export class AuthorizedHttpService {
 		this.headers.append('Authorization', 'Bearer ' + localStorage.getItem("id_token"));
 		this.urlBase = "http://localhost:8080/api/";
 	}
+	
 	protected extractData(res: Response){
 		let body = res.json();
 		return body || {};
 	}
+
 	protected handleError(error: any): Promise<any> {
 		console.error("An error occurred", error);
 		return Promise.reject(error.message || error);

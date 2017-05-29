@@ -216,36 +216,36 @@ module Route {
         }
         //TODO apidoc
         public openRegisteration = (req: express.Request, res: express.Response) => {
-             let eventId = req.params.event;
+            let eventId = req.params.event;
 
             this.getEvent(eventId).then((event: any) => {
-               event.registerationOpen = true;
-                    event.save(function (err: Error) {
-                        if (err) {
-                            let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-                            return res.status(500).send(err.message);
-                        } else {
-                            return res.status(200).json(JSON.stringify({"registerationOpen": event.registerationOpen}));
-                        }
-                    });
+                event.registerationOpen = true;
+                event.save(function (err: Error) {
+                    if (err) {
+                        let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                        return res.status(500).send(err.message);
+                    } else {
+                        return res.status(200).json(JSON.stringify({ "registerationOpen": event.registerationOpen }));
+                    }
+                });
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
         }
-         //TODO apidoc
+        //TODO apidoc
         public closeRegisteration = (req: express.Request, res: express.Response) => {
-             let eventId = req.params.event;
+            let eventId = req.params.event;
 
             this.getEvent(eventId).then((event: any) => {
-               event.registerationOpen = false;
-                    event.save(function (err: Error) {
-                        if (err) {
-                            let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-                            return res.status(500).send(err.message);
-                        } else {
-                            return res.status(200).json(JSON.stringify({"registerationOpen": event.registerationOpen}));
-                        }
-                    });
+                event.registerationOpen = false;
+                event.save(function (err: Error) {
+                    if (err) {
+                        let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                        return res.status(500).send(err.message);
+                    } else {
+                        return res.status(200).json(JSON.stringify({ "registerationOpen": event.registerationOpen }));
+                    }
+                });
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
@@ -265,37 +265,67 @@ module Route {
         * @apiError DatabaseUpdateError ERROR: Event update failed
         */
         public addParticipantGroup = (req: express.Request, res: express.Response) => {
-            console.log(req.body);
-
             let eventId = req.params.event;
-            let platoonId = req.body.platoonId;
+            let newGroup = req.body.group;
+            let platoonId = newGroup.platoonId;
+            let moderator = req.body.moderator;
             let self = this;
 
             this.getEvent(eventId).then((event: any) => {
                 event.getPlatoons(function (err: Error, platoons: Array<any>) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
+                        return res.status(500).send(errorMsg);
+                    }
+
                     let values = platoons.filter(p => p.id === platoonId);
                     let platoon = values.length > 0 ? values[0] : null;
 
                     if (platoon) {
+
+                        // Create new participant group
                         self.participantGroupModel.create({
-                            name: req.body.name,
-                            description: req.body.description !== undefined ? req.body.description : ""
-                        }, function (err: Error, group: any) {
+                            name: newGroup.name,
+                            description: newGroup.description !== undefined ? newGroup.description : ""
+                        }, (err: Error, group: any) => {
+
+                            // Add new group to platoon
                             platoon.addParticipantGroups(group, function (err: Error) {
-                                if (err != null) {
+                                if (err) {
                                     return res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE));
                                 } else {
+
+                                    // Create a group payment model
                                     self.groupPaymentModel.create({
                                         paidOn: null
                                     }, function (err: Error, payment: any) {
                                         if (err != null) {
                                             return res.status(500).send(ErrorHandler.getErrorMsg("GroupPayment", ErrorType.DATABASE_UPDATE));
                                         } else {
-                                            console.log(payment);
+
+                                            // Set the group to be the payee
                                             payment.setPayee(group, function (err: Error) {
-                                                return err != null
-                                                    ? res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE))
-                                                    : res.status(200).json(group);
+                                                if (err) {
+                                                    return res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE));
+                                                } else {
+
+                                                    // Set the creator user to be the initial moderator of the group
+                                                    self.userService.getUser(moderator).then((user: any) => {
+                                                        if (!user) {
+                                                            return res.status(500).send(ErrorHandler.getErrorMsg("User", ErrorType.NOT_FOUND));
+                                                        } else {
+                                                            group.addModerator(user, (err: Error) => {
+                                                                console.log("Set " + user.email + " to be moderator of group " + group.name);
+                                                                return err != null
+                                                                    ? res.status(500)
+                                                                        .send(ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_UPDATE))
+                                                                    : res.status(200).json(group);
+                                                            });
+                                                        }
+                                                    }).catch((err: APIError) => {
+                                                        return res.status(err.statusCode).send(err.message);
+                                                    });
+                                                }
                                             });
                                         }
                                     });

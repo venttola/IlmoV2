@@ -32,7 +32,6 @@ export class DatabaseHandler {
 	public syncDbModels() {
 			console.log("Retry with the database");
 			return new Promise((resolve: any, reject: any) => {
-				console.log("boero aeasd");
 				this.connectToDb().then((db: any) => {
 					console.log("Starting sync");
 					Models.defineModels(db);
@@ -67,8 +66,7 @@ export class DatabaseHandler {
 		console.log("Updating references");
 		db.models.Discount.hasOne("product", db.models.Product, {}, { reverse: "discounts" });
 
-		db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
-		db.models.ParticipantGroup.hasMany("groupModerator", db.models.User);
+		//db.models.ParticipantGroup.hasMany("members", db.models.User, {}, { reverse: "memberships" });
 
 		db.models.Platoon.hasMany("participantGroups", db.models.ParticipantGroup, {}, { autoFetch: true, reverse: "platoon" });
 
