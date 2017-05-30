@@ -10,11 +10,13 @@
 	</div>
 </section>
 
+<privacy-policy-modal #policymodal></privacy-policy-modal>
+
 <footer id="footer-main">
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-6">
-				Ilmoportaali by Jukka-Pekka Venttola &amp; Lauri Laaksonen <a href=""> Rekisteriseloste</a>
+				Ilmoportaali by Jukka-Pekka Venttola &amp; Lauri Laaksonen <button class="btn btn-link btn-inverse btn-sm my-2 my-lg-0" type="button" (click)="policymodal.show()">Rekisteriseloste</button>
 			</div>
 		</div>
 	</div>

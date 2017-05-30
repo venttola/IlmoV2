@@ -1,0 +1,20 @@
+.modal {
+  background: rgba(0,0,0,0.6);
+}
+
+
+.modal-dialog {
+    color: black;
+    margin-top: 10%;
+    max-height: 50%;
+}
+
+@media(min-width: 576px) {
+  .modal-dialog {
+    max-width: 650px;
+  }  
+}
+.modal-content {
+  height: calc(100vh - 250px);
+  overflow:auto;
+}

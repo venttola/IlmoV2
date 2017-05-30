@@ -36,6 +36,8 @@ import { GroupModerationComponent } from './group-moderation/group-moderation.co
 import { GroupModerationService } from "./group-moderation/group-moderation.service";
 import { GroupPageComponent } from './group-moderation/group-page/group-page.component';
 
+import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-policy-modal.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,6 +52,7 @@ import { GroupPageComponent } from './group-moderation/group-page/group-page.com
     EventSignupListingComponent,
     GroupModerationComponent,
     GroupPageComponent,
+    PrivacyPolicyModalComponent
   ],
   imports: [
     BrowserModule,

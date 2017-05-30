@@ -1,0 +1,98 @@
+<div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'in': visibleAnimate}" [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h1> Rekisteriseloste </h1>
+     </div>
+     <div class="modal-body">
+      <div class="container-fluid">
+        <p>Tämä on Henkilötietolain 2. luvun 10 § mukainen rekisteriseloste Suomen pehmomiekkailutapahtumien ilmoittautumisjärjestelmää Ilmoportaalia. </p>
+        <table class="table table sm">
+          <thead>
+            <tr> 
+              <th>Päivityspäivämäärä</th>    
+              <th>Päivityksen tekijä</th>
+              <th>Päivityksen sisältö</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th> 29. toukokuuta 2017</th>
+              <th>Jukka-Pekka Venttola</th>
+              <th>Rekisteriseloste laadittu</th>
+            </tr>
+          </tbody>
+        </table>
+        <h3>1. Rekisterinpitäjä</h3>
+
+        Rekisterinpitäjä on Sotahuuto-yhdistys ry (yhdrek. nro. 196.178, sähköposti hallitus@sotahuuto.fi).
+        2. Rekisterinpitäjän yhteyshenkilö
+
+        Rekisterinpitäjän yhteyshenkilö on Jukka-Pekka Venttola (sähköposti yllapito@sotahuuto.fi).
+        <h3>3. Rekisterin nimi</h3>
+
+        Tämä rekisteriseloste käsittelee suomalaisen pehmomiekkailuharrastuksen ilmoittautumisjärjestelmä Ilmoportaalin käyttäjärekisteriä.
+        <h3>4. Henkilötietojen käsittelyn tarkoitus</h3>
+
+        Henkilötietojen käsittelyn tarkoitus on tapahtumailmoittautumisien ja osallistumistietojen hallinta järjestelmää käyttävissä tapahtumissa.
+
+        Järjestelmää käyttävä tapahtuma voi olla rekisterinpitäjän tai kolmannen osapuolen järjestämä. Jos järjestäjänä on kolmas osapuoli, tämä on mainittu järjestelmän näkymien alatunnisteessa.
+
+        <h3>5. Rekisteriin tallennettavat tiedot</h3>
+
+        Rekisteriin tallennetaan seuraavat yksilöinti- ja yhteystiedot tai osa niistä (säilytysaika 2 vuotta):
+
+        sukunimi
+        ensimmäinen etunimi
+        salasanan kryptografinen tarkiste
+        syntymäaika
+        sähköpostiosoite
+        puhelinnumero
+
+        Kun rekisteröidyn tietoja käsitellään sellaisen tapahtuman yhteydessä, jossa tarjotaan ruokailumahdollisuus, rekisteriin voidaan rekisteröidyn nimenomaisella ilmoituksella tallentaa seuraavat terveydentilaa käsittelevät tiedot, jotka tuhotaan välittömästi kun niiden tarve on poistunut:
+
+        erikoisruokavalio
+
+        Rekisteriin voidaan tallentaa seuraavia tietoja rekisteröidyn asioinnista järjestelmää käyttävän tapahtuman kanssa:
+
+        rekisteröidyn osallistumiset tapahtumiin (säilytysaika 7 vuotta)
+
+        Lisäksi web-palvelinohjelmisto kerää normaaleja lokitietoja sisältäen mm.
+
+        käytön päivämäärän ja kellonajan,
+        käytetyn selaimen,
+        järjestelmän näkymät joissa on vierailtu, sekä
+        IP-osoitteen
+
+        Järjestelmässä ei käsitellä henkilötunnuksia eikä maksukortin numeroita.
+        <h3>6. Säännönmukaiset tietojen lähteet</h3>
+
+        Rekisterin tiedot ovat peräisin
+
+        rekisteröidyltä itseltään,
+        osallistujaryhmän vastuulliselta ryhmänjohtajalta, tai
+        järjestelmää käyttävän tapahtuman toimihenkilöltä (esim. työvuorot)
+
+        Rekisteröinnin perusteita ovat Henkilötietolain 2. luvun 8 § 1. momentin
+
+        kohdan 5 mukainen asiakassuhde (tapahtumien osallistumiset).
+
+        <h3>7. Säännönmukaiset tiedon luovutukset</h3>
+
+        Kun järjestelmää käyttävä tapahtuma on kolmannen osapuolen järjestämä, rekisteröidyn tiedot kyseisen tapahtuman osalta voidaan kokonaisuudessaan luovuttaa tapahtuman järjestäjälle.
+
+        <h3>8. Tietojen siirto Euroopan unionin tai Euroopan talousalueen ulkopuolelle</h3>
+
+        Rekisteri sijaitsee Suomessa. Rekisterin tietoja ei luovuteta Euroopan unionin tai Euroopan talousalueen ulkopuolelle.
+
+        <h3>9. Rekisterin suojauksen periaatteet</h3>
+
+        Rekisterin tiedot on suojattu teknisin turvakeinoin (mm. käyttäjäkohtaiset pääsyoikeudet, salasanan kryptografinen tarkiste sekä tiedonsiirron salaus) ja sijaitsee lukitussa tilassa.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" (click)="hide()">Sulje</button>
+    </div>
+  </div>
+</div>
+</div>
