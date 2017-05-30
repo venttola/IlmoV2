@@ -26,8 +26,9 @@ export class UserSettingsComponent implements OnInit {
 	ngOnInit() {
 		this.userData = new UserData;
 		this.credentialUpdate = new CredentialUpdate;
-		this.userDataService.getUserData().subscribe(userData => this.userData = userData,
+		this.userDataService.getUserData().subscribe(userData => {this.userData = userData; console.log(JSON.stringify(this.userData));},
 			error => this.error = <any>error);
+		
 	}
 	updateInformation(): void{
 		this.errorMessage = "";

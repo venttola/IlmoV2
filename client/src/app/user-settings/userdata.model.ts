@@ -13,7 +13,9 @@ export class UserData {
 		this.dob = "";
 		this.allergies = "";
 	}
-	public passwordPresent(): boolean{
-		return this.password !=="";
+	static fromJSON(json: any): UserData {
+		let data = Object.create(UserData.prototype);
+		Object.assign(data, json);
+		return data;
 	}
 }

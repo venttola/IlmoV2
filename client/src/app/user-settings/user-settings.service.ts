@@ -19,13 +19,15 @@ export class UserSettingsService extends AuthorizedHttpService {
 	}
 	getUserData(): Observable<UserData>{
 		console.log(this.usersUrl + localStorage.getItem("user"));
-		let response: any = this.http.get(this.usersUrl + localStorage.getItem("user"), { headers: this.headers }).map(this.extractData).catch(this.handleError);
-		return (response);
+		return this.http.get(this.usersUrl + localStorage.getItem("user"), { headers: this.headers }).
+		map(this.extractData).
+		catch(this.handleError);
+		
 	}
 	updateUserData(data: UserData): Observable<any> {
 		console.log(this.usersUrl + localStorage.getItem("user") + "/detail");
-		return this.http.patch(this.usersUrl + localStorage.getItem("user") + "/detail",
-							   JSON.stringify(data),
+		return this.http.patch(this.usersUrl + localStorage.getItem("user") + "/detail", 
+			 				   JSON.stringify(data),
 							   {headers:this.headers}).map(this.extractData).catch(this.handleError); 
 
 	}
