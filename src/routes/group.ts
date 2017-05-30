@@ -281,7 +281,7 @@ module Route {
         // TODO: ApiDocs
         // TODO: Error checking
         public getMemberPayments = (req: express.Request, res: express.Response) => {
-            let groupId = req.params.group;
+            let groupId = +req.params.group;
             let memberId: number = +req.params.member;
 
             this.groupService.getParticipantGroupMembers(groupId).then((members: any) => {
@@ -293,7 +293,8 @@ module Route {
                         reject(new APIError(404, msg));
                     } else {
                         member.getUserPayments((err: Error, userPayments: any) => {
-                            return err ? reject(err) : resolve(userPayments);
+                            console.log(userPayments);
+                            return err ? reject(err) : resolve(userPayments.filter((p: any) => p.payment[0].payee_id === groupId));
                         });
                     }
                 });
