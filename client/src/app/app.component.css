@@ -25,6 +25,6 @@
 
 }
 
-:host /deep/ form {
-	width: 50%;
+:host /deep/ input {
+	max-width: 50%;
 }
