@@ -5,7 +5,7 @@
 	<a class="navbar-brand" routerLink="" routerLinkActive="active">Ilmoportaali</a>
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
-			<li  class="nav-item">
+			<li  class="nav-item" *ngIf="isLoggedIn()">
 				<a class="nav-link" routerLink="main">Tapahtumat </a>
 			</li>
 			<li class="nav-item" *ngIf="isLoggedIn()">
