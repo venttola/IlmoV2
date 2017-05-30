@@ -12,9 +12,12 @@ import { UserSettingsService } from "./user-settings.service";
 export class UserSettingsComponent implements OnInit {
 	@Input() userData: UserData;
 	@Input() credentialUpdate: CredentialUpdate;
+	errorMessage: string;
 	reponse: any;
 	error: any;
-	constructor(private userDataService: UserSettingsService ) { }
+	constructor(private userDataService: UserSettingsService ) { 
+		this.errorMessage = "";
+	}
 
 	ngOnInit() {
 		this.userData = new UserData;
@@ -23,17 +26,31 @@ export class UserSettingsComponent implements OnInit {
 			error => this.error = <any>error);
 	}
 	updateInformation(): void{
-		this.userDataService.updateUserData(this.userData).subscribe(response => console.log(response), error => this.error = <any>error);
+		this.userDataService.updateUserData(this.userData).
+		subscribe(response => {console.log(response)}, 
+			error => {
+				this.error = <any>error;
+				this.setErrorMessage(error.status);
+			});
 	}
 	updatePassword(): void{
-		if (this.credentialUpdate.checkPasswordMatching()){
-			this.userDataService.updatePassword(this.credentialUpdate).subscribe(response => console.log(response), error => this.error = <any>error);
-			alert("ok");
-		}
-		else{
-			alert("Salasanat eivät täsmää");
-		}
+		this.userDataService.updatePassword(this.credentialUpdate).
+		subscribe(response => {
+			console.log(response)}, 
+			error => {
+				this.error = <any>error;
+				this.setErrorMessage(error.status);
+			});
 
+	}
+	private setErrorMessage(statusCode: number){
+		if (statusCode == 403){
+			this.errorMessage = "Virheellinen salasana.";
+		} else if (statusCode == 404) {
+			this.errorMessage = "Käyttäjää ei löytynyt.";
+		} else {
+			this.errorMessage = "Tuntematon virhe.";
+		}
 	}
 
 }

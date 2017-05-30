@@ -16,7 +16,7 @@ export class CredentialUpdate {
 		       this.reNewPassword ==="";
 	}
 
-	public checkPasswordMatching(): boolean{
+	public passwordsMatching(): boolean{
 		return  this.newPassword !=="" && 
 				this.reNewPassword !=="" && 
 				this.newPassword === this.reNewPassword;
