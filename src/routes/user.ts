@@ -137,13 +137,12 @@ module Route {
 						});
 					} else {
 						console.log("Userdata update failed", err);
-						return res.status(500).send("User details update failed");
+						return res.status(403).send("User details update failed");
 					}
 				}).catch((err: APIError) => {
 					return res.status(err.statusCode).send(err.message);
 				});
-			})
-				.catch((err: APIError) => {
+			}).catch((err: APIError) => {
 					return res.status(err.statusCode).send(err.message);
 				});
 		}
