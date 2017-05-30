@@ -8,10 +8,11 @@
 	<div class="form-group">
 		<input type="password" class="form-control" placeholder="Salasana" id="password" required [(ngModel)]="credentials.password" name="password"/>
 	</div>
-	<button type="submit" class="btn btn-primary btn-lg">Kirjaudu sisään</button>
 	<div id="errorbox" [hidden]="!errorMessage" class="alert alert-danger" >
 		{{errorMessage}}
 	</div>
+	<button type="submit" class="btn btn-primary btn-lg">Kirjaudu sisään</button>
+	
 
 </form>
 	
