@@ -37,10 +37,13 @@
         </div>               
     </div>
     <button type="submit" class="btn btn-success" [disabled]="!userdataForm.form.valid">Muuta tietoja</button>
-</form>
-<div [hidden]="!errorMessage || !userdataForm.valid" class="alert alert-danger">
+    <div [hidden]="!errorMessage || !userdataForm.submitted" class="alert alert-danger">
         {{errorMessage}}
     </div>
+</form>
+<div [hidden]="!userDataUpdateMessage" class="alert alert-success">
+    {{userDataUpdateMessage}}
+</div>
 
 <form class="pt-5" (ngSubmit)="updatePassword()" #passwordForm="ngForm">
     <h4 class="pb-2">Vaihda salasana </h4>
@@ -65,9 +68,12 @@
     <div [hidden]="credentialUpdate.passwordsMatching() || reNewPassword.pristine"
     class="alert alert-danger">
     Salasanat eivät täsmää!
-    </div>
-    <div [hidden]="!errorMessage || !passwordForm.valid" class="alert alert-danger">
-        {{errorMessage}}
-    </div>
-    <button type="submit" class="btn btn-success" [disabled]=" !passwordForm.form.valid || credentialUpdate.allPresent()">Vaihda</button>
+</div>
+<div [hidden]="!errorMessage || !passwordForm.submitted" class="alert alert-danger">
+    {{errorMessage}}
+</div>
+<button type="submit" class="btn btn-success" [disabled]=" !passwordForm.form.valid || credentialUpdate.allPresent()">Vaihda</button>
 </form>
+<div [hidden]="!credentialUpdateMessage" class="alert alert-success">
+    {{credentialUpdateMessage}}
+</div>

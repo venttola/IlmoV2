@@ -12,11 +12,15 @@ import { UserSettingsService } from "./user-settings.service";
 export class UserSettingsComponent implements OnInit {
 	@Input() userData: UserData;
 	@Input() credentialUpdate: CredentialUpdate;
+	userDataUpdateMessage: string;
+	credentialUpdateMessage: string;
 	errorMessage: string;
 	reponse: any;
 	error: any;
 	constructor(private userDataService: UserSettingsService ) { 
 		this.errorMessage = "";
+		this.userDataUpdateMessage = "";
+		this.credentialUpdateMessage = "";
 	}
 
 	ngOnInit() {
@@ -26,24 +30,37 @@ export class UserSettingsComponent implements OnInit {
 			error => this.error = <any>error);
 	}
 	updateInformation(): void{
+		this.errorMessage = "";
+		this.userDataUpdateMessage = "";
 		this.userDataService.updateUserData(this.userData).
-		subscribe(response => {console.log(response)}, 
-			error => {
-				this.error = <any>error;
-				this.setErrorMessage(error.status);
-			});
+		subscribe(response => {
+			console.log(response);
+			this.userDataUpdateMessage = "Käyttäjätietojen päivitys onnistui.";
+			this.errorMessage = "";
+
+		}, 
+		error => {
+			this.error = <any>error;
+			this.setErrorMessage(error.status);
+		});
 	}
 	updatePassword(): void{
+		this.errorMessage = "";
+		this.credentialUpdateMessage = "";
 		this.userDataService.updatePassword(this.credentialUpdate).
 		subscribe(response => {
-			console.log(response)}, 
-			error => {
-				this.error = <any>error;
-				this.setErrorMessage(error.status);
-			});
+			console.log(response)
+			this.credentialUpdateMessage = "Salasanan vaihto onnistui.";
+
+		}, 
+		error => {
+			this.error = <any>error;
+			this.setErrorMessage(error.status);
+		});
 
 	}
 	private setErrorMessage(statusCode: number){
+		console.log("Status: " + statusCode);
 		if (statusCode == 403){
 			this.errorMessage = "Virheellinen salasana.";
 		} else if (statusCode == 404) {
