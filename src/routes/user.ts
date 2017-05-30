@@ -242,7 +242,7 @@ module Route {
 
 		// TODO: apiDocs
 		public signup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			let groupId = req.body.groupId;
+			let groupId = +req.body.groupId;
 			let products = req.body.products;
 			let productIds = products.map((p: any) => p[0]);
 			let discountIds = products.map((p: any) => p[1]);
@@ -263,7 +263,7 @@ module Route {
 						let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
 						return res.status(500).send(errorMsg);
 					} else {
-						let firstOpenPayment = payments.find((p: any) => !p.isPaid);
+						let firstOpenPayment = payments.filter((p: any) => p.payment[0].payee_id === groupId).find((p: any) => p.isPaid === false);
 
 						// If there's open payments, add products to that one
 						if (firstOpenPayment) {
