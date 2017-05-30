@@ -61,17 +61,17 @@ module Route {
 									if (!err) {
 										return res.status(204).send();
 									} else {
-										return res.status(500).send("Password update failed");
+										return res.status(500).send("Error: Credential update failed");
 									}
 								});
 							} else {
 								console.log("Hash calculation failed", err);
-								return res.status(500).send("Hash calculation failed");
+								return res.status(500).send("Error: Credential update failed");
 							}
 						});
 					} else {
 						console.log("Credential update failed", err);
-						return res.status(500).send("Credential update failed");
+						return res.status(403).send("Error: Invalid password");
 					}
 				});
 			})
