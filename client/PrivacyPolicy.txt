@@ -1,0 +1,72 @@
+Rekisteriseloste 
+
+Tämä on Henkilötietolain 2. luvun 10 § mukainen rekisteriseloste Suomen pehmomiekkailutapahtumien ilmoittautumisjärjestelmää Ilmoportaalia.
+Päivityspäivämäärä	Päivityksen tekijä	Päivityksen sisältö
+29. toukokuuta 2017	Jukka-Pekka Venttola	Rekisteriseloste laadittu
+1. Rekisterinpitäjä
+
+Rekisterinpitäjä on Sotahuuto-yhdistys ry (yhdrek. nro. 196.178, sähköposti hallitus@sotahuuto.fi).
+2. Rekisterinpitäjän yhteyshenkilö
+
+Rekisterinpitäjän yhteyshenkilö on Jukka-Pekka Venttola (sähköposti yllapito@sotahuuto.fi).
+3. Rekisterin nimi
+
+Tämä rekisteriseloste käsittelee suomalaisen pehmomiekkailuharrastuksen ilmoittautumisjärjestelmä Ilmoportaalin käyttäjärekisteriä.
+4. Henkilötietojen käsittelyn tarkoitus
+
+Henkilötietojen käsittelyn tarkoitus on tapahtumailmoittautumisien ja osallistumistietojen hallinta järjestelmää käyttävissä tapahtumissa.
+
+Järjestelmää käyttävä tapahtuma voi olla rekisterinpitäjän tai kolmannen osapuolen järjestämä. Jos järjestäjänä on kolmas osapuoli, tämä on mainittu järjestelmän näkymien alatunnisteessa.
+
+5. Rekisteriin tallennettavat tiedot
+
+Rekisteriin tallennetaan seuraavat yksilöinti- ja yhteystiedot tai osa niistä (säilytysaika 2 vuotta):
+
+    sukunimi
+    ensimmäinen etunimi
+    salasanan kryptografinen tarkiste
+    syntymäaika
+    sähköpostiosoite
+    puhelinnumero
+
+Kun rekisteröidyn tietoja käsitellään sellaisen tapahtuman yhteydessä, jossa tarjotaan ruokailumahdollisuus, rekisteriin voidaan rekisteröidyn nimenomaisella ilmoituksella tallentaa seuraavat terveydentilaa käsittelevät tiedot, jotka tuhotaan välittömästi kun niiden tarve on poistunut:
+
+    erikoisruokavalio
+
+Rekisteriin voidaan tallentaa seuraavia tietoja rekisteröidyn asioinnista järjestelmää käyttävän tapahtuman kanssa:
+
+    rekisteröidyn osallistumiset tapahtumiin (säilytysaika 7 vuotta)
+
+Lisäksi web-palvelinohjelmisto kerää normaaleja lokitietoja sisältäen mm.
+
+    käytön päivämäärän ja kellonajan,
+    käytetyn selaimen,
+    järjestelmän näkymät joissa on vierailtu, sekä
+    IP-osoitteen
+
+Järjestelmässä ei käsitellä henkilötunnuksia eikä maksukortin numeroita.
+6. Säännönmukaiset tietojen lähteet
+
+Rekisterin tiedot ovat peräisin
+
+    rekisteröidyltä itseltään,
+    osallistujaryhmän vastuulliselta ryhmänjohtajalta, tai
+    järjestelmää käyttävän tapahtuman toimihenkilöltä (esim. työvuorot)
+
+Rekisteröinnin perusteita ovat Henkilötietolain 2. luvun 8 § 1. momentin
+
+    kohdan 5 mukainen asiakassuhde (tapahtumien osallistumiset).
+
+7. Säännönmukaiset tiedon luovutukset
+
+Kun järjestelmää käyttävä tapahtuma on kolmannen osapuolen järjestämä, rekisteröidyn tiedot kyseisen tapahtuman osalta voidaan kokonaisuudessaan luovuttaa tapahtuman järjestäjälle.
+
+8. Tietojen siirto Euroopan unionin tai Euroopan talousalueen ulkopuolelle
+
+Rekisteri sijaitsee Suomessa. Rekisterin tietoja ei luovuteta Euroopan unionin tai Euroopan talousalueen ulkopuolelle.
+
+9. Rekisterin suojauksen periaatteet
+
+Rekisterin tiedot on suojattu teknisin turvakeinoin (mm. käyttäjäkohtaiset pääsyoikeudet, salasanan kryptografinen tarkiste sekä tiedonsiirron salaus) ja sijaitsee lukitussa tilassa.
+
+
