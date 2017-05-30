@@ -141,7 +141,8 @@ module Route {
                                     // It's not a final one, but it's good to let the user know something went wrong.
                                     return res.status(500).send("Failed to add user:" + err);
                                 } else {
-                                    return res.status(201).send("User added!");
+                                    let response = JSON.stringify({"id": result.id, "email": result.email});
+                                    return res.status(201).json(response);
                                 }
                             });
                         }
