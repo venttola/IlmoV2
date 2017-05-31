@@ -1,17 +1,19 @@
+
+<h1>Tulevat tapahtumat</h1>
 <div class="row" >
 	<div class="col-sm-6">
 		<div class="card-group">
 			<div class="card" id="eventCard" *ngFor= "let event of events">
 				<h5 class="card-title"><b>{{event.name}}</b></h5> 
-				<h6 class="card-subtitle">{{event.startDate | date}} - {{event.endDate | date}} </h6>
+				<h6 class="card-subtitle">{{event.startDate | date:"dd.MM.yyyy" }} - {{event.endDate | date:"dd.MM.yyyy"}} </h6>
 				<p class="card-text"> {{event.description}} </p>
 				<div *ngIf="event.registerationOpen">
-					<a [routerLink]="['/events', event.id]" class="text-success">Ilmoittautuminen auki</a>  
+					<a [routerLink]="['/events', event.id]" class="text-success">Ilmoittaudu tästä</a>  
 				</div>
-				<div *ngIf ="!event.registerationOpen"> 	
-					<p class="text-danger">Ilmoittautuminen kiinni </p>
+				<div *ngIf="!event.registerationOpen"> 	
+					<p class="text-danger">Ilmoittautuminen on sulkeutunut </p>
 				</div>
-				<div *ngIf ="authService.isAdmin()"> 	
+				<div *ngIf="authService.isAdmin()"> 	
 					<a [routerLink]="['/events', event.id, 'manage']" class="text-warning">Hallinnoi</a>
 				</div>
 			</div>

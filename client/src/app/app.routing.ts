@@ -33,9 +33,9 @@ const appRoutes: Routes = [
     component: SignupComponent
   },
   {
-  	path: "main",
-  	component: MainPageComponent,
-  	canActivate: [AuthGuard]
+  	path: "events",
+  	component: MainPageComponent
+ 
   },
   {
     path: "admin",
