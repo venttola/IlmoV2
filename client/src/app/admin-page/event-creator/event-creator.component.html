@@ -17,15 +17,15 @@
     <input type="text" class="form-control" placeholder="Lyhyt kuvaus tapahtumasta" id="description" [(ngModel)]="newEvent.description" name="description" required/>                  
 </div>
 <h5>Osapuolet</h5>
-<button class="btn btn-success" (click) ="addInputForPlatoon()">+</button>
-<button class="btn btn-success" (click) ="removeInputForPlatoon()">-</button>
+<button type="button" class="btn btn-success" (click) ="addInputForPlatoon()">+</button>
+<button type="button" class="btn btn-success" (click) ="removeInputForPlatoon()">-</button>
 <div *ngFor="let platoon of platoons; let i = index; trackBy: trackPlatoons" class="form-group">
     <label  for="platoon{{i}}">Osapuoli:</label>
     <input type="text" class="form-control" placeholder="Osapuoli" id="platoon{{i}}"  [(ngModel)]="platoon.name" name="platoon{{i}}" required/>
 </div>
 <h5>Tuotteet</h5>
-<button class="btn btn-success" (click) ="addInputForProduct()">+</button>
-<button class="btn btn-success" (click) ="removeInputForProduct()">-</button>
+<button type="button" class="btn btn-success" (click) ="addInputForProduct()">+</button>
+<button type="button" class="btn btn-success" (click) ="removeInputForProduct()">-</button>
 <div *ngFor="let product of products; let i = index; trackBy: trackProducts" class="form-group">
     <div class="input-group">
         <label  for="productName{{i}}">Tuote:</label>
