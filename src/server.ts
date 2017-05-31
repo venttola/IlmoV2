@@ -76,21 +76,10 @@ class Server {
 		// Define them before setting router to use jwt
 		this.setAuthRoutes(router);
 
-		router.use(jwt({
-			secret: this.SECRET,
-			credentialsRequired: true,
-			getToken: function fromHeaderOrQuerystring(req: any) {
-				if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer") {
-					return req.headers.authorization.split(" ")[1];
-				} else if (req.query && req.query.token) {
-					return req.query.token;
-				}
-				return null;
-			}
-		}));
+		
+		this.setEventRoutes(router);
 
 		this.setUserRoutes(router);
-		this.setEventRoutes(router);
 		this.setGroupRoutes(router);
 		this.setOrganizationRoutes(router);
 		this.app.use(bodyparser.json());
@@ -155,6 +144,7 @@ class Server {
 			);
 
 		router.get(this.API_PREFIX + "/events", eventRoute.getEvents);
+		router.use(this.checkAuth());
 		router.post(this.API_PREFIX + "/events", /*this.priviledgeChecker.checkAdmin,*/ eventRoute.addEvent);
 		router.get(this.API_PREFIX + "/events/:event/product", eventRoute.getEventProducts);
 		router.post(this.API_PREFIX + "/events/:event/product", eventRoute.addProduct);
@@ -208,6 +198,20 @@ class Server {
 		router.get(this.API_PREFIX + "/organizations", organizationRoute.getOrganizations);
 		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
 		router.post(this.API_PREFIX + "/organizations/:organization/members", organizationRoute.addOrganizationMembers);
+	}
+	private checkAuth(){
+		return jwt({
+			secret: this.SECRET,
+			credentialsRequired: true,
+			getToken: function fromHeaderOrQuerystring(req: any) {
+				if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer") {
+					return req.headers.authorization.split(" ")[1];
+				} else if (req.query && req.query.token) {
+					return req.query.token;
+				}
+				return null;
+			}
+		});
 	}
 }
 
