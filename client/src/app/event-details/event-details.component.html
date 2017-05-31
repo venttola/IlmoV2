@@ -1,22 +1,21 @@
-<div class="event-details">
+<div class="event-details container-fluid">
   <h1>{{ eventDetails?.event.name }}</h1>
-  <div class="dates">{{ eventDetails?.event.startDate | date }} - {{ eventDetails?.event.endDate | date }}</div>
+  <div class="dates">{{ eventDetails?.event.startDate | date:"dd.MM.yyyy" }} - {{ eventDetails?.event.endDate | date:"dd.MM.yyyy" }}</div>
 
   <div class="description">{{ eventDetails?.event.description }}</div>
-
-  <div class="platoons">
-    <div class="platoon clickable" *ngFor="let p of eventDetails?.platoonList" (click)="onSelectPlatoon(p)" [class.selected]="p == selectedPlatoon">
+  <h4>Klikkaa haluamasi ryhmän nimeä ilmoittautuaksesi tai luo uusi ryhmä.</h4> 
+  <div class="platoons row">
+    <div class="platoon clickable col" *ngFor="let p of eventDetails?.platoonList" (click)="onSelectPlatoon(p)" [class.selected]="p == selectedPlatoon">
       <span class="unselectable"><h4>{{ p.name }}</h4></span>
+
+      <ul class="common-list">
+        <li *ngFor="let g of groupsByPlatoon.get(p.id)">
+        <div class="group-item unselectable clickable" [routerLink]="['/events', eventDetails?.event.id, 'group', g.id]"><a class="group-link">{{ g.name }}</a></div>
+        </li>
+      </ul>
+      <button class="btn btn-primary create-group-button" (click)="onNewGroup(p)">Lisää uusi ryhmä</button>
     </div>
   </div>
-
-  <ul *ngIf="selectedPlatoon" class="common-list">
-    <li *ngFor="let g of showableGroups">
-      <div class="group-item unselectable clickable" [routerLink]="['/events', eventDetails?.event.id, 'group', g.id]"><a class="group-link">{{ g.name }}</a></div>
-    </li>
-  </ul>
-
-  <button class="btn btn-primary create-group-button" (click)="onNewGroup()" [hidden]="selectedPlatoon == null">Lisää uusi ryhmä</button>
 </div>
 
 <app-group-modal>

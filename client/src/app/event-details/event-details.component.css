@@ -3,8 +3,9 @@
 }
 
 .platoons {
-    margin: 0 auto;
+    margin: auto 0;
     margin-bottom: 3%;
+    width: 100%;
 }
 
 .dates {
@@ -20,13 +21,19 @@
     text-align: center;
     margin-left: 1%;
     margin-right: 1%;
-
-    padding: 1%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    padding: 2%;
 
     font-size: 20;
     background-color: #3E3C3C;
 }
 
+.create-group-button {
+    position: relative;
+    bottom: 0;
+
+}
 .create-group-button:hover {
     cursor: pointer;
     cursor: hand;

@@ -3,7 +3,7 @@ import { Product } from "../product";
 import { Discount } from "../discount";
 
 @Component({
-  selector: 'app-product-row',
+  selector: 'product-row',
   templateUrl: './product-row.component.html',
   styleUrls: ['./product-row.component.css']
 })

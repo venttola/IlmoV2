@@ -30,7 +30,8 @@ export class EventDetailsComponent implements OnInit {
   modal: GroupModalComponent;
 
   constructor(private route: ActivatedRoute,
-    private eventDetailsService: EventDetailsService, private eventService: EventService) {
+              private eventDetailsService: EventDetailsService, 
+              private eventService: EventService) {
   }
   ngOnInit() {
     this.route.params
@@ -47,7 +48,8 @@ export class EventDetailsComponent implements OnInit {
     this.showableGroups = this.groupsByPlatoon.get(p.id);
   }
 
-  onNewGroup() {
+  onNewGroup(p: Platoon) {
+    this.selectedPlatoon = p.id;
     this.group = new ParticipantGroup();
     this.modal.show();
   }

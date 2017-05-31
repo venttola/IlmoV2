@@ -32,6 +32,8 @@ export class EventSignupComponent implements OnInit {
   private products: Product[] = [];
 
   private signedUp: boolean = false;
+  private signupSuccessful: boolean;
+  private updateSuccessful: boolean;
 
   constructor(private route: ActivatedRoute,
     private eventSignupService: EventSignupService,
@@ -39,18 +41,19 @@ export class EventSignupComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
+    this.signupSuccessful = false;
     this.route.params
-      .switchMap((params: Params) => this.eventSignupService.getSignUpData(+params["groupId"], +params["eventId"]))
-      .subscribe((data: SignUpData) => {
-        this.signedUp = data.signedUp;
-        this.participantGroup = data.group;
-        this.products = data.eventProducts;
-      });
+    .switchMap((params: Params) => this.eventSignupService.getSignUpData(+params["groupId"], +params["eventId"]))
+    .subscribe((data: SignUpData) => {
+      this.signedUp = data.signedUp;
+      this.participantGroup = data.group;
+      this.products = data.eventProducts;
+    });
   }
 
-  onSubmit() {
+  addSignup() {
     let prods = this.products
-      .filter((p: Product) => p.selected === true);
+    .filter((p: Product) => p.selected === true);
 
     let prodIds = prods.map((p: Product) => {
       let discounts = p.discounts.filter((d: Discount) => d.selected === true);
@@ -59,9 +62,30 @@ export class EventSignupComponent implements OnInit {
       return [p.id, discountId];
     });
 
-    this.eventSignupService.saveSignup(this.participantGroup.id, prodIds).subscribe((res: any) =>
-      this.router.navigate(["signups"])
-    );
+    this.eventSignupService.saveSignup(this.participantGroup.id, prodIds).subscribe((res: any) =>{
+        console.log("SignupSuccesfull");
+        this.signupSuccessful = true;
+    }, err => {
+
+    });
+  }
+  updateSignup() {
+    let prods = this.products
+    .filter((p: Product) => p.selected === true);
+
+    let prodIds = prods.map((p: Product) => {
+      let discounts = p.discounts.filter((d: Discount) => d.selected === true);
+      let discountId: number = discounts && discounts.length > 0 ? discounts[0].id : null;
+
+      return [p.id, discountId];
+    });
+
+    this.eventSignupService.saveSignup(this.participantGroup.id, prodIds).subscribe((res: any) =>{
+        console.log("SignupSuccesfull");
+        this.updateSuccessful = true;
+    }, err => {
+
+    });
   }
 
   isSignedUp() {
@@ -70,6 +94,6 @@ export class EventSignupComponent implements OnInit {
 
   cancelSignUp() {
     this.eventSignupService.cancelSignup(this.participantGroup.id)
-      .subscribe((success: boolean) => this.router.navigate(["signups"]));
+    .subscribe((success: boolean) => this.router.navigate(["signups"]));
   }
 }

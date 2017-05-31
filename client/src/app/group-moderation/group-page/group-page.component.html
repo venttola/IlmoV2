@@ -62,8 +62,8 @@
   <div class="group-modal-footer">
     <div class="moderator-actions">
       <button type="button" class="btn btn-danger remove-member-button" (click)="onRemoveMember()">Poista ryhmästä</button>
-      <button *ngIf="selectedMember && !selectedMember.isModerator" type="button" class="btn btn-primary" (click)="onAddModerator()">Lisää moderaattoriksi</button>
-      <button *ngIf="selectedMember && selectedMember.isModerator === true" type="button" class="btn btn-danger" (click)="onRemoveModerator()">Poista moderaattori</button>
+      <button *ngIf="selectedMember && !selectedMember.isModerator" type="button" class="btn btn-primary" (click)="onAddModerator()">Lisää moderaattorioikeudet</button>
+      <button *ngIf="selectedMember && selectedMember.isModerator === true" type="button" class="btn btn-danger" (click)="onRemoveModerator()">Poista moderaattorioikeudet</button>
       <button type="button" class="btn btn-primary" (click)="onReceiptPayment()">Kuittaa maksetuksi</button>
       <button type="button" class="btn btn-primary cancel-button" (click)="onCloseModal()">Sulje</button>
     </div>

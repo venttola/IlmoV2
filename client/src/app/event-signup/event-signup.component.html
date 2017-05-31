@@ -1,9 +1,7 @@
 <div class="event-signup">
-  <h1>Ilmoittauminen</h1>
+  <h1>Ilmoittauminen ryhmään {{participantGroup?.name}}</h1>
 
   <div class="participantgroup-section">
-    <h4>Ryhmä</h4>
-    <div>{{participantGroup?.name}}</div>
     <div class="group-description">
       {{participantGroup?.description}}
     </div>
@@ -13,16 +11,18 @@
     <h4>Tuotteet</h4>
     <ul class="product-list">
       <li *ngFor="let p of products">
-        <app-product-row [product]="p"></app-product-row>
+        <product-row [product]="p"></product-row>
       </li>
     </ul>
   </div>
 
   <div class="actions">
-    <button *ngIf="!isSignedUp()" type="button" class="btn btn-primary" (click)="onSubmit()">Ilmottaudu</button>
+    <button *ngIf="!isSignedUp()" type="button" class="btn btn-primary" (click)="addSignup()">Ilmoittaudu</button>
     <div *ngIf="isSignedUp()">
-      <button type="button" class="btn btn-primary" (click)="onSubmit()">Päivitä tiedot</button>
+      <button type="button" class="btn btn-primary" (click)="updateSignup()">Päivitä tiedot</button>
       <button type="button" class="btn btn-danger" (click)="cancelSignUp()">Peru ilmottautuminen</button>
     </div>
   </div>
+  <div [hidden]="!signupSuccessful" class="alert alert-success">Ilmoittautuminen onnistui!  Siirry <a routerLink="/signups">tästä</a> tarkastelemaan ilmoittautumisiasi. </div>
+    <div [hidden]="!updateSuccessful" class="alert alert-success">Tietojen muuttaminen onnistui  Siirry <a routerLink="/signups">tästä</a> tarkastelemaan ilmoittautumisiasi. </div>
 </div>
