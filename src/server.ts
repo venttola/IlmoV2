@@ -76,7 +76,6 @@ class Server {
 		// Define them before setting router to use jwt
 		this.setAuthRoutes(router);
 
-		
 		this.setEventRoutes(router);
 
 		this.setUserRoutes(router);
@@ -199,7 +198,7 @@ class Server {
 		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
 		router.post(this.API_PREFIX + "/organizations/:organization/members", organizationRoute.addOrganizationMembers);
 	}
-	private checkAuth(){
+	private checkAuth() {
 		return jwt({
 			secret: this.SECRET,
 			credentialsRequired: true,
