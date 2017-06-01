@@ -2,7 +2,9 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 
 module Service {
     export class GroupService {
-        constructor(private groupModel: any, private userService: any) { }
+        constructor(private groupModel: any,
+                    private nonregisteredParticipantModel: any,
+                    private userService: any) { }
 
         public getGroup = (groupId: number) => {
             return new Promise((resolve, reject) => {
@@ -62,6 +64,31 @@ module Service {
 
                                 resolve(uniquePayees);
                             });
+                        });
+                    });
+            });
+        }
+
+        public getNonregisteredParticipants = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getParticipantGroupPayment(groupId)
+                    .then((groupPayment: any) => new Promise((resolve, reject) => {
+                        groupPayment[0].getNonregisteredPariticipantPayments((err: Error, nonRegisteredParticipantPayments: any) => {
+                            err ? reject(err) : resolve(nonRegisteredParticipantPayments);
+                        });
+                    })).then((nonRegisteredParticipantPayments: any[]) => {
+                        let promises = nonRegisteredParticipantPayments.map((up: any) => {
+                            return new Promise((resolve, reject) => {
+                                up.getPayee((err: Error, payeeParticipant: any) => resolve(payeeParticipant[0]));
+                            });
+                        });
+
+                        Promise.all(promises).then((payees: any) => {
+                            // Get only unique users, there can be multiple userpayments per user
+                            let uniquePayees = payees.filter((value: any, index: any, self: any) => {
+                                return self.indexOf(value) === index;
+                            });
+                            resolve(uniquePayees);
                         });
                     });
             });

@@ -421,6 +421,32 @@ module Route {
             });
         }
 
+        public getGroupNonregisteredParticipants = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group;
+
+            this.getNonregisteredParticipants(groupId).then((participantInfos: any) =>
+                res.status(200).json(participantInfos))
+                .catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
+                });
+        }
+
+        private getNonregisteredParticipants = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.groupService.getNonregisteredParticipants(groupId).then((members: any) => {
+                    let memberInfos = members.map((payee: any) => {
+                        return {
+                            id: payee.id,
+                            name: payee.firstname + " " + payee.lastname,
+                        };
+                    });
+                    resolve(memberInfos);
+                }).catch((err: APIError) => {
+                    reject(err.message);
+                });
+            });
+        }
+
         private getPaymentProducts = (userPayments: any) => {
             let productPromises = userPayments.map((up: any) => {
                 return new Promise((resolve, reject) => {

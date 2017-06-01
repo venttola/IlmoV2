@@ -53,7 +53,7 @@ class Server {
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
 			this.authService = new AuthService(this.userService);
-			this.groupService = new GroupService(models.ParticipantGroup, this.userService);
+			this.groupService = new GroupService(models.ParticipantGroup, models.NonregisteredParticipant, this.userService);
 
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
@@ -166,7 +166,7 @@ class Server {
 				models.Product,
 				models.Discount,
 				models.NonregisteredParticipant,
-				models.Userpayment,
+				models.NonregisteredParticipantPayment,
 				models.ProductSelection,
 				models.GroupPayment,
 				this.userService,
@@ -186,7 +186,8 @@ class Server {
 		router.post(this.API_PREFIX + "/group/:group/moderator/userpayment", groupRoute.receiptPayment);
 		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
 		router.delete(this.API_PREFIX + "/group/:group/moderator/:member/moderator", groupRoute.removeModerator);
-		router.post(this.API_PREFIX + "group/:group/nonregisteredparticipant", groupRoute.addNonregisteredParticipant);
+		router.post(this.API_PREFIX + "group/:group/nonregisteredparticipants", groupRoute.addNonregisteredParticipant);
+		router.get(this.API_PREFIX + "group/:group/nonregisteredparticipants", groupRoute.getGroupNonregisteredParticipants);
 		console.log("Group routes set");
 	}
 
