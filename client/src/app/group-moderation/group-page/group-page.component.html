@@ -1,5 +1,5 @@
 <h4 *ngIf="participantGroup">Ryhmän {{participantGroup.name}} jäsenet</h4>
-<h5>Rekisteröityneet käyttäjät</h5>
+<h5>Rekisteröityneet jäsenet</h5>
 <ul class="common-list">
   <li *ngFor="let m of members">
     <div class="group-item unselectable clickable" (click)="onSelectMember(m)">
@@ -9,10 +9,10 @@
 </ul>
 
 <div *ngIf="members.length === 0">
-  <p>Ei rekisteröityneitä käyttäjiä</p>
+  <p>Ei rekisteröityneitä jäseniä.</p>
 </div>
 
-<h5>Rekisteröitymättömät käyttäjät</h5>
+<h5>Rekisteröitymättömät jäsenet</h5>
 <ul class="common-list">
   <li *ngFor="let p of participants">
     <div class="group-item unselectable clickable">
@@ -23,7 +23,7 @@
 
 
 <div *ngIf="participants.length === 0">
-  <p>Ei rekisteröityneitä käyttäjiä</p>
+  <p>Ei rekisteröitymättömiä jäseniä.</p>
 </div>
 
 <app-group-modal>
