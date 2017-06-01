@@ -4,6 +4,7 @@ import { AuthorizedHttpService } from "../authorizedhttp.service";
 import { Http, Response } from "@angular/http";
 import { ParticipantGroup } from "../event-details/participantgroup.model";
 import { Member } from "./member";
+import { NonregisteredParticipant } from "./nonregistered-participant.model";
 import { UserPayment } from "./userpayment";
 
 @Injectable()
@@ -76,6 +77,15 @@ export class GroupModerationService extends AuthorizedHttpService {
       .map((res: Response) => {
         console.log(res);
         return this.extractData(res).map(d => Member.fromJSON(d));
+      }).catch(this.handleError);
+  }
+
+  getNonRegisteredParticipants(groupId: number): Observable<NonregisteredParticipant[]> {
+    console.log("GroupId: " + groupId);
+    return this.http.get("/api/group/" + groupId + "/moderator/nonregisteredparticipants", { headers: this.headers })
+      .map((res: Response) => {
+        console.log(res);
+        return this.extractData(res).map(participant => NonregisteredParticipant.fromJSON(participant));
       }).catch(this.handleError);
   }
 }

@@ -4,6 +4,7 @@ import { ParticipantGroupService } from "../../event-details/participant-group.s
 import { ActivatedRoute, Params } from "@angular/router";
 import { GroupModerationService } from "../group-moderation.service";
 import { Member } from "../member";
+import { NonregisteredParticipant } from "../nonregistered-participant.model";
 import { GroupModalComponent } from "../../event-details/group-modal/group-modal.component";
 import { UserPayment } from "../userpayment";
 
@@ -20,6 +21,8 @@ export class GroupPageComponent implements OnInit {
   participantGroup: ParticipantGroup;
   members: any[] = [];
 
+  participants: any[] = [];
+
   @ViewChild(GroupModalComponent)
   modal: GroupModalComponent;
 
@@ -35,6 +38,11 @@ export class GroupPageComponent implements OnInit {
     this.route.params
       .switchMap((params: Params) => this.groupModerationService.getGroupMembers(+params["groupId"]))
       .subscribe((members: Member[]) => this.members = members);
+
+    this.route.params
+      .switchMap((params: Params) => this.groupModerationService.getNonRegisteredParticipants(+params["groupId"]))
+      .subscribe((participants: NonregisteredParticipant[]) => this.participants = participants);
+
   }
 
   onSelectMember(member: Member) {
