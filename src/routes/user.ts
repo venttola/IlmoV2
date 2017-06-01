@@ -582,7 +582,7 @@ module Route {
 				});
 			});
 		}
-
+		//This has been copypasted to group route, refactor to a service at some point.
 		private getProductsFromDb = (products: Number[]) => {
 			return new Promise((resolve, reject) => {
 				this.productModel.find({ id: products }, function (err: Error, products: any) {

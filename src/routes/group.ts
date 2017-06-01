@@ -57,6 +57,10 @@ module Route {
         constructor(private groupModel: any,
             private productModel: any,
             private discountModel: any,
+            private nonregisteredParticipant: any,
+            private userPayment: any,
+            private productSelectionModel: any,
+            private groupPaymentModel: any,
             private userService: UserService,
             private groupService: GroupService) {
 
@@ -330,6 +334,92 @@ module Route {
                 return res.status(err.statusCode).send(err.message);
             });
         }
+        //TODO APidocs
+        //Adds a nonregistered participant to group
+
+        public addNonregisteredParticipant = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            let groupId = +req.body.groupId;
+            let products = req.body.products;
+            let participant = req.body.participant;
+            let productIds = products.map((p: any) => p[0]);
+            let discountIds = products.map((p: any) => p[1]);
+
+            Promise.all([
+                this.getProductsFromDb(productIds),
+                this.createParticipant(req.params.username),
+                this.groupService.getGroup(groupId)
+            ]).then((results: any) => {
+                let products = results[0];
+                let participant = results[1];
+                let group = results[2];
+                let paymentModel = this.userPayment;
+                let self = this;
+
+                participant.getUserPayments(function (err: Error, payments: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
+                        return res.status(500).send(errorMsg);
+                    } else {
+                        let firstOpenPayment = payments.filter((p: any) => p.payment[0].payee_id === groupId).find((p: any) => p.isPaid === false);
+
+                        // If there's open payments, add products to that one
+                        if (firstOpenPayment) {
+
+                            // Remove old product selections
+                            self.removeOldProducts(firstOpenPayment).then((result: any) => {
+
+                                // Add new product selections
+                                self.addPaymentProducts(firstOpenPayment, products, discountIds).then((empty: any) => {
+                                    return res.status(204).send();
+                                }).catch((err: APIError) => {
+                                    return res.status(err.statusCode).send(err.message);
+                                });
+                            });
+                        } else {
+                            // Create new user payment
+                            paymentModel.create({
+                                isPaid: false
+                            }, function (err: Error, payment: any) {
+                                if (err) {
+                                    let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_INSERTION);
+                                    return res.status(500).send(errorMsg);
+                                } else {
+                                    // Add products to newly created user payment
+                                    self.addPaymentProducts(payment, products, discountIds).then((result: any) => {
+                                        group.getGroupPayment(function (err: Error, groupPayment: any) {
+                                            if (err) {
+                                                let errorMsg = ErrorHandler.getErrorMsg("Group payment", ErrorType.NOT_FOUND);
+                                                return res.status(404).send();
+                                            }
+
+                                            // Link user payment to group payment
+                                            groupPayment[0].addUserPayments(payment, function (err: Error) {
+                                                if (err) {
+                                                    let errorMsg = ErrorHandler.getErrorMsg("Group Payment data", ErrorType.DATABASE_UPDATE);
+                                                    return res.status(500).send(errorMsg);
+                                                } else {
+                                                    // Link user payment to user
+                                                    participant.addUserPayments(payment, function (err: Error) {
+                                                        if (err) {
+                                                            let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_UPDATE);
+                                                            return res.status(500).send(errorMsg);
+                                                        }
+
+                                                        return res.status(204).send();
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    }).catch((err: APIError) => {
+                                        return res.status(err.statusCode).send(err.message);
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }
 
         private getPaymentProducts = (userPayments: any) => {
             let productPromises = userPayments.map((up: any) => {
@@ -367,6 +457,83 @@ module Route {
 
                 return new PaymentInfo(fp[0].id, prodSelectionInfos, fp[0].isPaid, fp[0].paidOn);
             });
+        }
+        //This has been copypasted from group route, refactor to a service at some point
+        private getProductsFromDb = (products: Number[]) => {
+            return new Promise((resolve, reject) => {
+                this.productModel.find({ id: products }, function (err: Error, products: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
+                        reject(new DatabaseError(500, errorMsg));
+                    } else if (!products) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Product", ErrorType.NOT_FOUND);
+                        reject(new DatabaseError(400, errorMsg));
+                    } else {
+                        return resolve(products);
+                    }
+                });
+            });
+        }
+        private createParticipant = (participant: any) => {
+            return new Promise((resolve, reject) => {
+                this.nonregisteredParticipant.create({
+                    firstname: participant.firstname,
+                    lastname: participant.lastname,
+                    age: participant.age,
+                    allergies: participant.allergies
+                }, function(error: any , newParticipant: any) {
+                    if (error) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Participant data", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(500, error));
+                    } else if (!newParticipant) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Participant data", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(400, errorMsg));
+                    } else {
+                        return resolve(newParticipant);
+                    }
+                });
+            });
+        }
+
+        //More copypasta from User route
+        private addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
+            let selectionPromises: any = [];
+
+            products.forEach((p: any) => {
+                selectionPromises.push(new Promise((resolve, reject) => {
+                    this.productSelectionModel.create({}, function (err: Error, ps: any) {
+                        ps.setProduct(p, function (err: Error) {
+                            let disc = p.discounts.find((d: any) => discountIds.some((di: any) => di === d.id));
+
+                            if (disc) {
+                                ps.setDiscount(disc, (err: Error) =>
+                                    err ? reject(err)
+                                        : payment.addProductSelections(ps, (err: Error) =>
+                                            err ? reject(err)
+                                                : resolve(true)));
+                            } else {
+                                payment.addProductSelections(ps, (err: Error) => err ? reject(err) : resolve(true));
+                            }
+                        });
+                    });
+                }));
+            });
+
+            return Promise.all(selectionPromises);
+        }
+        private removeOldProducts = (payment: any) => {
+            let promises: any = [];
+
+            payment.productSelections.forEach((ps: any) =>
+                promises.push(new Promise((resolve, reject) => {
+
+                    // Dereference product selections from payment
+                    payment.removeProductSelections(ps, function (err: Error) {
+                        // Delete product selections
+                        ps.remove((err: Error) => err ? reject(err) : resolve(payment));
+                    });
+                })));
+            return Promise.all(promises);
         }
     }
 }

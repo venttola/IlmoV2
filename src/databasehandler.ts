@@ -92,6 +92,7 @@ export class DatabaseHandler {
 
 		db.models.User.extendsTo("admin", {});
 
+		db.models.NonregisteredParticipant.hasMany("payments", db.models.UserPayment, {}, {reverse: "payee"});
 		console.log("References updated");
 	}
 }

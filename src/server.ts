@@ -165,6 +165,10 @@ class Server {
 				models.ParticipantGroup,
 				models.Product,
 				models.Discount,
+				models.NonregisteredParticipant,
+				models.Userpayment,
+				models.ProductSelection,
+				models.GroupPayment,
 				this.userService,
 				this.groupService
 			);
@@ -182,7 +186,7 @@ class Server {
 		router.post(this.API_PREFIX + "/group/:group/moderator/userpayment", groupRoute.receiptPayment);
 		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
 		router.delete(this.API_PREFIX + "/group/:group/moderator/:member/moderator", groupRoute.removeModerator);
-
+		router.post(this.API_PREFIX + "group/:group/nonregisteredparticipant", groupRoute.addNonregisteredParticipant);
 		console.log("Group routes set");
 	}
 
