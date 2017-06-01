@@ -9,6 +9,7 @@ import { ProductSelection } from "./productselection";
 import { User } from "./user";
 import { UserPayment } from "./userpayment";
 import { NonregisteredParticipant } from "./nonregistered-participant";
+import { NonregisteredParticipantPayment } from "./nonregistered-participant-payment";
 /*declare module "Models" {
 	import function Organization();
 	import function	ParticipantGroup();
@@ -31,4 +32,5 @@ export function defineModels(db: any) {
 	User(db);
 	UserPayment(db);
 	NonregisteredParticipant(db);
+	NonregisteredParticipantPayment(db);
 };

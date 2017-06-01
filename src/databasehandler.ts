@@ -76,7 +76,8 @@ export class DatabaseHandler {
 
 		db.models.GroupPayment.hasOne("payee", db.models.ParticipantGroup, {}, { reverse: "groupPayment" });
 		db.models.GroupPayment.hasMany("userPayments", db.models.UserPayment, {}, { reverse: "payment", autoFetch: true });
-
+		db.models.GroupPayment.hasMany("nonregisteredPariticipantPayments", db.models.NonregisteredParticipantPayment, {},
+									   {reverse: "payment", autoFetch: true});
 		db.models.Product.hasMany("discounts", db.models.Discount, {}, { reverse: "product", autoFetch: true });
 		db.models.UserPayment.hasMany("productSelections", db.models.ProductSelection, {}, { autoFetch: true });
 
@@ -92,7 +93,8 @@ export class DatabaseHandler {
 
 		db.models.User.extendsTo("admin", {});
 
-		db.models.NonregisteredParticipant.hasMany("payments", db.models.UserPayment, {}, {reverse: "payee"});
+		db.models.NonregisteredParticipant.hasMany("payments", db.models.NonregisteredParticipantPayment, {}, {reverse: "payee"});
+		db.models.NonregisteredParticipantPayment.hasMany("productSelections", db.models.ProductSelection, {}, { autoFetch: true });
 		console.log("References updated");
 	}
 }

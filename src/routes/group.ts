@@ -58,7 +58,7 @@ module Route {
             private productModel: any,
             private discountModel: any,
             private nonregisteredParticipant: any,
-            private userPayment: any,
+            private nonRegisteredParticipantPayment: any,
             private productSelectionModel: any,
             private groupPaymentModel: any,
             private userService: UserService,
@@ -352,10 +352,10 @@ module Route {
                 let products = results[0];
                 let participant = results[1];
                 let group = results[2];
-                let paymentModel = this.userPayment;
+                let paymentModel = this.nonRegisteredParticipantPayment;
                 let self = this;
 
-                participant.getUserPayments(function (err: Error, payments: any) {
+                participant.getPayments(function (err: Error, payments: any) {
                     if (err) {
                         let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
                         return res.status(500).send(errorMsg);
