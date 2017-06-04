@@ -179,6 +179,24 @@ module Service {
             }).then((members: any) => members);
         }
 
+        public getEventStatusByParticipantgroup = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getGroup(groupId).then((group: any) => {
+                    return new Promise((resolve, reject) => {
+                        resolve(group);
+                    });
+                }).then((group: any) => {
+                    return new Promise((resolve, reject) => {
+                        resolve(group.platoon[0]);
+                    });
+                }).then((platoon: any) => {
+                    platoon.getEvent((err: Error, event: any) => {
+                        resolve(event[0].registerationOpen);
+                    });
+                });
+            });
+        }
+
         private getGroupModerators = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.getGroup(groupId).then((group: any) => {

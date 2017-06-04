@@ -1,7 +1,7 @@
 <div class="product form-group">
   <div class="product-name">{{product?.name}}</div>
   <div class="selection checkbox">
-    <input type="checkbox" name="isSelected" [(ngModel)]="product.selected">
+    <input type="checkbox" class="product-checkbox" name="isSelected" [(ngModel)]="product.selected">
   </div>
 
   <div class="discount-section" *ngIf="!product.discounts" [hidden]="!product.selected">

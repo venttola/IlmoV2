@@ -16,9 +16,9 @@
     </ul>
   </div>
 
-  <div class="actions">
-    <button *ngIf="!isSignedUp()" type="button" class="btn btn-primary" (click)="addSignup()">Ilmoittaudu</button>
-    <div *ngIf="isSignedUp()">
+  <div *ngIf="isRegistrationOpen === true" class="actions">
+    <button *ngIf="!signedUp" type="button" class="btn btn-primary" (click)="addSignup()">Ilmoittaudu</button>
+    <div *ngIf="signedUp">
       <button type="button" class="btn btn-primary" (click)="updateSignup()">Päivitä tiedot</button>
       <button type="button" class="btn btn-danger" (click)="cancelSignUp()">Peru ilmottautuminen</button>
     </div>

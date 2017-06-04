@@ -25,6 +25,6 @@
 
 }
 
-:host /deep/ input {
+:host /deep/ input:not(.product-checkbox) {
 	max-width: 50%;
 }
