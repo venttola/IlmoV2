@@ -1,25 +1,28 @@
-export class SignupData{
+export class SignupData {
 	email: string;
 	password: string;
 	repassword: string;
 	firstname: string;
 	lastname: string;
 	dob: string;
-	constructor(){
+	phone: string;
+
+	constructor() {
 	}
-	public allPresent(): boolean{
+
+	public allPresent(): boolean {
 		return (this.email != undefined &&
-			   this.password != undefined &&
-			   this.repassword != undefined &&
-			   this.firstname != undefined &&
-			   this.lastname != undefined &&
-			   this.dob != undefined);
+			this.password != undefined &&
+			this.repassword != undefined &&
+			this.firstname != undefined &&
+			this.lastname != undefined &&
+			this.dob != undefined);
 	}
-	public encodePassword(): void{
-    	//Perform encoding
-    	//this.password = btoa(this.password);
-    }
-    public passwordsMatching(): boolean{
-    	return this.password == this.repassword;
-    }
+	public encodePassword(): void {
+		//Perform encoding
+		//this.password = btoa(this.password);
+	}
+	public passwordsMatching(): boolean {
+		return this.password == this.repassword;
+	}
 }

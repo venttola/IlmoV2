@@ -112,6 +112,7 @@ module Route {
             let password: string = req.body.password;
             let firstname: string = req.body.firstname;
             let lastname: string = req.body.lastname;
+            let phone: string = req.body.phone;
             console.log(req.body.dob);
             let dob: string = req.body.dob;
             console.log(req.body.dob);
@@ -133,7 +134,8 @@ module Route {
                                 firstname: firstname,
                                 lastname: lastname,
                                 dob: dob,
-                                allergies: ""
+                                allergies: "",
+                                phone: phone
                             }, function (err: any, result: any) {
                                 if (err) {
                                     console.log("Error creating user: " + err);

@@ -5,6 +5,7 @@ export class UserData {
 	lastname: string;
 	dob: string;
 	allergies: string
+	phone: string;
 	constructor(){
 		this.email = "";
 		this.password = "";
@@ -12,6 +13,7 @@ export class UserData {
 		this.lastname = "";
 		this.dob = "";
 		this.allergies = "";
+		this.phone = "";
 	}
 	static fromJSON(json: any): UserData {
 		let data = Object.create(UserData.prototype);

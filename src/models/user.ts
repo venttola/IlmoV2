@@ -6,6 +6,7 @@ export function User(db: any) {
 		firstname: {type: "text", required: true},
 		lastname: {type: "text", require: true},
 		dob: {type: "date", time: false, required: true},
-		allergies: {type: "text"}
+		allergies: {type: "text"},
+		phone: {type: "text"}
 	});
 };
