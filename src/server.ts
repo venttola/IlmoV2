@@ -182,6 +182,7 @@ class Server {
 		router.post(this.API_PREFIX + "/group/:group/moderator/userpayment", groupRoute.receiptPayment);
 		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
 		router.delete(this.API_PREFIX + "/group/:group/moderator/:member/moderator", groupRoute.removeModerator);
+		router.get(this.API_PREFIX + "/group/:group/checkout", groupRoute.getGroupCheckout);
 
 		console.log("Group routes set");
 	}
