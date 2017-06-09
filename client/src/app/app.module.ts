@@ -37,6 +37,7 @@ import { GroupModerationService } from "./group-moderation/group-moderation.serv
 import { GroupPageComponent } from './group-moderation/group-page/group-page.component';
 
 import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-policy-modal.component';
+import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-checkout-page/group-checkout-page.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-poli
     EventSignupListingComponent,
     GroupModerationComponent,
     GroupPageComponent,
-    PrivacyPolicyModalComponent
+    PrivacyPolicyModalComponent,
+    GroupCheckoutPageComponent
   ],
   imports: [
     BrowserModule,

@@ -18,6 +18,7 @@ import { EventManagementComponent } from "./admin-page/event-management/event-ma
 import { EventSignupListingComponent } from "./event-signup-listing/event-signup-listing.component";
 import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
 import { GroupPageComponent } from "./group-moderation/group-page/group-page.component";
+import { GroupCheckoutPageComponent } from "./group-moderation/group-page/group-checkout-page/group-checkout-page.component";
 
 const appRoutes: Routes = [
   {
@@ -74,8 +75,11 @@ const appRoutes: Routes = [
   },
   {
     path: "groups/:groupId",
-    component: GroupPageComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: GroupPageComponent },
+      { path: 'checkout', component: GroupCheckoutPageComponent }
+    ]
   },
   {
     path: "**",

@@ -1,15 +1,21 @@
 <h4 *ngIf="participantGroup">Ryhmän {{participantGroup.name}} jäsenet</h4>
 
-<ul class="common-list">
-  <li *ngFor="let m of members">
-    <div class="group-item unselectable clickable" (click)="onSelectMember(m)">
-      <p>{{ m.name }}</p>
-    </div>
-  </li>
-</ul>
+<div class="content">
+  <ul class="common-list">
+    <li *ngFor="let m of members">
+      <div class="group-item unselectable clickable" (click)="onSelectMember(m)">
+        <p>{{ m.name }}</p>
+      </div>
+    </li>
+  </ul>
 
-<div *ngIf="members.length === 0">
-  <p>Ei jäseniä</p>
+  <div *ngIf="members.length === 0">
+    <p>Ei jäseniä</p>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn btn-primary" [routerLink]="['/groups', participantGroup?.id, 'checkout']">Ryhmän maksuerittely</button>
+  </div>
 </div>
 
 <app-group-modal>
@@ -69,3 +75,5 @@
     </div>
   </div>
 </app-group-modal>
+
+<router-outlet></router-outlet>
