@@ -282,12 +282,17 @@ module Route {
                     let platoon = values.length > 0 ? values[0] : null;
 
                     if (platoon) {
-
                         // Create new participant group
                         self.participantGroupModel.create({
                             name: newGroup.name,
-                            description: newGroup.description !== undefined ? newGroup.description : ""
+                            description: newGroup.description !== undefined ? newGroup.description : "",
+                            referenceNumber: 123 // TODO: Generate new number for each group
                         }, (err: Error, group: any) => {
+
+                            if (err) {
+                                let errorMsg = ErrorHandler.getErrorMsg("Group data", ErrorType.DATABASE_INSERTION);
+                                return res.status(500).send(errorMsg);
+                            }
 
                             // Add new group to platoon
                             platoon.addParticipantGroups(group, function (err: Error) {
