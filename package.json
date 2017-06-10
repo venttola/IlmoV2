@@ -36,10 +36,12 @@
     "mysql": "^2.0.0-alpha8",
     "orm": "^3.1.0",
     "rollup": "^0.41.6",
-    "ts-promise": "^0.3.4"
+    "ts-promise": "^0.3.4",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "@types/node": "^6.0.63",
+    "@types/underscore": "^1.8.1",
     "faker": "^4.1.0",
     "gulp": "^3.9.1",
     "gulp-cached": "^1.1.0",

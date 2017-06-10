@@ -1,5 +1,7 @@
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
-
+// var _ = require("underscore-node");
+// import * as _ from "underscore-node";
+import { groupBy } from "underscore";
 module Service {
     export class GroupService {
         constructor(private groupModel: any, private userService: any) { }
@@ -26,6 +28,31 @@ module Service {
                     .then((group: any) => group.getGroupPayment((err: Error, groupPayment: any) => {
                         err ? reject(err) : resolve(groupPayment);
                     }));
+            });
+        }
+
+        public getPaidUserPayments = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getParticipantGroupPayment(groupId)
+                    .then((groupPayment: any) => new Promise((resolve, reject) => {
+                        groupPayment[0].getUserPayments((err: Error, userPayments: any) => {
+                            err ? reject(err) : resolve(userPayments);
+                        });
+                    })).then((userPayments: any[]) => {
+                        let promises = userPayments.filter((up: any) => up.isPaid).map((up: any) => {
+                            return new Promise((resolve, reject) => {
+                                up.getPayee((err: Error, payeeUser: any) => {
+                                    console.log(JSON.stringify(payeeUser));
+                                    up.payee = payeeUser[0].fullName();
+                                    resolve(up);
+                                });
+                            });
+                        });
+
+                        Promise.all(promises).then((payments: any) => {
+                            resolve(groupBy(payments, (p: any) => p.payee));
+                        });
+                    });
             });
         }
 

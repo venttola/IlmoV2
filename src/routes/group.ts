@@ -231,7 +231,17 @@ module Route {
         }
 
         public getGroupCheckout = (req: express.Request, res: express.Response) => {
-            return res.status(204);
+            console.log("Request received");
+            let groupId = req.params.group;
+            this.groupService.getPaidUserPayments(groupId).then((paymentsByUser: any) => {
+                console.log("Got payments: " + JSON.stringify(paymentsByUser));
+
+                for (let entry of paymentsByUser) {
+                    console.log("entry:" + JSON.stringify(entry));
+                }
+
+                return res.status(200).json(paymentsByUser);
+            });
         }
 
         // Req is marked as type of any because Typescript compiler refuses to admit the existence of req.user attribute
