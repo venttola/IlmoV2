@@ -1,10 +1,13 @@
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 // var _ = require("underscore-node");
 // import * as _ from "underscore-node";
-import { groupBy } from "underscore";
+import { groupBy, flatten, reduce } from "underscore";
 module Service {
     export class GroupService {
-        constructor(private groupModel: any, private userService: any) { }
+        constructor(private groupModel: any,
+            private userService: any,
+            private productModel: any,
+            private discountModel: any) { }
 
         public getGroup = (groupId: number) => {
             return new Promise((resolve, reject) => {
@@ -38,20 +41,47 @@ module Service {
                         groupPayment[0].getUserPayments((err: Error, userPayments: any) => {
                             err ? reject(err) : resolve(userPayments);
                         });
-                    })).then((userPayments: any[]) => {
-                        let promises = userPayments.filter((up: any) => up.isPaid).map((up: any) => {
-                            return new Promise((resolve, reject) => {
-                                up.getPayee((err: Error, payeeUser: any) => {
-                                    console.log(JSON.stringify(payeeUser));
-                                    up.payee = payeeUser[0].fullName();
-                                    resolve(up);
-                                });
+                    }))
+                    .then((userPayments: any[]) => {
+                        let promises = userPayments.filter((up: any) => up.isPaid).map((up: any) => new Promise((resolve, reject) => {
+                            up.getPayee((err: Error, payeeUser: any) => {
+                                up.payee = payeeUser[0].fullName();
+                                resolve(up);
                             });
-                        });
+                        }));
 
-                        Promise.all(promises).then((payments: any) => {
-                            resolve(groupBy(payments, (p: any) => p.payee));
-                        });
+                        return Promise.all(promises);
+                    }).then((payments: any) => {
+                        let paymentsByUser: any = groupBy(payments, (p: any) => p.payee);
+                        let promises = [];
+
+                        for (let payee in paymentsByUser) {
+                            if (payee) {
+                                let promise = new Promise((resolve, reject) => {
+                                    this.getPaymentProducts(paymentsByUser[payee]).then((paymentsWithProds: any) => {
+                                        let allProducts = flatten(paymentsWithProds);
+
+                                        let prods = flatten(allProducts.map((payment: any) =>
+                                            payment.productSelections.map((prodSelection: any) => prodSelection.product)));
+
+                                        let discounts = flatten(allProducts.map((payment: any) =>
+                                            payment.productSelections.map((prodSelection: any) => prodSelection.discount)));
+
+                                        resolve({
+                                            member: payee,
+                                            productSum: reduce(prods.filter((p: any) => p != null)
+                                                .map((p: any) => p.price), (memo, num) => (memo + num), 0),
+                                            discountSum: reduce(discounts.filter((d: any) => d != null)
+                                                .map((d: any) => d.amount), (memo, num) => (memo + num), 0)
+                                        });
+                                    });
+                                });
+
+                                promises.push(promise);
+                            }
+                        }
+
+                        Promise.all(promises).then((results: any) => resolve(results));
                     });
             });
         }
@@ -232,6 +262,29 @@ module Service {
                     });
                 });
             });
+        }
+
+        public getPaymentProducts = (userPayments: any) => {
+            let productPromises = userPayments.map((up: any) => {
+                return new Promise((resolve, reject) => {
+                    let promises = up.productSelections.map((ps: any) => {
+                        return new Promise((resolve, reject) => {
+                            this.productModel.one({ id: ps.product_id }, (err: Error, product: any) => {
+                                ps.product = product;
+
+                                this.discountModel.one({ id: ps.discount_id }, (err: Error, discount: any) => {
+                                    ps.discount = discount;
+                                    resolve(up);
+                                });
+                            });
+                        });
+                    });
+
+                    Promise.all(promises).then((results: any) => resolve(results));
+                });
+            });
+
+            return Promise.all(productPromises);
         }
     }
 }

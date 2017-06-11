@@ -166,7 +166,7 @@ module Route {
         public receiptPayment = (req: express.Request, res: express.Response) => {
             this.groupService.receiptMemberPayment(req.body.groupId, req.body.memberId)
                 .then((paidPayments: any) => {
-                    return this.getPaymentProducts(paidPayments);
+                    return this.groupService.getPaymentProducts(paidPayments);
                 }).then((payments: any) => {
                     return res.status(200).json(this.mapPaymentProducts(payments));
                 });
@@ -222,7 +222,7 @@ module Route {
                     }
                 });
             }).then((userPayments: any) => {
-                return this.getPaymentProducts(userPayments);
+                return this.groupService.getPaymentProducts(userPayments);
             }).then((finalPayments: any[]) => {
                 return res.status(200).json(this.mapPaymentProducts(finalPayments));
             }).catch((err: APIError) => {
@@ -231,15 +231,8 @@ module Route {
         }
 
         public getGroupCheckout = (req: express.Request, res: express.Response) => {
-            console.log("Request received");
             let groupId = req.params.group;
             this.groupService.getPaidUserPayments(groupId).then((paymentsByUser: any) => {
-                console.log("Got payments: " + JSON.stringify(paymentsByUser));
-
-                for (let entry of paymentsByUser) {
-                    console.log("entry:" + JSON.stringify(entry));
-                }
-
                 return res.status(200).json(paymentsByUser);
             });
         }
@@ -283,31 +276,6 @@ module Route {
                     reject(err.message);
                 });
             });
-        }
-
-        private getPaymentProducts = (userPayments: any) => {
-            let productPromises = userPayments.map((up: any) => {
-                return new Promise((resolve, reject) => {
-                    let promises = up.productSelections.map((ps: any) => {
-                        return new Promise((resolve, reject) => {
-                            this.productModel.one({ id: ps.product_id }, (err: Error, product: any) => {
-                                ps.product = product;
-
-                                this.discountModel.one({ id: ps.discount_id }, (err: Error, discount: any) => {
-                                    ps.discount = discount;
-                                    resolve(up);
-                                });
-                            });
-                        });
-                    });
-
-                    Promise.all(promises).then((results: any) => {
-                        resolve(results);
-                    });
-                });
-            });
-
-            return Promise.all(productPromises);
         }
 
         private mapPaymentProducts = (finalPayments: any[]) => {

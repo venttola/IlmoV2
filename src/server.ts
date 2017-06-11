@@ -53,7 +53,7 @@ class Server {
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
 			this.authService = new AuthService(this.userService);
-			this.groupService = new GroupService(models.ParticipantGroup, this.userService);
+			this.groupService = new GroupService(models.ParticipantGroup, this.userService, models.Product, models.Discount);
 
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
