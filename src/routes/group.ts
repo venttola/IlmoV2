@@ -57,6 +57,7 @@ module Route {
         group: any;
         payments: any[];
         refNumber: string;
+        organizationBankAccount: string;
     };
 
     export class GroupRoutes {
@@ -64,7 +65,8 @@ module Route {
             private productModel: any,
             private discountModel: any,
             private userService: UserService,
-            private groupService: GroupService) {
+            private groupService: GroupService,
+            private organizationService: OrganizationService) {
 
         }
 
@@ -251,6 +253,18 @@ module Route {
                 }).then((refNumber: string) => {
                     checkoutData.refNumber = refNumber;
                     delete checkoutData.group.groupPayment; // Do not send all the payment info
+
+
+                    return new Promise((resolve, reject) => {
+                        this.groupService.getEventByGroup(checkoutData.group.id)
+                            .then((event: any) => {
+                                event.getOrganization((err: Error, organization: any) => {
+                                    err ? reject(err) : resolve(organization.bankAccount);
+                                });
+                            });
+                    });
+                }).then((organizationBankAccount: string) => {
+                    checkoutData.organizationBankAccount = organizationBankAccount;
                     return res.status(200).json(checkoutData);
                 });
         }
