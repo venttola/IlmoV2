@@ -4,7 +4,7 @@ import { ParticipantGroupService } from "../../event-details/participant-group.s
 import { ActivatedRoute, Params } from "@angular/router";
 import { GroupModerationService } from "../group-moderation.service";
 import { Member } from "../member";
-import { NonregisteredParticipant } from "../nonregistered-participant.model";
+import { Participant } from "../participant.model";
 import { GroupModalComponent } from "../../event-details/group-modal/group-modal.component";
 import { UserPayment } from "../userpayment";
 import { Product } from "../../event-signup/product";
@@ -27,7 +27,7 @@ export class GroupPageComponent implements OnInit {
 
   availableProducts: Product[] = [];
 
-  newParticipant: NonregisteredParticipant;
+  newParticipant: Participant;
 
   @ViewChild(GroupModalComponent)
   modal: GroupModalComponent;
@@ -36,7 +36,7 @@ export class GroupPageComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private participantGroupService: ParticipantGroupService,
     private groupModerationService: GroupModerationService) { 
-    this.newParticipant = new NonregisteredParticipant;
+    this.newParticipant = new Participant;
     this.errorMessage = "";
   }
 
@@ -50,8 +50,8 @@ export class GroupPageComponent implements OnInit {
       .subscribe((members: Member[]) => this.members = members);
 
     this.route.params
-      .switchMap((params: Params) => this.groupModerationService.getNonRegisteredParticipants(+params["groupId"]))
-      .subscribe((participants: NonregisteredParticipant[]) => this.participants = participants);
+      .switchMap((params: Params) => this.groupModerationService.getParticipants(+params["groupId"]))
+      .subscribe((participants: Participant[]) => this.participants = participants);
     this.route.params
       .switchMap((params: Params) => this.groupModerationService.getAvailableProducts(+params["groupId"]))
       .subscribe((products: Product[]) => this.availableProducts = products);
@@ -143,9 +143,9 @@ export class GroupPageComponent implements OnInit {
       return [p.id, discountId];
     });
 
-    this.groupModerationService.createNonRegisteredParticipant(this.participantGroup.id, this.newParticipant, selectedProducts)
+    this.groupModerationService.createParticipant(this.participantGroup.id, this.newParticipant, selectedProducts)
       .subscribe((res: any) => {
-        console.log("User added succesfully");
+        console.log("Participant added succesfully");
       }, error => {
         this.errorMessage = "Tapahtui virhe";
       });

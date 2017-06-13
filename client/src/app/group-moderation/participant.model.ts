@@ -1,4 +1,4 @@
-export class NonregisteredParticipant {
+export class Participant {
   id: number;
   firstname: string;
   lastname: string;
@@ -6,8 +6,8 @@ export class NonregisteredParticipant {
   allergies: string;
 
 
-  static fromJSON(json: any): NonregisteredParticipant {
-    let participant = Object.create(NonregisteredParticipant.prototype);
+  static fromJSON(json: any): Participant {
+    let participant = Object.create(Participant.prototype);
     Object.assign(participant, json);
     return participant;
   }

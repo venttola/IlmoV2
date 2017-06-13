@@ -4,7 +4,7 @@ import { AuthorizedHttpService } from "../authorizedhttp.service";
 import { Http, Response } from "@angular/http";
 import { ParticipantGroup } from "../event-details/participantgroup.model";
 import { Member } from "./member";
-import { NonregisteredParticipant } from "./nonregistered-participant.model";
+import { Participant } from "./participant.model";
 import { UserPayment } from "./userpayment";
 import { Product } from "../event-signup/product";
 @Injectable()
@@ -80,18 +80,18 @@ export class GroupModerationService extends AuthorizedHttpService {
   }
 
   //Service functions for managing the nonregistered Participants
-  getNonRegisteredParticipants(groupId: number): Observable<NonregisteredParticipant[]> {
+  getParticipants(groupId: number): Observable<Participant[]> {
     console.log("GroupId: " + groupId);
-    return this.http.get("/api/group/" + groupId + "/moderator/nonregisteredparticipants", { headers: this.headers })
+    return this.http.get("/api/group/" + groupId + "/moderator/participants", { headers: this.headers })
       .map((res: Response) => {
         console.log(res);
-        return this.extractData(res).map(participant => NonregisteredParticipant.fromJSON(participant));
+        return this.extractData(res).map(participant => Participant.fromJSON(participant));
       }).catch(this.handleError);
   }
-  createNonRegisteredParticipant(groupId: number, participant: NonregisteredParticipant, products: Product[]): Observable<any> {
+  createParticipant(groupId: number, participant: Participant, products: Product[]): Observable<any> {
     let data = { groupId: groupId, participant: participant, products: products };
 
-    return this.http.post("/api/group/" + groupId + "/moderator/nonregisteredparticipants", JSON.stringify(data), { headers: this.headers })
+    return this.http.post("/api/group/" + groupId + "/moderator/participants", JSON.stringify(data), { headers: this.headers })
       .map((res:Response) => {
         console.log(res);
         return this.extractData(res);
