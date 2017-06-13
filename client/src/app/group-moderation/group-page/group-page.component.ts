@@ -7,6 +7,8 @@ import { Member } from "../member";
 import { NonregisteredParticipant } from "../nonregistered-participant.model";
 import { GroupModalComponent } from "../../event-details/group-modal/group-modal.component";
 import { UserPayment } from "../userpayment";
+import { Product } from "../../event-signup/product";
+import { Discount } from "../../event-signup/discount";
 
 @Component({
   selector: 'app-group-page',
@@ -23,12 +25,20 @@ export class GroupPageComponent implements OnInit {
 
   participants: any[] = [];
 
+  availableProducts: Product[] = [];
+
+  newParticipant: NonregisteredParticipant;
+
   @ViewChild(GroupModalComponent)
   modal: GroupModalComponent;
+  errorMessage: string;
 
   constructor(private route: ActivatedRoute,
     private participantGroupService: ParticipantGroupService,
-    private groupModerationService: GroupModerationService) { }
+    private groupModerationService: GroupModerationService) { 
+    this.newParticipant = new NonregisteredParticipant;
+    this.errorMessage = "";
+  }
 
   ngOnInit() {
     this.route.params
@@ -42,6 +52,11 @@ export class GroupPageComponent implements OnInit {
     this.route.params
       .switchMap((params: Params) => this.groupModerationService.getNonRegisteredParticipants(+params["groupId"]))
       .subscribe((participants: NonregisteredParticipant[]) => this.participants = participants);
+    this.route.params
+      .switchMap((params: Params) => this.groupModerationService.getAvailableProducts(+params["groupId"]))
+      .subscribe((products: Product[]) => this.availableProducts = products);
+      console.log(this.availableProducts);
+
 
   }
 
@@ -116,5 +131,23 @@ export class GroupPageComponent implements OnInit {
 
   onCloseModal() {
     this.modal.hide();
+  }
+  addParticipant(){
+    console.log("Adding participant");
+     let selectedProducts = this.availableProducts.filter((p: Product) => p.selected === true);
+
+    let prodIds = selectedProducts.map((p: Product) => {
+      let discounts = p.discounts.filter((d: Discount) => d.selected === true);
+      let discountId: number = discounts && discounts.length > 0 ? discounts[0].id : null;
+
+      return [p.id, discountId];
+    });
+
+    this.groupModerationService.createNonRegisteredParticipant(this.participantGroup.id, this.newParticipant, selectedProducts)
+      .subscribe((res: any) => {
+        console.log("User added succesfully");
+      }, error => {
+        this.errorMessage = "Tapahtui virhe";
+      });
   }
 }
