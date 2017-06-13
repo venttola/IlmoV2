@@ -4,7 +4,9 @@ module Service {
     export class GroupService {
         constructor(private groupModel: any,
                     private nonregisteredParticipantModel: any,
-                    private userService: any) { }
+                    private platoonModel: any,
+                    private userService: any,
+                    private eventService: any) { }
 
         public getGroup = (groupId: number) => {
             return new Promise((resolve, reject) => {
@@ -91,6 +93,35 @@ module Service {
                             resolve(uniquePayees);
                         });
                     });
+            });
+        }
+        // TODO: Platoon and platoon event getting should be refactored to a service
+        public getAvailableProducts = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getGroup(groupId).then((group: any) => {
+                    console.log(JSON.stringify(group));
+                    //console.log(group.platoon);
+                    //console.log(group.platoon.event);
+                    group.getPlatoon((err: Error, platoon: any) => {
+                        if (err) {
+                           reject(err);
+                        } else {
+                           console.log(platoon);
+                           console.log(platoon[0].event[0]);
+                           console.log(platoon[0].event[0].id);
+                           return resolve(this.eventService.getEventProducts(platoon[0].event[0].id));
+                           //The event is autofetched, and for some reason the platoo.getEvent does not find the event.
+                           /*platoon[0].getEvent((err: Error, event: any) => {
+                               if (err) {
+                                   reject(err);
+                                } else {
+                                    console.log(JSON.stringify(event));
+                                   return this.eventService.getEventProducts(event.id);
+                                }
+                            });*/
+                        }
+                    });
+                });
             });
         }
 

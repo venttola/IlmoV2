@@ -431,6 +431,19 @@ module Route {
                 });
         }
 
+        public getAvailableProducts = (req: express.Request, res: express.Response) => {
+            console.log("Getting available products");
+            let groupId = req.params.group;
+            this.groupService.getAvailableProducts(groupId).
+            then((products: any) => {
+                console.log(products);
+                return res.json(products);
+            }).
+            catch((error: APIError) => {
+                return res.status(error.statusCode).send(error.message);
+            });
+        }
+
         private getNonregisteredParticipants = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.groupService.getNonregisteredParticipants(groupId).then((members: any) => {
