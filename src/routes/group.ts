@@ -3,6 +3,7 @@ import * as express from "express";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { GroupService } from "../services/groupservice";
+import { reduce } from "underscore";
 
 module Route {
     class DiscountInfo {
@@ -56,6 +57,7 @@ module Route {
     class CheckoutData {
         group: any;
         payments: any[];
+        totalSum: number;
         refNumber: string;
         organizationBankAccount: string;
     };
@@ -65,8 +67,7 @@ module Route {
             private productModel: any,
             private discountModel: any,
             private userService: UserService,
-            private groupService: GroupService,
-            private organizationService: OrganizationService) {
+            private groupService: GroupService) {
 
         }
 
@@ -249,6 +250,11 @@ module Route {
                     return this.groupService.getPaidUserPayments(groupId);
                 }).then((paymentsByUser: any) => {
                     checkoutData.payments = paymentsByUser;
+                    checkoutData.totalSum =
+                        reduce(paymentsByUser.map((p: any) =>
+                            (p.productSum - p.discountSum) as number),
+                            (currentSum: number, userSum: number) => (currentSum + userSum)
+                            , 0);
                     return this.groupService.getGroupRefNumber(checkoutData.group);
                 }).then((refNumber: string) => {
                     checkoutData.refNumber = refNumber;
