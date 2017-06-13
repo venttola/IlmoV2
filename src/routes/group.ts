@@ -346,7 +346,7 @@ module Route {
 
             Promise.all([
                 this.getProductsFromDb(productIds),
-                this.createParticipant(req.params.username),
+                this.createParticipant(participant),
                 this.groupService.getGroup(groupId)
             ]).then((results: any) => {
                 let products = results[0];
@@ -393,15 +393,16 @@ module Route {
                                             }
 
                                             // Link user payment to group payment
-                                            groupPayment[0].addUserPayments(payment, function (err: Error) {
+                                            groupPayment[0].addNonregisteredParticipantPayments(payment, function (err: Error) {
                                                 if (err) {
                                                     let errorMsg = ErrorHandler.getErrorMsg("Group Payment data", ErrorType.DATABASE_UPDATE);
                                                     return res.status(500).send(errorMsg);
                                                 } else {
                                                     // Link user payment to user
-                                                    participant.addUserPayments(payment, function (err: Error) {
+                                                    participant.addPayments(payment, function (err: Error) {
                                                         if (err) {
-                                                            let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_UPDATE);
+                                                            let errorMsg = ErrorHandler.getErrorMsg("Participant Payment data",
+                                                                                                     ErrorType.DATABASE_UPDATE);
                                                             return res.status(500).send(errorMsg);
                                                         }
 
@@ -423,12 +424,15 @@ module Route {
 
         public getGroupNonregisteredParticipants = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
+            console.log("Getting participants");
+            this.getNonregisteredParticipants(groupId).then((participantInfos: any) => {
 
-            this.getNonregisteredParticipants(groupId).then((participantInfos: any) =>
-                res.status(200).json(participantInfos))
-                .catch((err: APIError) => {
-                    return res.status(err.statusCode).send(err.message);
-                });
+                console.log(JSON.stringify(participantInfos));
+                return res.status(200).json(participantInfos);
+            }).catch((err: APIError) => {
+                console.log("Hit an error, " + err.message + "Error code: " + err.statusCode);
+                return res.status(err.statusCode).send(err.message);
+            });
         }
 
         public getAvailableProducts = (req: express.Request, res: express.Response) => {
@@ -436,7 +440,6 @@ module Route {
             let groupId = req.params.group;
             this.groupService.getAvailableProducts(groupId).
             then((products: any) => {
-                console.log(products);
                 return res.json(products);
             }).
             catch((error: APIError) => {
@@ -446,16 +449,21 @@ module Route {
 
         private getNonregisteredParticipants = (groupId: number) => {
             return new Promise((resolve, reject) => {
-                this.groupService.getNonregisteredParticipants(groupId).then((members: any) => {
-                    let memberInfos = members.map((payee: any) => {
+                console.log("Calling groupservice");
+                this.groupService.getNonregisteredParticipants(groupId).then((participants: any) => {
+                    console.log("Parsing participantinfos");
+                    console.log(JSON.stringify(participants));
+                    let participantInfos = participants.map((payee: any) => {
                         return {
                             id: payee.id,
                             name: payee.firstname + " " + payee.lastname,
                         };
                     });
-                    resolve(memberInfos);
+                    console.log("Got memberinfos");
+                    resolve(participantInfos);
                 }).catch((err: APIError) => {
-                    reject(err.message);
+                    console.log("Error in getNonregisteredParticipants:" + err.message);
+                    reject(err);
                 });
             });
         }

@@ -75,13 +75,17 @@ module Service {
             return new Promise((resolve, reject) => {
                 this.getParticipantGroupPayment(groupId)
                     .then((groupPayment: any) => new Promise((resolve, reject) => {
-                        groupPayment[0].getNonregisteredPariticipantPayments((err: Error, nonRegisteredParticipantPayments: any) => {
+                        groupPayment[0].getNonregisteredParticipantPayments((err: Error, nonRegisteredParticipantPayments: any) => {
                             err ? reject(err) : resolve(nonRegisteredParticipantPayments);
                         });
                     })).then((nonRegisteredParticipantPayments: any[]) => {
+                        console.log(JSON.stringify(nonRegisteredParticipantPayments));
                         let promises = nonRegisteredParticipantPayments.map((up: any) => {
                             return new Promise((resolve, reject) => {
-                                up.getPayee((err: Error, payeeParticipant: any) => resolve(payeeParticipant[0]));
+                                up.getPayee((err: Error, payeeParticipant: any) => {
+                                    console.log(JSON.stringify(payeeParticipant));
+                                   err ? reject(err) : resolve(payeeParticipant[0]);
+                                });
                             });
                         });
 
@@ -92,6 +96,9 @@ module Service {
                             });
                             resolve(uniquePayees);
                         });
+                    }).catch((error: APIError) => {
+                        console.log(error);
+                        reject(error);
                     });
             });
         }
@@ -106,9 +113,6 @@ module Service {
                         if (err) {
                            reject(err);
                         } else {
-                           console.log(platoon);
-                           console.log(platoon[0].event[0]);
-                           console.log(platoon[0].event[0].id);
                            return resolve(this.eventService.getEventProducts(platoon[0].event[0].id));
                            //The event is autofetched, and for some reason the platoo.getEvent does not find the event.
                            /*platoon[0].getEvent((err: Error, event: any) => {
