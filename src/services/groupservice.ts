@@ -254,16 +254,6 @@ module Service {
             });
         }
 
-        private getGroupModerators = (groupId: number) => {
-            return new Promise((resolve, reject) => {
-                this.getGroup(groupId).then((group: any) => {
-                    group.getModerator((err: Error, moderators: any) => {
-                        err ? reject(err) : resolve(moderators);
-                    });
-                });
-            });
-        }
-
         public getPaymentProducts = (userPayments: any) => {
             let productPromises = userPayments.map((up: any) => {
                 return new Promise((resolve, reject) => {
@@ -285,6 +275,24 @@ module Service {
             });
 
             return Promise.all(productPromises);
+        }
+
+        public getGroupRefNumber(group: any) {
+            return new Promise((resolve, reject) => {
+                group.getGroupPayment((err: Error, payment: any) => {
+                    return err ? reject(err) : resolve(payment[0].referenceNumber);
+                });
+            });
+        }
+
+        private getGroupModerators = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getGroup(groupId).then((group: any) => {
+                    group.getModerator((err: Error, moderators: any) => {
+                        err ? reject(err) : resolve(moderators);
+                    });
+                });
+            });
         }
     }
 }

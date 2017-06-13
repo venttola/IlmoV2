@@ -53,6 +53,12 @@ module Route {
         }
     }
 
+    class CheckoutData {
+        group: any;
+        payments: any[];
+        refNumber: string;
+    };
+
     export class GroupRoutes {
         constructor(private groupModel: any,
             private productModel: any,
@@ -232,9 +238,21 @@ module Route {
 
         public getGroupCheckout = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
-            this.groupService.getPaidUserPayments(groupId).then((paymentsByUser: any) => {
-                return res.status(200).json(paymentsByUser);
-            });
+
+            let checkoutData: CheckoutData = new CheckoutData();
+
+            this.groupService.getGroup(groupId)
+                .then((group: any) => {
+                    checkoutData.group = group;
+                    return this.groupService.getPaidUserPayments(groupId);
+                }).then((paymentsByUser: any) => {
+                    checkoutData.payments = paymentsByUser;
+                    return this.groupService.getGroupRefNumber(checkoutData.group);
+                }).then((refNumber: string) => {
+                    checkoutData.refNumber = refNumber;
+                    delete checkoutData.group.groupPayment; // Do not send all the payment info
+                    return res.status(200).json(checkoutData);
+                });
         }
 
         // Req is marked as type of any because Typescript compiler refuses to admit the existence of req.user attribute

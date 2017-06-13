@@ -4,6 +4,8 @@ import { UserService } from "../services/userservice";
 import { OrganizationService } from "../services/organizationservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
+const bankUtils = require("finnish-bank-utils");
+
 module Route {
 
     class Event {
@@ -281,14 +283,13 @@ module Route {
                     let values = platoons.filter(p => p.id === platoonId);
                     let platoon = values.length > 0 ? values[0] : null;
 
+                    // TODO: Refactor this shit
                     if (platoon) {
                         // Create new participant group
                         self.participantGroupModel.create({
                             name: newGroup.name,
-                            description: newGroup.description !== undefined ? newGroup.description : "",
-                            referenceNumber: 123 // TODO: Generate new number for each group
+                            description: newGroup.description !== undefined ? newGroup.description : ""
                         }, (err: Error, group: any) => {
-
                             if (err) {
                                 let errorMsg = ErrorHandler.getErrorMsg("Group data", ErrorType.DATABASE_INSERTION);
                                 return res.status(500).send(errorMsg);
@@ -299,11 +300,12 @@ module Route {
                                 if (err) {
                                     return res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE));
                                 } else {
-
                                     // Create a group payment model
                                     self.groupPaymentModel.create({
-                                        paidOn: null
+                                        paidOn: null,
+                                        referenceNumber: bankUtils.generateFinnishRefNumber()
                                     }, function (err: Error, payment: any) {
+                                        console.log("err: " + err);
                                         if (err != null) {
                                             return res.status(500).send(ErrorHandler.getErrorMsg("GroupPayment", ErrorType.DATABASE_UPDATE));
                                         } else {
