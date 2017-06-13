@@ -237,6 +237,11 @@ module Service {
         }
 
         public getEventStatusByParticipantgroup = (groupId: number) => {
+            return this.getEventByGroup(groupId)
+                .then((event: any) => event.registerationOpen);
+        }
+
+        public getEventByGroup = (groupId: any) => {
             return new Promise((resolve, reject) => {
                 this.getGroup(groupId).then((group: any) => {
                     return new Promise((resolve, reject) => {
@@ -248,7 +253,7 @@ module Service {
                     });
                 }).then((platoon: any) => {
                     platoon.getEvent((err: Error, event: any) => {
-                        resolve(event[0].registerationOpen);
+                        resolve(event[0]);
                     });
                 });
             });
