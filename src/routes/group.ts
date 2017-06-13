@@ -57,8 +57,8 @@ module Route {
         constructor(private groupModel: any,
             private productModel: any,
             private discountModel: any,
-            private nonregisteredParticipant: any,
-            private nonRegisteredParticipantPayment: any,
+            private participantModel: any,
+            private participantPaymentModel: any,
             private productSelectionModel: any,
             private groupPaymentModel: any,
             private userService: UserService,
@@ -337,7 +337,7 @@ module Route {
         //TODO APidocs
         //Adds a nonregistered participant to group
 
-        public addNonregisteredParticipant = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        public addParticipant = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             let groupId = +req.body.groupId;
             let products = req.body.products;
             let participant = req.body.participant;
@@ -352,7 +352,7 @@ module Route {
                 let products = results[0];
                 let participant = results[1];
                 let group = results[2];
-                let paymentModel = this.nonRegisteredParticipantPayment;
+                let paymentModel = this.participantPaymentModel;
                 let self = this;
 
                 participant.getPayments(function (err: Error, payments: any) {
@@ -393,7 +393,7 @@ module Route {
                                             }
 
                                             // Link user payment to group payment
-                                            groupPayment[0].addNonregisteredParticipantPayments(payment, function (err: Error) {
+                                            groupPayment[0].addParticipantPayments(payment, function (err: Error) {
                                                 if (err) {
                                                     let errorMsg = ErrorHandler.getErrorMsg("Group Payment data", ErrorType.DATABASE_UPDATE);
                                                     return res.status(500).send(errorMsg);
@@ -422,10 +422,10 @@ module Route {
             });
         }
 
-        public getGroupNonregisteredParticipants = (req: express.Request, res: express.Response) => {
+        public getParticipants = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
             console.log("Getting participants");
-            this.getNonregisteredParticipants(groupId).then((participantInfos: any) => {
+            this.findParticipants(groupId).then((participantInfos: any) => {
 
                 console.log(JSON.stringify(participantInfos));
                 return res.status(200).json(participantInfos);
@@ -447,10 +447,10 @@ module Route {
             });
         }
 
-        private getNonregisteredParticipants = (groupId: number) => {
+        private findParticipants = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 console.log("Calling groupservice");
-                this.groupService.getNonregisteredParticipants(groupId).then((participants: any) => {
+                this.groupService.getParticipants(groupId).then((participants: any) => {
                     console.log("Parsing participantinfos");
                     console.log(JSON.stringify(participants));
                     let participantInfos = participants.map((payee: any) => {
@@ -462,7 +462,7 @@ module Route {
                     console.log("Got memberinfos");
                     resolve(participantInfos);
                 }).catch((err: APIError) => {
-                    console.log("Error in getNonregisteredParticipants:" + err.message);
+                    console.log("Error in getParticipants:" + err.message);
                     reject(err);
                 });
             });
@@ -523,7 +523,7 @@ module Route {
         }
         private createParticipant = (participant: any) => {
             return new Promise((resolve, reject) => {
-                this.nonregisteredParticipant.create({
+                this.participantModel.create({
                     firstname: participant.firstname,
                     lastname: participant.lastname,
                     age: participant.age,

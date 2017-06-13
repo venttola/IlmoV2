@@ -1,6 +1,6 @@
 "use strict";
-export function NonregisteredParticipant(db: any) {
-	var nonregisteredParticipant = db.define("NonregisteredParticipant", {
+export function Participant(db: any) {
+	var participant = db.define("Participant", {
 		firstname: {type: "text", required: true},
 		lastname: {type: "text", require: true},
 		age: {type: "number", time: false, required: true},

@@ -3,7 +3,7 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 module Service {
     export class GroupService {
         constructor(private groupModel: any,
-                    private nonregisteredParticipantModel: any,
+                    private participantModel: any,
                     private platoonModel: any,
                     private userService: any,
                     private eventService: any) { }
@@ -71,16 +71,16 @@ module Service {
             });
         }
 
-        public getNonregisteredParticipants = (groupId: number) => {
+        public getParticipants = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.getParticipantGroupPayment(groupId)
                     .then((groupPayment: any) => new Promise((resolve, reject) => {
-                        groupPayment[0].getNonregisteredParticipantPayments((err: Error, nonRegisteredParticipantPayments: any) => {
-                            err ? reject(err) : resolve(nonRegisteredParticipantPayments);
+                        groupPayment[0].getParticipantPayments((err: Error, participantPayments: any) => {
+                            err ? reject(err) : resolve(participantPayments);
                         });
-                    })).then((nonRegisteredParticipantPayments: any[]) => {
-                        console.log(JSON.stringify(nonRegisteredParticipantPayments));
-                        let promises = nonRegisteredParticipantPayments.map((up: any) => {
+                    })).then((participantPayments: any[]) => {
+                        console.log(JSON.stringify(participantPayments));
+                        let promises = participantPayments.map((up: any) => {
                             return new Promise((resolve, reject) => {
                                 up.getPayee((err: Error, payeeParticipant: any) => {
                                     console.log(JSON.stringify(payeeParticipant));
