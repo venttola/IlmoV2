@@ -79,7 +79,6 @@ module Service {
                             err ? reject(err) : resolve(participantPayments);
                         });
                     })).then((participantPayments: any[]) => {
-                        console.log(JSON.stringify(participantPayments));
                         let promises = participantPayments.map((payment: any) => {
                             return new Promise((resolve, reject) => {
                                 payment.getPayee((err: Error, payeeParticipant: any) => {
@@ -107,8 +106,6 @@ module Service {
             return new Promise((resolve, reject) => {
                 this.getGroup(groupId).then((group: any) => {
                     console.log(JSON.stringify(group));
-                    //console.log(group.platoon);
-                    //console.log(group.platoon.event);
                     group.getPlatoon((err: Error, platoon: any) => {
                         if (err) {
                            reject(err);
@@ -176,6 +173,27 @@ module Service {
                     });
             });
         }
+        private getAllParticipantPayments = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getParticipantGroupPayment(groupId)
+                    .then((groupPayment: any) => new Promise((resolve, reject) => {
+                        groupPayment[0].getParticipantPayments((err: Error, participantPayments: any) => {
+                            return err ? reject(err) : resolve(participantPayments);
+                        });
+                    })).then((participantPayments: any[]) => {
+                        let promises = participantPayments.map((payment: any) => {
+                            return new Promise((resolve, reject) => {
+                                payment.getPayee((err: Error, payeeParticipant: any) => {
+                                    payment.payeeId = payeeParticipant[0].id;
+                                    resolve(payment);
+                                });
+                            });
+                        });
+                           
+                        Promise.all(promises).then((payees: any) => resolve(payees));
+                    });
+            });
+        }
 
         public removeMember = (groupId: number, memberId: number) => {
             return new Promise((resolve, reject) => {
@@ -222,7 +240,6 @@ module Service {
                         } else {
                             self.getParticipantGroupMembers(groupId).then((memberInfos: any) => {
                                 let userInfo = memberInfos.map((up: any) => {
-                                    console.log("up: " + JSON.stringify(up));
                                     if (up) {
                                         return {
                                             id: up.id,
@@ -239,6 +256,37 @@ module Service {
                     });
                 });
             }).then((members: any) => members);
+        }
+
+        public removeParticipant = (groupId: number, participantId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getAllParticipantPayments(groupId).then((res: any) => {
+                    let participantPayments = res.filter((p: any) => p.payeeId === participantId);
+                    let removePromises = participantPayments.map((payment: any) => new Promise((resolve, reject) => {
+                        // Remove payment's product selections
+                        let psRemovePromises = payment.productSelections.map((ps: any) => new Promise((resolve, reject) => {
+                            ps.remove((err: Error) => err ? reject(err) : resolve(true));
+                        }));
+
+                        // Remove participant payments
+                        Promise.all(psRemovePromises).then((result: any) => {
+                            payment.remove((err: Error) => {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve(true);
+                                }
+                            });
+                        });
+                    }));
+
+                    return Promise.all(removePromises).then((result: any) => new Promise((resolve, reject) => {
+                        this.getParticipants(groupId).then((participants: any) => resolve(participants));
+                    }));
+                }).then((updatedParticipants: any) => {
+                    resolve(updatedParticipants);
+                });
+            });
         }
 
         private getGroupModerators = (groupId: number) => {

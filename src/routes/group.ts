@@ -403,8 +403,7 @@ module Route {
                                                                                                      ErrorType.DATABASE_UPDATE);
                                                             return res.status(500).send(errorMsg);
                                                         }
-
-                                                        return res.status(204).send();
+                                                        return res.status(200).json(participant);
                                                     });
                                                 }
                                             });
@@ -423,8 +422,6 @@ module Route {
         public getParticipants = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
             this.findParticipants(groupId).then((participantInfos: any) => {
-                console.log("The info contains");
-                console.log(JSON.stringify(participantInfos));
                 return res.status(200).json(participantInfos);
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
@@ -463,6 +460,17 @@ module Route {
                     reject(err);
                 });
             });
+        }
+         public removeParticipant = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group; // Group name or id?
+            let participantId: number = +req.params.participant;
+
+            this.groupService.removeParticipant(groupId, participantId)
+                .then((updatedParticipants: any[]) => {
+                    return res.status(200).json(updatedParticipants);
+                }).catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
+                });
         }
 
         private getPaymentProducts = (userPayments: any) => {
