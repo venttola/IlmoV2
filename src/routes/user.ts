@@ -269,7 +269,7 @@ module Route {
 								let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
 								return res.status(500).send(errorMsg);
 							} else {
-								let firstOpenPayment = payments.filter((p: any) => p.payment[0].payee_id === groupId).find((p: any) => p.isPaid === false);
+								let firstOpenPayment = payments.filter((p: any) => p.groupPayment[0].payee_id === groupId).find((p: any) => p.isPaid === false);
 
 								// If there's open payments, add products to that one
 								if (firstOpenPayment) {
@@ -403,7 +403,7 @@ module Route {
 
 			userPayments.forEach((up: any) => {
 				promises.push(new Promise((resolve, reject) => {
-					up.getPayment((err: Error, groupPayment: any) => {
+					up.getGroupPayment((err: Error, groupPayment: any) => {
 						if (err) {
 							reject(err);
 						}
@@ -593,7 +593,7 @@ module Route {
 				});
 			});
 		}
-
+		//This has been copypasted to group route, refactor to a service at some point.
 		private getProductsFromDb = (products: Number[]) => {
 			return new Promise((resolve, reject) => {
 				this.productModel.find({ id: products }, function (err: Error, products: any) {

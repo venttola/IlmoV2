@@ -2,7 +2,11 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 
 module Service {
     export class GroupService {
-        constructor(private groupModel: any, private userService: any) { }
+        constructor(private groupModel: any,
+                    private participantModel: any,
+                    private platoonModel: any,
+                    private userService: any,
+                    private eventService: any) { }
 
         public getGroup = (groupId: number) => {
             return new Promise((resolve, reject) => {
@@ -67,6 +71,61 @@ module Service {
             });
         }
 
+        public getParticipants = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getParticipantGroupPayment(groupId)
+                    .then((groupPayment: any) => new Promise((resolve, reject) => {
+                        groupPayment[0].getParticipantPayments((err: Error, participantPayments: any) => {
+                            err ? reject(err) : resolve(participantPayments);
+                        });
+                    })).then((participantPayments: any[]) => {
+                        let promises = participantPayments.map((payment: any) => {
+                            return new Promise((resolve, reject) => {
+                                payment.getPayee((err: Error, payeeParticipant: any) => {
+                                    let participantDetails = {participant: payeeParticipant[0], payment: payment};
+                                   err ? reject(err) : resolve(participantDetails);
+                                });
+                            });
+                        });
+
+                        Promise.all(promises).then((payees: any) => {
+                            // Get only unique users, there can be multiple userpayments per user
+                            let uniquePayees = payees.filter((value: any, index: any, self: any) => {
+                                return self.indexOf(value) === index;
+                            });
+                            resolve(uniquePayees);
+                        });
+                    }).catch((error: APIError) => {
+                        console.log(error);
+                        reject(error);
+                    });
+            });
+        }
+        // TODO: Platoon and platoon event getting should be refactored to a service
+        public getAvailableProducts = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getGroup(groupId).then((group: any) => {
+                    console.log(JSON.stringify(group));
+                    group.getPlatoon((err: Error, platoon: any) => {
+                        if (err) {
+                           reject(err);
+                        } else {
+                           return resolve(this.eventService.getEventProducts(platoon[0].event[0].id));
+                           //The event is autofetched, and for some reason the platoo.getEvent does not find the event.
+                           /*platoon[0].getEvent((err: Error, event: any) => {
+                               if (err) {
+                                   reject(err);
+                                } else {
+                                    console.log(JSON.stringify(event));
+                                   return this.eventService.getEventProducts(event.id);
+                                }
+                            });*/
+                        }
+                    });
+                });
+            });
+        }
+
         public receiptMemberPayment(groupId: number, memberId: number) {
             return new Promise((resolve, reject) => {
                 this.getAllMemberPayments(groupId)
@@ -110,6 +169,27 @@ module Service {
                             });
                         });
 
+                        Promise.all(promises).then((payees: any) => resolve(payees));
+                    });
+            });
+        }
+        private getAllParticipantPayments = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getParticipantGroupPayment(groupId)
+                    .then((groupPayment: any) => new Promise((resolve, reject) => {
+                        groupPayment[0].getParticipantPayments((err: Error, participantPayments: any) => {
+                            return err ? reject(err) : resolve(participantPayments);
+                        });
+                    })).then((participantPayments: any[]) => {
+                        let promises = participantPayments.map((payment: any) => {
+                            return new Promise((resolve, reject) => {
+                                payment.getPayee((err: Error, payeeParticipant: any) => {
+                                    payment.payeeId = payeeParticipant[0].id;
+                                    resolve(payment);
+                                });
+                            });
+                        });
+                           
                         Promise.all(promises).then((payees: any) => resolve(payees));
                     });
             });
@@ -160,7 +240,6 @@ module Service {
                         } else {
                             self.getParticipantGroupMembers(groupId).then((memberInfos: any) => {
                                 let userInfo = memberInfos.map((up: any) => {
-                                    console.log("up: " + JSON.stringify(up));
                                     if (up) {
                                         return {
                                             id: up.id,
@@ -193,6 +272,36 @@ module Service {
                     platoon.getEvent((err: Error, event: any) => {
                         resolve(event[0].registerationOpen);
                     });
+                });
+            });
+        }
+        public removeParticipant = (groupId: number, participantId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getAllParticipantPayments(groupId).then((res: any) => {
+                    let participantPayments = res.filter((p: any) => p.payeeId === participantId);
+                    let removePromises = participantPayments.map((payment: any) => new Promise((resolve, reject) => {
+                        // Remove payment's product selections
+                        let psRemovePromises = payment.productSelections.map((ps: any) => new Promise((resolve, reject) => {
+                            ps.remove((err: Error) => err ? reject(err) : resolve(true));
+                        }));
+
+                        // Remove participant payments
+                        Promise.all(psRemovePromises).then((result: any) => {
+                            payment.remove((err: Error) => {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve(true);
+                                }
+                            });
+                        });
+                    }));
+
+                    return Promise.all(removePromises).then((result: any) => new Promise((resolve, reject) => {
+                        this.getParticipants(groupId).then((participants: any) => resolve(participants));
+                    }));
+                }).then((updatedParticipants: any) => {
+                    resolve(updatedParticipants);
                 });
             });
         }

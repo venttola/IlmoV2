@@ -1,6 +1,10 @@
 h4 {
     text-align: center;
 }
+.group-moderation {
+    text-align: center;
+    width: 50%
+}
 
 .remove-member-button {
     display: inline-block;
@@ -39,4 +43,13 @@ h4 {
 
 .productlist-header {
     font-weight: bold;
+}
+
+.participantgroup-section, .product-sections {
+    text-align: left;
+}
+
+.product-list {
+    list-style-type: none;
+    padding: 0;
 }
