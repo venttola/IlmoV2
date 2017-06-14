@@ -29,13 +29,16 @@ export class GroupPageComponent implements OnInit {
 
   newParticipant: Participant;
 
+  selectedParticipant: Participant;
+  selectedParticipantPayments: UserPayment[];
+
   @ViewChild(GroupModalComponent)
   modal: GroupModalComponent;
   errorMessage: string;
 
   constructor(private route: ActivatedRoute,
-    private participantGroupService: ParticipantGroupService,
-    private groupModerationService: GroupModerationService) { 
+              private participantGroupService: ParticipantGroupService,
+              private groupModerationService: GroupModerationService) { 
     this.newParticipant = new Participant;
     this.errorMessage = "";
   }
@@ -132,6 +135,7 @@ export class GroupPageComponent implements OnInit {
   onCloseModal() {
     this.modal.hide();
   }
+
   addParticipant(){
     console.log("Adding participant");
      let selectedProducts = this.availableProducts.filter((p: Product) => p.selected === true);
@@ -149,5 +153,16 @@ export class GroupPageComponent implements OnInit {
       }, error => {
         this.errorMessage = "Tapahtui virhe";
       });
+  }
+
+  onSelectParticipant(participant: Participant) {
+    this.selectedParticipant = participant;
+    this.groupModerationService.getParticipantPayments(this.participantGroup.id, this.selectedParticipant.id)
+      .subscribe((participantPayments: UserPayment[]) => {
+        console.log(participantPayments);
+        this.selectedParticipantPayments = participantPayments;
+      },
+      (error: any) => console.log(error));
+
   }
 }
