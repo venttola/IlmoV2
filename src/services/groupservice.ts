@@ -80,11 +80,11 @@ module Service {
                         });
                     })).then((participantPayments: any[]) => {
                         console.log(JSON.stringify(participantPayments));
-                        let promises = participantPayments.map((up: any) => {
+                        let promises = participantPayments.map((payment: any) => {
                             return new Promise((resolve, reject) => {
-                                up.getPayee((err: Error, payeeParticipant: any) => {
-                                    console.log(JSON.stringify(payeeParticipant));
-                                   err ? reject(err) : resolve(payeeParticipant[0]);
+                                payment.getPayee((err: Error, payeeParticipant: any) => {
+                                    let participantDetails = {participant: payeeParticipant[0], payment: payment};
+                                   err ? reject(err) : resolve(participantDetails);
                                 });
                             });
                         });

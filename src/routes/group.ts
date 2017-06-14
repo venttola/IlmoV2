@@ -298,7 +298,7 @@ module Route {
                     } else {
                         member.getUserPayments((err: Error, userPayments: any) => {
                             console.log(userPayments);
-                            return err ? reject(err) : resolve(userPayments.filter((p: any) => p.payment[0].payee_id === groupId));
+                            return err ? reject(err) : resolve(userPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
                         });
                     }
                 });
@@ -341,9 +341,8 @@ module Route {
             let groupId = +req.body.groupId;
             let products = req.body.products;
             let participant = req.body.participant;
-            let productIds = products.map((p: any) => p[0]);
-            let discountIds = products.map((p: any) => p[1]);
-
+            let productIds = products.map((p: any) => p.id);
+            let discountIds = products.map((p: any) => p.discounts.map((d: any) => d.id));
             Promise.all([
                 this.getProductsFromDb(productIds),
                 this.createParticipant(participant),
@@ -354,7 +353,6 @@ module Route {
                 let group = results[2];
                 let paymentModel = this.participantPaymentModel;
                 let self = this;
-
                 participant.getPayments(function (err: Error, payments: any) {
                     if (err) {
                         let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
@@ -376,7 +374,7 @@ module Route {
                                 });
                             });
                         } else {
-                            // Create new user payment
+                            // Create new participant payment
                             paymentModel.create({
                                 isPaid: false
                             }, function (err: Error, payment: any) {
@@ -424,16 +422,17 @@ module Route {
 
         public getParticipants = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
-            console.log("Getting participants");
             this.findParticipants(groupId).then((participantInfos: any) => {
-
+                console.log("The info contains");
                 console.log(JSON.stringify(participantInfos));
                 return res.status(200).json(participantInfos);
             }).catch((err: APIError) => {
-                console.log("Hit an error, " + err.message + "Error code: " + err.statusCode);
                 return res.status(err.statusCode).send(err.message);
             });
         }
+        /*public getParticipantDetails = (req: express.Request, res: express.Response) => {
+
+        }*/
 
         public getAvailableProducts = (req: express.Request, res: express.Response) => {
             console.log("Getting available products");
@@ -451,18 +450,16 @@ module Route {
             return new Promise((resolve, reject) => {
                 console.log("Calling groupservice");
                 this.groupService.getParticipants(groupId).then((participants: any) => {
-                    console.log("Parsing participantinfos");
-                    console.log(JSON.stringify(participants));
-                    let participantInfos = participants.map((payee: any) => {
+                    resolve (participants);
+                    /*let participantInfos = participants.map((payee: any) => {
                         return {
                             id: payee.id,
                             name: payee.firstname + " " + payee.lastname,
                         };
                     });
                     console.log("Got memberinfos");
-                    resolve(participantInfos);
+                    resolve(participantInfos);*/
                 }).catch((err: APIError) => {
-                    console.log("Error in getParticipants:" + err.message);
                     reject(err);
                 });
             });
@@ -545,7 +542,7 @@ module Route {
         //More copypasta from User route
         private addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
             let selectionPromises: any = [];
-
+            console.log("Adding products");
             products.forEach((p: any) => {
                 selectionPromises.push(new Promise((resolve, reject) => {
                     this.productSelectionModel.create({}, function (err: Error, ps: any) {
