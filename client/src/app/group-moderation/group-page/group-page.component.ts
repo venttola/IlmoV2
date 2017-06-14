@@ -34,13 +34,16 @@ export class GroupPageComponent implements OnInit {
 
   @ViewChild(GroupModalComponent)
   modal: GroupModalComponent;
+
   errorMessage: string;
+  infoMessage: string;
 
   constructor(private route: ActivatedRoute,
               private participantGroupService: ParticipantGroupService,
               private groupModerationService: GroupModerationService) { 
     this.newParticipant = new Participant;
     this.errorMessage = "";
+    this.infoMessage = "";
   }
 
   ngOnInit() {
@@ -52,9 +55,7 @@ export class GroupPageComponent implements OnInit {
       .switchMap((params: Params) => this.groupModerationService.getGroupMembers(+params["groupId"]))
       .subscribe((members: Member[]) => this.members = members);
 
-    this.route.params
-      .switchMap((params: Params) => this.groupModerationService.getParticipants(+params["groupId"]))
-      .subscribe((participants: Participant[]) => this.participants = participants);
+    this.getParticipants();
     this.route.params
       .switchMap((params: Params) => this.groupModerationService.getAvailableProducts(+params["groupId"]))
       .subscribe((products: Product[]) => this.availableProducts = products);
@@ -135,8 +136,15 @@ export class GroupPageComponent implements OnInit {
   onCloseModal() {
     this.modal.hide();
   }
+  getParticipants() {
+    this.route.params
+      .switchMap((params: Params) => this.groupModerationService.getParticipants(+params["groupId"]))
+      .subscribe((participants: Participant[]) => this.participants = participants);
+  }
 
   addParticipant(){
+    this.infoMessage = "";
+    this.errorMessage = "";
     console.log("Adding participant");
      let selectedProducts = this.availableProducts.filter((p: Product) => p.selected === true);
 
@@ -148,10 +156,20 @@ export class GroupPageComponent implements OnInit {
     });
 
     this.groupModerationService.createParticipant(this.participantGroup.id, this.newParticipant, selectedProducts)
-      .subscribe((res: any) => {
+      .subscribe((participant: any) => {
         console.log("Participant added succesfully");
+        this.getParticipants();
+        this.infoMessage = "Osallistuja " + participant.firstname + " "  + participant.lastname + " lisätty onnistuneesti";
       }, error => {
         this.errorMessage = "Tapahtui virhe";
+      });
+  }
+  removeParticipant(participant: Participant){
+    console.log("Removing participant");
+    this.groupModerationService.removeParticipant(this.participantGroup.id, participant.id).
+      subscribe((participants: Participant[] ) => {
+        this.infoMessage ="Osallistuja " + participant.firstname + " "  + participant.lastname + " poistettu onnistuneesti";
+        this.participants = participants;
       });
   }
 

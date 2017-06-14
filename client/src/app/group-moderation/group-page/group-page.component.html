@@ -17,8 +17,8 @@
   <h5>Rekisteröitymättömät jäsenet</h5>
   <ul class="common-list">
     <li *ngFor="let p of participants">
-      <div class="group-item unselectable clickable">
-        <p>{{ p.firstname }} {{p.lastname}} </p>
+      <div class="group-item participant unselectable clickable">
+        <p>{{ p.firstname }} {{p.lastname}} <button type="button" class="btn btn-sm btn-warning" (click)="removeParticipant(p)">Poista</button></p> 
       </div>
     </li>
   </ul>
@@ -61,8 +61,8 @@
     <div [hidden]="!errorMessage" class="alert alert-danger">
       {{errorMessage}}
     </div>
-    <div [hidden]="!newParticipant.id" class="alert alert-success">
-      Uusi osallistuja lisätty onnistuneesti.
+    <div [hidden]="!infoMessage" class="alert alert-success">
+      {{infoMessage}}
     </div>
   </div>
 </div>

@@ -102,6 +102,16 @@ export class GroupModerationService extends AuthorizedHttpService {
         return this.extractData(res);
        }).catch(this.handleError);
   }
+  removeParticipant(groupId: number, participantId: number): Observable<any> {
+    return this.http.delete("/api/group/" + groupId + "/moderator/participants/" + participantId, {headers: this.headers })
+      .map((res: Response) => {
+        return this.extractData(res).map(p => {
+          let participant = Participant.fromJSON(p.participant);
+          participant.payment = UserPayment.fromJSON(p.payment);
+          return participant;
+        });
+      }).catch(this.handleError);
+  }
 
   getAvailableProducts(groupId: number): Observable<Product[]> {
     return this.http.get("/api/group/" + groupId + "/moderator/products", { headers: this.headers})
