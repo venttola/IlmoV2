@@ -86,7 +86,10 @@ export class GroupModerationService extends AuthorizedHttpService {
       .map((res: Response) => {
         console.log(res);
         return this.extractData(res).map(data => { 
-          return Participant.fromJSON(data.participant);
+          let participant = Participant.fromJSON(data.participant);
+          participant.payment = UserPayment.fromJSON(data.payment);
+          return participant;
+
         });
       }).catch(this.handleError);
   }

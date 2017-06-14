@@ -17,8 +17,8 @@
   <h5>Rekisteröitymättömät jäsenet</h5>
   <ul class="common-list">
     <li *ngFor="let p of participants">
-      <div class="group-item unselectable clickable" (click)="onSelectParticipant(p)">
-        <p>{{ p.firstname }} {{p.lastname}}</p>
+      <div class="group-item unselectable clickable">
+        <p>{{ p.firstname }} {{p.lastname}} </p>
       </div>
     </li>
   </ul>
