@@ -13,6 +13,7 @@ import { Routing, RoutedComponents } from './app.routing';
 import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
+import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
 import { EventService } from "./event.service";
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
@@ -66,6 +67,7 @@ import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-poli
     AuthService,
     AuthGuard,
     AdminGuard,
+    GroupModeratorGuard,
     EventService,
     LoginService,
     SignupService,

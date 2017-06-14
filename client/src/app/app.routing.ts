@@ -4,6 +4,7 @@ import { Routes, RouterModule, CanActivate } from '@angular/router';
 
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
+import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
 
 
 import { FrontPageComponent } from "./front-page/front-page.component";
@@ -70,12 +71,12 @@ const appRoutes: Routes = [
   {
     path: "moderation",
     component: GroupModerationComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ]
   },
   {
     path: "groups/:groupId",
     component: GroupPageComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, GroupModeratorGuard]
   },
   {
     path: "**",
