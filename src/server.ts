@@ -139,6 +139,7 @@ class Server {
 			new eventRoutes.EventRoutes(
 				models.Event,
 				models.Product,
+				models.Discount,
 				models.Platoon,
 				models.ParticipantGroup,
 				models.GroupPayment,
@@ -151,6 +152,7 @@ class Server {
 		router.post(this.API_PREFIX + "/events", /*this.priviledgeChecker.checkAdmin,*/ eventRoute.addEvent);
 		router.get(this.API_PREFIX + "/events/:event/product", eventRoute.getEventProducts);
 		router.post(this.API_PREFIX + "/events/:event/product", eventRoute.addProduct);
+		router.patch(this.API_PREFIX + "/events/:event/product", eventRoute.updateProduct);
 		router.post(this.API_PREFIX + "/events/:event/organization", eventRoute.setOrganization);
 		router.delete(this.API_PREFIX + "/events/:event", eventRoute.deleteEvent);
 		router.post(this.API_PREFIX + "/events/:event/group", eventRoute.addParticipantGroup);

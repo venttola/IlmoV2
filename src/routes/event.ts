@@ -29,6 +29,7 @@ module Route {
     export class EventRoutes {
         constructor(private eventModel: any,
             private productModel: any,
+            private discountModel: any,
             private platoonModel: any,
             private participantGroupModel: any,
             private groupPaymentModel: any,
@@ -128,7 +129,6 @@ module Route {
         * @apiError DatabaseReadError ERROR: Event product data could not be read from the database
         */
         public getEventProducts = (req: express.Request, res: express.Response) => {
-            console.log("Getting event products");
             let eventId = req.params.event;
 
             this.eventModel.one({ id: eventId }, function (err: Error, event: any) {
@@ -144,7 +144,6 @@ module Route {
                             let errorMsg = ErrorHandler.getErrorMsg("Event product data", ErrorType.DATABASE_READ);
                             return res.status(500).send(errorMsg);
                         } else {
-                            console.log(prods);
                             return res.status(200).json(prods);
                         }
                     });
@@ -209,26 +208,40 @@ module Route {
         * @apiError DatabaseReadError ERROR: Event data could not be read from the database
         */
         public updateProduct = (req: express.Request, res: express.Response) => {
+            let self = this;
             let eventId: number = req.params.event;
             let productId: number = req.body.id;
             let productName = req.body.name;
             let productPrice = req.body.price;
-            let discounts: any[] = JSON.parse( req.body.discounts);
+            let discounts = req.body.discounts;
             this.getEvent(eventId).then((event: any) => {
                 this.productModel.one( {
                     id: productId,
-                }, function (err: Error, prod: any) {
+                }, function (err: Error, product: any) {
                     if (err) {
                         let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
                         return res.status(500).send(errorMsg);
                     } else {
-                        event.addProducts(prod, function (err: Error) {
+                        let discountPromises: any = discounts.map((discount: any) => {
+                            if (!discount.id) {
+                                return self.createDiscount(product, discount);
+                            } else {
+                                return self.updateDiscount(product, discount);
+                            }
+
+                        });
+                        Promise.all(discountPromises).then((promises: any) => {
+                            return res.status(204).send();
+                        }).catch((err: APIError) => {
+                            return res.status(err.statusCode).send(err.message);
+                        });
+                       /* event.addProducts(prod, function (err: Error) {
                             if (err) {
                                 return res.status(500).send("ERROR: Adding product to event failed");
                             } else {
                                 return res.status(204).send();
                             }
-                        });
+                        });*/
                     }
                 });
             }).catch((err: APIError) => {
@@ -515,6 +528,62 @@ module Route {
                         }).catch((err: APIError) => {
                             return reject(err);
                         });
+                    }
+                });
+            });
+        }
+        private createDiscount = (product: any, discount: any) => {
+            let self = this;
+            return new Promise((resolve, reject) => {
+                self.discountModel.create({
+                    name: discount.name,
+                    amount: discount.amount
+                }, function (err: Error, discount: any) {
+                    if (err || !discount) {
+                        console.log(err);
+                        let errorMsg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(500, errorMsg));
+                    } else {
+                            discount.setProduct(product, function (err: Error) {
+                                if (err) {
+                                    let msg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
+                                    return reject(new DatabaseError(500, msg));
+                                } else {
+                                    console.log(JSON.stringify(product));
+                                    return resolve(discount);
+                                }
+                            });
+                    }
+                });
+            });
+        }
+        private updateDiscount = (product: any, newDiscount: any) => {
+            let self = this;
+            return new Promise((resolve, reject) => {
+                self.discountModel.find({
+                    id: newDiscount.id
+                }, function (err: Error, discount: any) {
+                    if (err || !discount) {
+                        console.log(err);
+                        let errorMsg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(500, errorMsg));
+                    } else {
+                        resolve(discount);
+                        /*console.log("Before saving");
+                        console.log(JSON.stringify( discount));
+                        discount.name = newDiscount.name;
+                        discount.amount = newDiscount.amount;
+                        console.log("Trying to save");
+                        console.log(JSON.stringify( discount));
+                        console.log("With this data");
+                        console.log(JSON.stringify(newDiscount));
+                        //The Discount need to be updated here, will be done on a later date
+                        // The orm is causing wierd behaviour at the moment
+                        discount.save(function(err: Error, discount: any){
+                             err ?
+                             reject(new DatabaseError(500, ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION))) :
+                             resolve(discount);
+                        });*/
                     }
                 });
             });
