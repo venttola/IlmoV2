@@ -31,9 +31,12 @@ export class GroupPageComponent implements OnInit {
 
   selectedParticipant: Participant;
   selectedParticipantPayments: UserPayment[];
+  
+  @ViewChild('memberModal')
+  memberModal: GroupModalComponent;
 
-  @ViewChild(GroupModalComponent)
-  modal: GroupModalComponent;
+  @ViewChild('participantModal')
+  participantModal: GroupModalComponent;
 
   errorMessage: string;
   infoMessage: string;
@@ -73,7 +76,7 @@ export class GroupPageComponent implements OnInit {
       },
       (error: any) => console.log(error));
 
-    this.modal.show();
+    this.memberModal.show();
   }
 
   onRemoveMember() {
@@ -83,7 +86,7 @@ export class GroupPageComponent implements OnInit {
       .subscribe((members: Member[]) => {
         console.log("members: " + JSON.stringify(members));
         this.members = members;
-        this.modal.hide();
+        this.memberModal.hide();
       });
   }
 
@@ -109,7 +112,7 @@ export class GroupPageComponent implements OnInit {
         if (selected) {
           this.selectedMember = selected;
         } else {
-          this.modal.hide();
+          this.memberModal.hide();
           this.selectedMember = null;
         }
       });
@@ -127,15 +130,16 @@ export class GroupPageComponent implements OnInit {
         if (selected) {
           this.selectedMember = selected;
         } else {
-          this.modal.hide();
+          this.memberModal.hide();
           this.selectedMember = null;
         }
       });
   }
 
   onCloseModal() {
-    this.modal.hide();
+    this.memberModal.hide();
   }
+
   getParticipants() {
     this.route.params
       .switchMap((params: Params) => this.groupModerationService.getParticipants(+params["groupId"]))
@@ -182,5 +186,9 @@ export class GroupPageComponent implements OnInit {
       },
       (error: any) => console.log(error));
 
+  }
+  
+  onSelectModal() {
+    this.participantModal.show();
   }
 }
