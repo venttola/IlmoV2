@@ -4,7 +4,7 @@
     <input type="checkbox" class="product-checkbox" name="isSelected" [(ngModel)]="product.selected">
   </div>
 
-  <div class="discount-section" *ngIf="!product.discounts" [hidden]="!product.selected">
+  <div class="discount-section" [hidden]="!product.selected || product.discounts.length==0">
     <div><label>Alennus</label></div>
 
     <select name="discount" [ngModel]="selectedDiscount" (ngModelChange)="onChange($event)">
@@ -12,7 +12,7 @@
             {{d.name}} ({{d.amount}})
         </option>
         <option [ngValue]="null">
-            Ei valittavia alennuksia.
+            Valitse alennus.
         </option>
     </select>
   </div>
