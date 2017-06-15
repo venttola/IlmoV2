@@ -42,6 +42,7 @@ module Route {
         * @apiGroup Event
         * @apiParam {JSON} name {name: "Event name"}
         * @apiParam {JSON} startDate {startDate: "2017-01-01T12:00:00+0200"}
+        * @apiParam {JSON} endDate {endDate: "2017-01-02T12:00:00+0200"}
         * @apiSuccess (204) -
         * @apiError DatabaseInsertionError ERROR: Event data insertion failed
         */
@@ -61,6 +62,16 @@ module Route {
                 }
             });
         }
+        /**
+        * @api {patch} api/events/:event Updated event data
+        * @apiName New event
+        * @apiGroup Event
+        * @apiParam {JSON} name {name: "Event name"}
+        * @apiParam {JSON} startDate {startDate: "2017-01-01T12:00:00+0200"}
+        * @apiSuccess (204) -
+        * @apiError DatabaseInsertionError ERROR: Event data insertion failed
+        */
+
 
         /**
         * @api {delete} api/events/:event
@@ -148,6 +159,7 @@ module Route {
         * @apiParam {Number} event Events unique ID
         * @apiParam {JSON} name {name: "Product name"}
         * @apiParam {JSON} price {price: "Product price"}
+        * @apiParam {JSON} discounts [{name: "Free entry"}, amount: 10]
         * @apiSuccess (200) JSON {id: 1, name: "Product name", price: "Product price"}
         * @apiError DatabaseInsertionError ERROR: Product data insertion failed
         * @apiError NotFound ERROR: Event was not found
@@ -158,10 +170,53 @@ module Route {
             let eventId = req.params.event;
             let productName = req.body.name;
             let productPrice = req.body.price;
+            let discounts: any[] = JSON.parse( req.body.discounts);
             this.getEvent(eventId).then((event: any) => {
                 this.productModel.create({
                     name: productName,
                     price: productPrice
+                }, function (err: Error, prod: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+                        return res.status(500).send(errorMsg);
+                    } else {
+                        event.addProducts(prod, function (err: Error) {
+                            if (err) {
+                                return res.status(500).send("ERROR: Adding product to event failed");
+                            } else {
+                                return res.status(204).send();
+                            }
+                        });
+                    }
+                });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+
+        /**
+        * @api {patch} api/events/:event/product Adds event products
+        * @apiName Update event product
+        * @apiGroup Event
+        * @apiParam {Number} event Events unique ID
+        * @apiParam {JSON} name {name: "Product name"}
+        * @apiParam {JSON} price {price: "Product price"}
+        * @apiParam {JSON} discounts [{name:"Ilmainen tapahtuma", amount:10}]
+        * @apiSuccess (200) JSON {id: 1, name: "Product name", price: "Product price"}
+        * @apiError DatabaseInsertionError ERROR: Product data insertion failed
+        * @apiError NotFound ERROR: Event was not found
+        * @apiError DatabaseInsertionError ERROR: Adding product to event failed
+        * @apiError DatabaseReadError ERROR: Event data could not be read from the database
+        */
+        public updateProduct = (req: express.Request, res: express.Response) => {
+            let eventId: number = req.params.event;
+            let productId: number = req.body.id;
+            let productName = req.body.name;
+            let productPrice = req.body.price;
+            let discounts: any[] = JSON.parse( req.body.discounts);
+            this.getEvent(eventId).then((event: any) => {
+                this.productModel.one( {
+                    id: productId,
                 }, function (err: Error, prod: any) {
                     if (err) {
                         let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
