@@ -59,7 +59,6 @@ module Route {
                                         "moderatedGroups": JSON.stringify(moderatedGroups),
                                         "organizationMemberships": JSON.stringify(organizationMemberships)
                                     };
-                                    
                                     jwt.sign(userInfo, self.superSecret, options, function(err: any, token: any ){
                                         if (err) {
                                             console.log(err);

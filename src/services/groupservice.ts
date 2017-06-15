@@ -189,7 +189,6 @@ module Service {
                                 });
                             });
                         });
-                           
                         Promise.all(promises).then((payees: any) => resolve(payees));
                     });
             });
