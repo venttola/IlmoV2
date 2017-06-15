@@ -18,8 +18,8 @@ import { EventManagementService } from "./event-management.service";
 export class EventManagementComponent implements OnInit {
 	event: Event;
 	eventDetails: EventDetails;
-	newPlatoons: Platoon[];
-	newProducts: Product[];
+	eventPlatoons: Platoon[];
+	eventProducts: Product[];
 
 	private groupsByPlatoon: Map<number, ParticipantGroup[]> = new Map<number, ParticipantGroup[]>();
 	error: any;
@@ -27,8 +27,8 @@ export class EventManagementComponent implements OnInit {
 				 private eventManagementService: EventManagementService,
 				 private eventDetailsService: EventDetailsService ) {
 		this.event = new Event();
-		this.newPlatoons = new Array<Platoon>();
-		this.newProducts = new Array<Product>();
+		this.eventPlatoons = new Array<Platoon>();
+		this.eventProducts = new Array<Product>();
 	}
 
 	ngOnInit() {
@@ -40,10 +40,10 @@ export class EventManagementComponent implements OnInit {
 		this.route.params
 		.switchMap((params: Params) => this.eventDetailsService.getEventDetails(+params["eventId"]))
 		.subscribe((eventDetails: EventDetails) => {
-			console.log(eventDetails);
+			//console.log(eventDetails);
 			this.eventDetails = eventDetails;
 			this.event = eventDetails.event;
-			this.newPlatoons = eventDetails.platoonList;
+			this.eventPlatoons = eventDetails.platoonList;
 			eventDetails.platoonList.map(p => this.groupsByPlatoon.set(p.id, p.participantGroups));
 		},
 		error => this.error = <any>error);
@@ -53,7 +53,7 @@ export class EventManagementComponent implements OnInit {
 		switchMap((params: Params) => this.eventDetailsService.getEventProducts(+params["eventId"])).
 		subscribe((products: Product[]) => {
 			console.log(products);
-			this.newProducts = products;
+			this.eventProducts = products;
 		},
 		error => this.error =<any>error);
 	}
@@ -81,11 +81,17 @@ export class EventManagementComponent implements OnInit {
 	}
 	updateEvent(){
 		console.log(this.eventDetails);
+		console.log(this.eventProducts);
 		console.log("foo");
+		this.eventManagementService.updateEvent(this.event, this.eventPlatoons, this.eventProducts)
+		  .subscribe((result: any) => {
+		  	console.log(result);
+
+		  }, error => this.error = <any>error);
 	}
 	addInputForPlatoon(){
 		this.eventDetails.platoonList.push(new Platoon);
-		console.log(JSON.stringify(this.newPlatoons));
+		console.log(JSON.stringify(this.eventPlatoons));
 	}
 	removeInputForPlatoon(){
 		this.eventDetails.platoonList.pop();
@@ -95,9 +101,21 @@ export class EventManagementComponent implements OnInit {
 		return platoon.name;
 	}
 	addInputForProduct(){
-		this.newProducts.push(new Product);
+		this.eventProducts.push(new Product);
 	}
 	removeInputForProduct(){
-		this.newProducts.pop();
+		this.eventProducts.pop();
+	}
+	trackProduct(index: number, product: Product): string{
+		return product.name;
+	}
+	addInputForDiscount(product: Product){
+		product.discounts.push(new Discount);
+	}
+	removeInputForDiscount(product: Product){
+		product.discounts.pop();
+	}
+	trackDiscount(index: number, discount: Discount): string{
+		return discount.name;
 	}
 }
