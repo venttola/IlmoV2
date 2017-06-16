@@ -7,7 +7,7 @@ export class Participant {
   age: number;
   allergies: string;
 
-  payment: UserPayment;
+  payments: UserPayment[];
   static fromJSON(json: any): Participant {
     let participant = Object.create(Participant.prototype);
     Object.assign(participant, json);

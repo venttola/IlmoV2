@@ -136,8 +136,11 @@ export class GroupPageComponent implements OnInit {
       });
   }
 
-  onCloseModal() {
+  onCloseMemberModal() {
     this.memberModal.hide();
+  }
+  onCloseParticipantModal() {
+    this.participantModal.hide();
   }
 
   getParticipants() {
@@ -168,27 +171,26 @@ export class GroupPageComponent implements OnInit {
         this.errorMessage = "Tapahtui virhe";
       });
   }
-  removeParticipant(participant: Participant){
+  removeParticipant(){
     console.log("Removing participant");
-    this.groupModerationService.removeParticipant(this.participantGroup.id, participant.id).
+    this.groupModerationService.removeParticipant(this.participantGroup.id, this.selectedParticipant.id).
       subscribe((participants: Participant[] ) => {
-        this.infoMessage ="Osallistuja " + participant.firstname + " "  + participant.lastname + " poistettu onnistuneesti";
+        this.infoMessage ="Osallistuja " + this.selectedParticipant.firstname + " "  + this.selectedParticipant.lastname + " poistettu onnistuneesti";
         this.participants = participants;
+        this.participantModal.hide();
       });
   }
-
+  //old, not used version
   onSelectParticipant(participant: Participant) {
     this.selectedParticipant = participant;
     this.groupModerationService.getParticipantPayments(this.participantGroup.id, this.selectedParticipant.id)
       .subscribe((participantPayments: UserPayment[]) => {
         console.log(participantPayments);
         this.selectedParticipantPayments = participantPayments;
+        this.participantModal.show();
       },
       (error: any) => console.log(error));
 
   }
   
-  onSelectModal() {
-    this.participantModal.show();
-  }
 }
