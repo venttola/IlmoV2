@@ -341,8 +341,8 @@ module Route {
             let groupId = +req.body.groupId;
             let products = req.body.products;
             let participant = req.body.participant;
-            let productIds = products.map((p: any) => p.id);
-            let discountIds = products.map((p: any) => p.discounts.map((d: any) => d.id));
+            let productIds = products.map((p: any) => p[0]);
+            let discountIds = products.map((p: any) => p[1]);
             Promise.all([
                 this.getProductsFromDb(productIds),
                 this.createParticipant(participant),
@@ -432,7 +432,6 @@ module Route {
         }*/
 
         public getAvailableProducts = (req: express.Request, res: express.Response) => {
-            console.log("Getting available products");
             let groupId = req.params.group;
             this.groupService.getAvailableProducts(groupId).
             then((products: any) => {
@@ -443,9 +442,38 @@ module Route {
             });
         }
 
+        public getParticipantPayments = (req: express.Request, res: express.Response) => {
+            let groupId = +req.params.group;
+            let participantId: number = +req.params.participant;
+
+            this.groupService.getParticipants(groupId).then((participants: any) => {
+                let participant = participants.find((p: any) => p.id === participantId);
+                return new Promise((resolve, reject) => {
+                    if (participant == null) {
+                        let msg = ErrorHandler.getErrorMsg("Participant not found in group", null);
+                        reject(new APIError(404, msg));
+                    } else {
+                        participant.getPayments((err: Error, participantPayments: any) => {
+                            return err ?
+                            reject(err) :
+                            resolve(participantPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
+                        });
+                    }
+                }).catch((err: APIError) => {
+                    console.log(err);
+                    
+                });
+            }).then((participantPayments: any) => {
+                return this.getPaymentProducts(participantPayments);
+            }).then((finalPayments: any[]) => {
+                return res.status(200).json(this.mapPaymentProducts(finalPayments));
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+
         private findParticipants = (groupId: number) => {
             return new Promise((resolve, reject) => {
-                console.log("Calling groupservice");
                 this.groupService.getParticipants(groupId).then((participants: any) => {
                     resolve (participants);
                     /*let participantInfos = participants.map((payee: any) => {
@@ -550,23 +578,26 @@ module Route {
         //More copypasta from User route
         private addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
             let selectionPromises: any = [];
-            console.log("Adding products");
             products.forEach((p: any) => {
                 selectionPromises.push(new Promise((resolve, reject) => {
                     this.productSelectionModel.create({}, function (err: Error, ps: any) {
-                        ps.setProduct(p, function (err: Error) {
-                            let disc = p.discounts.find((d: any) => discountIds.some((di: any) => di === d.id));
-
-                            if (disc) {
-                                ps.setDiscount(disc, (err: Error) =>
-                                    err ? reject(err)
-                                        : payment.addProductSelections(ps, (err: Error) =>
-                                            err ? reject(err)
-                                                : resolve(true)));
-                            } else {
-                                payment.addProductSelections(ps, (err: Error) => err ? reject(err) : resolve(true));
-                            }
-                        });
+                        if(err) {
+                            console.log(err);
+                            reject(err);
+                        } else {
+                            ps.setProduct(p, function (err: Error) {
+                                let disc = p.discounts.find((d: any) => discountIds.some((di: any) => di === d.id));
+                                if (disc) {
+                                    ps.setDiscount(disc, (err: Error) =>
+                                        err ? reject(err)
+                                            : payment.addProductSelections(ps, (err: Error) =>
+                                                err ? reject(err)
+                                                    : resolve(true)));
+                                } else {
+                                    payment.addProductSelections(ps, (err: Error) => err ? reject(err) : resolve(true));
+                                }
+                            });
+                        }
                     });
                 }));
             });

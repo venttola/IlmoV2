@@ -82,8 +82,7 @@ module Service {
                         let promises = participantPayments.map((payment: any) => {
                             return new Promise((resolve, reject) => {
                                 payment.getPayee((err: Error, payeeParticipant: any) => {
-                                    let participantDetails = {participant: payeeParticipant[0], payment: payment};
-                                   err ? reject(err) : resolve(participantDetails);
+                                   err ? reject(err) : resolve(payeeParticipant[0]);
                                 });
                             });
                         });
@@ -93,6 +92,7 @@ module Service {
                             let uniquePayees = payees.filter((value: any, index: any, self: any) => {
                                 return self.indexOf(value) === index;
                             });
+
                             resolve(uniquePayees);
                         });
                     }).catch((error: APIError) => {
@@ -105,7 +105,6 @@ module Service {
         public getAvailableProducts = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.getGroup(groupId).then((group: any) => {
-                    console.log(JSON.stringify(group));
                     group.getPlatoon((err: Error, platoon: any) => {
                         if (err) {
                            reject(err);
