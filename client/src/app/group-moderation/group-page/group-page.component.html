@@ -29,29 +29,29 @@
   </div>
 
   <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#participantAdding" aria-expanded="false"
-    aria-controls="participantAdding">Lisää osallistuja ryhmään</button>
+  aria-controls="participantAdding">Lisää osallistuja ryhmään</button>
   <div class="collapse" id="participantAdding">
     <form (ngSubmit)="addParticipant()" #loginForm="ngForm">
       <h4>Syötä ryhmäläisen tiedot</h4>
       <div class="form-group">
         <label for="firstname" class="sr-only">Etunimi:</label>
         <input type="text" class="form-control" placeholder="Etunimi" id="firstname" [(ngModel)]="newParticipant.firstname" name="firstname"
-          required />
+        required />
       </div>
       <div class="form-group">
         <label for="lastname" class="sr-only">Sukunimi:</label>
         <input type="text" class="form-control" placeholder="Sukunimi" id="lastname" [(ngModel)]="newParticipant.lastname" name="lastname"
-          required />
+        required />
       </div>
       <div class="form-group">
         <label for="age" class="sr-only">Ikä:</label>
         <input type="date" class="form-control" placeholder="Osallistujan ikä" id="dob" [(ngModel)]="newParticipant.age" name="age"
-          required />
+        required />
       </div>
       <div class="form-group">
         <label for="allergies" class="sr-only">Ruoka-aineallergiat:</label>
         <input type="text" class="form-control" placeholder="Ruoka-aineallergiat" id="allergies" [(ngModel)]="newParticipant.allergies"
-          name="allergies" />
+        name="allergies" />
       </div>
       <div class="product-sections">
         <h4>Tuotteet</h4>
@@ -96,6 +96,11 @@
               <span *ngIf="p.discount == null">{{ p.product.price }} €</span>
             </div>
           </div>
+          <hr>
+          Summa
+          <div class="final-price">
+            <span>{{payment.sum()}}€ </span>
+          </div>
         </div>
 
         <!-- TODO: Copypasta lists, make a template -->
@@ -114,6 +119,11 @@
               <span *ngIf="p.discount != null">{{ p.product.price + p.discount.amount }} €</span>
               <span *ngIf="p.discount == null">{{ p.product.price }} €</span>
             </div>
+          </div>
+          <hr>
+          Summa
+          <div class="final-price">
+            <span>{{payment.sum()}}€ </span>
           </div>
         </div>
       </div>
@@ -154,6 +164,11 @@
               <span *ngIf="p.discount == null">{{ p.product.price }} €</span>
             </div>
           </div>
+          <hr>
+          Summa
+          <div class="final-price">
+            <span>{{payment.sum()}}€ </span>
+          </div>
         </div>
 
         <!-- TODO: Copypasta lists, make a template -->
@@ -172,6 +187,11 @@
               <span *ngIf="p.discount != null">{{ p.product.price + p.discount.amount }} €</span>
               <span *ngIf="p.discount == null">{{ p.product.price }} €</span>
             </div>
+          </div>
+          <hr>
+          Summa
+          <div class="final-price">
+            <span>{{payment.sum()}}€ </span>
           </div>
         </div>
       </div>

@@ -180,7 +180,6 @@ export class GroupPageComponent implements OnInit {
         this.participantModal.hide();
       });
   }
-  //old, not used version
   onSelectParticipant(participant: Participant) {
     this.selectedParticipant = participant;
     this.groupModerationService.getParticipantPayments(this.participantGroup.id, this.selectedParticipant.id)
