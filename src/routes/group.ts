@@ -461,7 +461,6 @@ module Route {
                     }
                 }).catch((err: APIError) => {
                     console.log(err);
-                    
                 });
             }).then((participantPayments: any) => {
                 return this.getPaymentProducts(participantPayments);
@@ -581,7 +580,7 @@ module Route {
             products.forEach((p: any) => {
                 selectionPromises.push(new Promise((resolve, reject) => {
                     this.productSelectionModel.create({}, function (err: Error, ps: any) {
-                        if(err) {
+                        if (err) {
                             console.log(err);
                             reject(err);
                         } else {
