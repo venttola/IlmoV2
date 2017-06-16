@@ -50,11 +50,9 @@ module Route {
 			let oldPassword = req.body.password;
 			let newPassword = req.body.newPassword;
 			let saltRounds = this.saltRounds;
-			console.log("Updating pasword");
 			this.userService.getUser(userEmail).then((user: any) => {
 				bcrypt.compare(oldPassword, user.password, function (err: Error, success: any) {
 					if (success) {
-						console.log("Passwords match");
 						bcrypt.hash(newPassword, saltRounds, function (err: Error, hash: any) {
 							if (!err) {
 								user.password = hash;
@@ -66,12 +64,10 @@ module Route {
 									}
 								});
 							} else {
-								console.log("Hash calculation failed", err);
 								return res.status(500).send("Error: Credential update failed");
 							}
 						});
 					} else {
-						console.log("Credential update failed", err);
 						return res.status(403).send("Error: Invalid password");
 					}
 				});
@@ -116,10 +112,8 @@ module Route {
         * @apiError DatabaseUpdateError User details update failed
         */
 		public setUserInfo = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			console.log(req.body);
 			let userEmail = req.params.username;
 			let password = req.body.password;
-			console.log("updating userdata");
 			this.userService.getUser(userEmail).then((user: any) => {
 				bcrypt.compare(password, user.password, function (err: Error, success: any) {
 					if (success) {
@@ -131,12 +125,10 @@ module Route {
 							if (!err) {
 								return res.status(204).send();
 							} else {
-								console.log(err);
 								return res.status(500).send("User details update failed");
 							}
 						});
 					} else {
-						console.log("Userdata update failed", err);
 						return res.status(403).send("User details update failed");
 					}
 				}).catch((err: APIError) => {
@@ -157,7 +149,6 @@ module Route {
         * @apiError DatabaseReadError Product data could not be read from the database
         */
 		public getProducts = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			console.log(req.body);
 			this.userService.getUser(req.params.username).then((user: any) => {
 				user.getProducts(function (err: Error, prods: any) {
 					if (err) {
@@ -350,7 +341,6 @@ module Route {
 		}
 
 		public cancelSignup = (req: express.Request, res: express.Response) => {
-			console.log("Canceling signup");
 
 			let username = req.params.username;
 			let groupId = req.params.groupId;
