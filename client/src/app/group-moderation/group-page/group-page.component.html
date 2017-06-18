@@ -23,17 +23,16 @@
     <h4>{{selectedMember?.name}}</h4>
   </div>
   <div class="group-modal-body">
-    <div class="payment-section">
-      <!-- TODO: Copypasta lists, make a template -->
+    <div class="paid-payment-section">
+      <h5>Maksetut tuotteet</h5>
+      <hr>
+      <div class="productlist-header">
+        <div class="product">Tuote</div>
+        <div class="discount">Alennus</div>
+        <div class="final-price">Lopullinen hinta</div>
+      </div>
       <div *ngFor="let payment of selectedMemberPayments">
         <div *ngIf="payment.isPaid === true" class="paid-payments">
-          <h5>Maksetut tuotteet</h5>
-          <hr>
-          <div class="productlist-header">
-            <div class="product">Tuote</div>
-            <div class="discount">Alennus</div>
-            <div class="final-price">Lopullinen hinta</div>
-          </div>
           <div *ngFor="let p of payment.products" class="paid">
             <div class="product">{{p.product.name}} ({{p.product.price}} €)</div>
             <div class="discount"><span *ngIf="p.discount !== null">{{ p.discount.name }} ({{ p.discount.amount }} €)</span></div>
@@ -43,16 +42,20 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- TODO: Copypasta lists, make a template -->
-        <div *ngIf="payment.isPaid === false" class="unpaid-payments">
-          <h5>Maksamattomat tuotteet</h5>
-          <hr>
-          <div class="productlist-header">
-            <div class="product">Tuote</div>
-            <div class="discount">Alennus</div>
-            <div class="final-price">Lopullinen hinta</div>
-          </div>
+    <div class="unpaid-payment-section">
+      <h5>Maksamattomat tuotteet</h5>
+      <hr>
+      <div class="productlist-header">
+        <div class="product">Tuote</div>
+        <div class="discount">Alennus</div>
+        <div class="final-price">Lopullinen hinta</div>
+      </div>
+
+      <div *ngFor="let payment of selectedMemberPayments">
+        <div *ngIf="payment.isPaid === false" class="paid-payments">
           <div *ngFor="let p of payment.products" class="not-paid">
             <div class="product">{{p.product.name}} ({{p.product.price}} €)</div>
             <div class="discount"><span *ngIf="p.discount !== null">{{ p.discount.name }} ({{ p.discount.amount }} €)</span></div>

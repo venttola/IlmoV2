@@ -174,6 +174,7 @@ module Route {
         }
 
         public receiptPayment = (req: express.Request, res: express.Response) => {
+            console.log("Receipting Payment");
             this.groupService.receiptMemberPayment(req.body.groupId, req.body.memberId)
                 .then((paidPayments: any) => {
                     return this.groupService.getPaymentProducts(paidPayments);
@@ -279,7 +280,7 @@ module Route {
                     return res.status(200).json(checkoutData);
                 }).catch((err: APIError) => {
                     return res.status(err.statusCode).send(err.message);
-                });;
+                });
         }
 
         // Req is marked as type of any because Typescript compiler refuses to admit the existence of req.user attribute
@@ -325,14 +326,14 @@ module Route {
 
         private mapPaymentProducts = (finalPayments: any[]) => {
             return finalPayments.map((fp: any) => {
-                let prodSelectionInfos = fp[0].productSelections.map((ps: any) => {
+                let prodSelectionInfos = fp.productSelections.map((ps: any) => {
                     let discountInfo: any = ps.discount ? new DiscountInfo(ps.discount.id, ps.discount.name, ps.discount.amount) : null;
                     let productInfo: any = new ProductInfo(ps.product.id, ps.product.name, ps.product.price);
 
                     return new ProductSelectionInfo(productInfo, discountInfo);
                 });
 
-                return new PaymentInfo(fp[0].id, prodSelectionInfos, fp[0].isPaid, fp[0].paidOn);
+                return new PaymentInfo(fp.id, prodSelectionInfos, fp.isPaid, fp.paidOn);
             });
         }
     }

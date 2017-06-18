@@ -52,7 +52,6 @@ module Service {
 
                         return Promise.all(promises);
                     }).then((payments: any) => {
-
                         let paymentsByUser: any = groupBy(payments, (p: any) => p.payee);
                         let promises = [];
 
@@ -61,7 +60,6 @@ module Service {
                                 let promise = new Promise((resolve, reject) => {
                                     this.getPaymentProducts(paymentsByUser[payee]).then((paymentsWithProds: any) => {
                                         let allProducts = flatten(paymentsWithProds);
-
 
                                         let prods = flatten(allProducts.map((payment: any) =>
                                             payment.productSelections.map((prodSelection: any) => prodSelection.product)));
@@ -144,6 +142,8 @@ module Service {
                                             resolve(up);
                                         }
                                     });
+                                } else {
+                                    resolve(up);
                                 }
                             }));
 

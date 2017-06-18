@@ -176,6 +176,7 @@ module Route {
 
 		// TODO: Apidocs
 		public getEventSignUpData = (req: express.Request, res: express.Response) => {
+			console.log("Getting signup data");
 			let groupId = req.body.groupId;
 			let eventId = req.body.eventId;
 			let username = req.params.username;
