@@ -60,6 +60,7 @@ module Route {
         totalSum: number;
         refNumber: string;
         organizationBankAccount: string;
+        isPaid: boolean;
     };
 
     export class GroupRoutes {
@@ -213,6 +214,7 @@ module Route {
         // TODO: ApiDocs
         // TODO: Error checking
         public getMemberPayments = (req: express.Request, res: express.Response) => {
+            console.log("Getting member payments");
             let groupId = +req.params.group;
             let memberId: number = +req.params.member;
 
@@ -247,6 +249,9 @@ module Route {
             this.groupService.getGroup(groupId)
                 .then((group: any) => {
                     checkoutData.group = group;
+                    return this.groupService.getParticipantGroupPayment(groupId);
+                }).then((groupPayment: any) => {
+                    checkoutData.isPaid = groupPayment[0].isPaid;
                     return this.groupService.getPaidUserPayments(groupId);
                 }).then((paymentsByUser: any) => {
                     checkoutData.payments = paymentsByUser;
@@ -272,7 +277,9 @@ module Route {
                 }).then((organizationBankAccount: string) => {
                     checkoutData.organizationBankAccount = organizationBankAccount;
                     return res.status(200).json(checkoutData);
-                });
+                }).catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
+                });;
         }
 
         // Req is marked as type of any because Typescript compiler refuses to admit the existence of req.user attribute
