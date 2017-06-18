@@ -8,6 +8,8 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 import { EventService } from "../services/eventservice";
 import { GroupService } from "../services/groupservice";
 
+import { uniq, flatten, contains } from "underscore";
+
 module Route {
 	class SignUpData {
 		signedUp: boolean;
@@ -221,6 +223,7 @@ module Route {
 											let prod = userProdSelections.find((ups: any) => ups.product_id === e.id);
 
 											if (prod) {
+												// TODO: Mark paid status and disable checkbox in UI if already paid
 												e.selected = true;
 												// Mark discount as selected
 												if (prod.discount_id && prod.discount_id != null) {
@@ -247,91 +250,56 @@ module Route {
 		// TODO: apiDocs
 		public signup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let groupId = +req.body.groupId;
-			let products = req.body.products;
-			let productIds = products.map((p: any) => p[0]);
-			let discountIds = products.map((p: any) => p[1]);
+			let selectedProducts = req.body.products;
+			let selectionIDs = selectedProducts.map((p: any) => [p[0], p[1]]);
+			let discountIds: Array<number> = selectionIDs.map((p: any) => p[1]);
 
-			this.groupService.getEventStatusByParticipantgroup(groupId).then((isOpen: boolean) => {
-				if (isOpen === true) {
-					Promise.all([
-						this.getProductsFromDb(productIds),
-						this.userService.getUser(req.params.username),
-						this.groupService.getGroup(groupId)
-					]).then((results: any) => {
-						let products = results[0];
-						let user = results[1];
-						let group = results[2];
-						let paymentModel = this.userPayment;
-						let self = this;
+			this.groupService.getEventStatusByParticipantgroup(groupId)
+				.then((isOpen: boolean) => {
+					if (isOpen) {
+						return this.userService.getUserPayments(req.params.username);
+					} else {
+						throw new APIError(403, "ERROR: Registration is closed");
+					}
+				}).then((userPayments: any) => {
+					let paymentsInGroup = userPayments
+						.filter((p: any) => p.payment[0].payee_id === groupId);
+					let openPayment = paymentsInGroup
+						.find((p: any) => p.isPaid === false);
 
-						user.getUserPayments(function (err: Error, payments: any) {
-							if (err) {
-								let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
-								return res.status(500).send(errorMsg);
-							} else {
-								let firstOpenPayment = payments.filter((p: any) => p.payment[0].payee_id === groupId).find((p: any) => p.isPaid === false);
+					// Update the open payment with the new product selections
+					if (openPayment) {
+						console.log("Updating old payment");
+						this.removeOldProducts(openPayment)
+							.then((result: any) => {
+								let prodIds = selectionIDs.map((s: any) => s[0]);
+								return this.userService.getProductsFromDb(prodIds);
+							}).then((products: any) => {
+								console.log("Products: " + JSON.stringify(products));
+								// Add new product selections
+								this.userService.addPaymentProducts(openPayment, products, discountIds).then((empty: any) => {
+									return res.status(204).send();
+								}).catch((err: APIError) => {
+									return res.status(err.statusCode).send(err.message);
+								});
+							});
+					} else {
+						console.log("Creating new payment");
+						let oldProductIds = flatten(paymentsInGroup.map((p: any) =>
+							p.productSelections.map((ps: any) => ps.product_id)));
 
-								// If there's open payments, add products to that one
-								if (firstOpenPayment) {
+						let newProds = selectionIDs.filter((s: any) => !contains(oldProductIds, s[0]));
 
-									// Remove old product selections
-									self.removeOldProducts(firstOpenPayment).then((result: any) => {
-
-										// Add new product selections
-										self.addPaymentProducts(firstOpenPayment, products, discountIds).then((empty: any) => {
-											return res.status(204).send();
-										}).catch((err: APIError) => {
-											return res.status(err.statusCode).send(err.message);
-										});
-									});
-								} else {
-									// Create new user payment
-									paymentModel.create({
-										isPaid: false
-									}, function (err: Error, payment: any) {
-										if (err) {
-											let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_INSERTION);
-											return res.status(500).send(errorMsg);
-										} else {
-											// Add products to newly created user payment
-											self.addPaymentProducts(payment, products, discountIds).then((result: any) => {
-												group.getGroupPayment(function (err: Error, groupPayment: any) {
-													if (err) {
-														let errorMsg = ErrorHandler.getErrorMsg("Group payment", ErrorType.NOT_FOUND);
-														return res.status(404).send();
-													}
-
-													// Link user payment to group payment
-													groupPayment[0].addUserPayments(payment, function (err: Error) {
-														if (err) {
-															let errorMsg = ErrorHandler.getErrorMsg("Group Payment data", ErrorType.DATABASE_UPDATE);
-															return res.status(500).send(errorMsg);
-														} else {
-															// Link user payment to user
-															user.addUserPayments(payment, function (err: Error) {
-																if (err) {
-																	let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_UPDATE);
-																	return res.status(500).send(errorMsg);
-																}
-
-																return res.status(204).send();
-															});
-														}
-													});
-												});
-											}).catch((err: APIError) => {
-												return res.status(err.statusCode).send(err.message);
-											});
-										}
-									});
-								}
-							}
-						});
-					});
-				} else {
-					return res.status(403).json("ERROR: Registration is closed");
-				}
-			});
+						this.groupService.getParticipantGroupPayment(groupId)
+							.then((groupPayment: any) => {
+								return this.userService.createUserPaymentWithSelections(req.params.username, newProds, groupPayment);
+							}).then((result: any) => {
+								return res.status(204).send();
+							});
+					}
+				}).catch((err: APIError) => {
+					return res.status(err.statusCode).send(err.message);
+				});
 		}
 
 		public getSignUps = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -344,7 +312,9 @@ module Route {
 						return res.status(500).send(errorMsg);
 					}
 
-					this.fetchSignUpDetails(userPayments).then((details: any) => res.status(200).json(details));
+					this.fetchSignUpDetails(userPayments).then((details: any) => {
+						return res.status(200).json(uniq(uniq(details, false, (d: any) => d.eventId)));
+					});
 				});
 			});
 		}
@@ -398,6 +368,7 @@ module Route {
 			});
 		}
 
+		// TODO: Refactor this
 		private fetchSignUpDetails = (userPayments: any) => {
 			let promises: any[] = [];
 
@@ -453,32 +424,6 @@ module Route {
 				})));
 
 			return Promise.all(promises);
-		}
-
-		private addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
-			let selectionPromises: any = [];
-
-			products.forEach((p: any) => {
-				selectionPromises.push(new Promise((resolve, reject) => {
-					this.productSelectionModel.create({}, function (err: Error, ps: any) {
-						ps.setProduct(p, function (err: Error) {
-							let disc = p.discounts.find((d: any) => discountIds.some((di: any) => di === d.id));
-
-							if (disc) {
-								ps.setDiscount(disc, (err: Error) =>
-									err ? reject(err)
-										: payment.addProductSelections(ps, (err: Error) =>
-											err ? reject(err)
-												: resolve(true)));
-							} else {
-								payment.addProductSelections(ps, (err: Error) => err ? reject(err) : resolve(true));
-							}
-						});
-					});
-				}));
-			});
-
-			return Promise.all(selectionPromises);
 		}
 
 		/**
@@ -589,22 +534,6 @@ module Route {
 						reject(new DatabaseError(400, errorMsg));
 					} else {
 						return resolve(product);
-					}
-				});
-			});
-		}
-
-		private getProductsFromDb = (products: Number[]) => {
-			return new Promise((resolve, reject) => {
-				this.productModel.find({ id: products }, function (err: Error, products: any) {
-					if (err) {
-						let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
-						reject(new DatabaseError(500, errorMsg));
-					} else if (!products) {
-						let errorMsg = ErrorHandler.getErrorMsg("Product", ErrorType.NOT_FOUND);
-						reject(new DatabaseError(400, errorMsg));
-					} else {
-						return resolve(products);
 					}
 				});
 			});

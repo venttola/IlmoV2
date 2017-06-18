@@ -49,7 +49,10 @@ class Server {
 
 		connection.then((conn: any) => {
 			let models = this.handler.getModels();
-			this.userService = new UserService(models.User);
+			this.userService = new UserService(models.User,
+				models.UserPayment,
+				models.ProductSelection,
+				models.Product);
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
 			this.authService = new AuthService(this.userService);
