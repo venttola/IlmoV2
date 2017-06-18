@@ -3,6 +3,10 @@ import { Router, ActivatedRoute, Params } from "@angular/router";
 import { GroupModerationService } from "../../group-moderation.service";
 import { ParticipantGroupService } from "../../../event-details/participant-group.service";
 import { ParticipantGroup } from "../../../event-details/participantgroup.model";
+import { GroupCheckoutDetails } from "./group-checkout-details";
+
+
+
 
 @Component({
   selector: 'app-group-checkout-page',
@@ -10,16 +14,18 @@ import { ParticipantGroup } from "../../../event-details/participantgroup.model"
   styleUrls: ['./group-checkout-page.component.css']
 })
 export class GroupCheckoutPageComponent implements OnInit {
-  participantGroup: ParticipantGroup;
+  checkoutDetails: GroupCheckoutDetails;
 
   constructor(private route: ActivatedRoute,
-    private groupModerationService: GroupModerationService,
-    private participantGroupService: ParticipantGroupService) { }
+    private groupModerationService: GroupModerationService) { }
 
   ngOnInit() {
     this.route.params
-      .switchMap((params: Params) => this.participantGroupService.getGroup(+params["groupId"]))
-      .subscribe((group: ParticipantGroup) => this.participantGroup = group);
+      .switchMap((params: Params) => this.groupModerationService.getGroupCheckoutDetails(+params["groupId"]))
+      .subscribe((checkoutDetails: GroupCheckoutDetails) => {
+        console.log(JSON.stringify(checkoutDetails));
+        this.checkoutDetails = checkoutDetails;
+      });
   }
 
 }

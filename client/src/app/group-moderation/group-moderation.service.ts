@@ -5,6 +5,7 @@ import { Http, Response } from "@angular/http";
 import { ParticipantGroup } from "../event-details/participantgroup.model";
 import { Member } from "./member";
 import { UserPayment } from "./userpayment";
+import { GroupCheckoutDetails } from "./group-page/group-checkout-page/group-checkout-details";
 
 @Injectable()
 export class GroupModerationService extends AuthorizedHttpService {
@@ -76,6 +77,13 @@ export class GroupModerationService extends AuthorizedHttpService {
       .map((res: Response) => {
         console.log(res);
         return this.extractData(res).map(d => Member.fromJSON(d));
+      }).catch(this.handleError);
+  }
+
+  getGroupCheckoutDetails(groupId: number): Observable<GroupCheckoutDetails> {
+    return this.http.get("/api/group/" + groupId + "/checkout", { headers: this.headers })
+      .map((res: Response) => {
+        return GroupCheckoutDetails.fromJSON(res.json());
       }).catch(this.handleError);
   }
 }
