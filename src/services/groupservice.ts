@@ -1,7 +1,7 @@
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 // var _ = require("underscore-node");
 // import * as _ from "underscore-node";
-import { groupBy, flatten, reduce } from "underscore";
+import { groupBy, flatten, reduce, uniq } from "underscore";
 module Service {
     export class GroupService {
         constructor(private groupModel: any,
@@ -25,7 +25,7 @@ module Service {
             });
         }
 
-        private getParticipantGroupPayment = (groupId: number) => {
+        public getParticipantGroupPayment = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.getGroup(groupId)
                     .then((group: any) => group.getGroupPayment((err: Error, groupPayment: any) => {
@@ -101,10 +101,11 @@ module Service {
                         });
 
                         Promise.all(promises).then((payees: any) => {
+                            console.log("Payees: " + JSON.stringify(payees));
                             // Get only unique users, there can be multiple userpayments per user
-                            let uniquePayees = payees.filter((value: any, index: any, self: any) => {
-                                return self.indexOf(value) === index;
-                            });
+                            let uniquePayees = uniq(payees, false, (p: any) => p.id);
+
+                            console.log("Unique payees: " + JSON.stringify(uniquePayees));
 
                             this.getGroupModerators(groupId).then((moderators: any) => {
                                 let moderatorIds = moderators.map((m: any) => m.id);
