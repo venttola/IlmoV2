@@ -78,7 +78,7 @@ export class DatabaseHandler {
 		db.models.GroupPayment.hasMany("userPayments", db.models.UserPayment, {}, { reverse: "payment", autoFetch: true });
 
 		db.models.Product.hasMany("discounts", db.models.Discount, {}, { reverse: "product", autoFetch: true });
-		db.models.UserPayment.hasMany("productSelections", db.models.ProductSelection, {}, { autoFetch: true });
+		db.models.UserPayment.hasMany("productSelections", db.models.ProductSelection, {}, { autoFetch: true, cascadeRemove: true });
 
 		db.models.ProductSelection.hasOne("discount", db.models.Discount, {}, { autoFetch: true });
 		db.models.ProductSelection.hasOne("product", db.models.Product, {}, { autoFetch: true });
