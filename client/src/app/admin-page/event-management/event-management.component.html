@@ -19,21 +19,34 @@
 		<input type="text" class="form-control" placeholder="Lyhytkuvaus" id="description" [(ngModel)]="event.description" name="description"/>                  
 	</div>
 	<h5>Osapuolet</h5>
-	<button class="btn btn-success" (click) ="addInputForPlatoon()">+</button>
-	<button class="btn btn-success" (click) ="removeInputForPlatoon()">-</button>
-	<div *ngFor="let platoon of newPlatoons; let i = index; trackBy: trackPlatoons" class="form-group">
+	<button class="btn btn-success" type="button" (click) ="addInputForPlatoon()">+</button>
+	<button class="btn btn-success" type="button" (click) ="removeInputForPlatoon()">-</button>
+	<div *ngFor="let platoon of eventPlatoons; let i = index; trackBy: trackPlatoons" class="form-group">
 		<label  for="platoon{{i}}" class="sr-only">Osapuoli1:</label>
 		<input type="text" class="form-control" placeholder="Osapuoli" id="platoon{{i}}"  [(ngModel)]="platoon.name" name="platoon{{i}}"/>
 	</div>
 	<h5>Tuotteet</h5>
-	<button class="btn btn-success" (click) ="addInputForProduct()">+</button>
-	<button class="btn btn-success" (click) ="removeInputForProduct()">-</button>
-	<div *ngFor="let product of newProducts; let i = index; trackBy: trackProducts" class="form-group">
+	<p>Lisää tuote</p>
+	<button class="btn btn-success" type="button" (click) ="addInputForProduct()" >+</button>
+	<button class="btn btn-success" type="button" (click) ="removeInputForProduct()" >-</button>
+	<div *ngFor="let product of eventProducts; let i = index; trackBy: trackProducts" class="form-group">
 		<div class="input-group">
 			<label  for="productName{{i}}">Tuote:</label>
 			<input type="text" class="form-control" placeholder="Tuote" id="productName{{i}}"  [(ngModel)]="product.name" name="productName{{i}}"/>
 			<label  for="productPrice{{i}}">Hinta:</label>
 			<input type="text" class="form-control" placeholder="Hinta" id="productPrice{{i}}"  [(ngModel)]="product.price" name="productPrice{{i}}"/>
+		</div>
+		<p>Lisää alennus</p>
+		<button class="btn btn-success btn-sm" type="button" (click) ="addInputForDiscount(product)">+</button>
+		<button class="btn btn-success btn-sm" type="button" (click) ="removeInputForDiscount(product)">-</button>
+		<h6 *ngIf="product.discounts"></h6>
+		<div *ngFor="let discount of product.discounts; let j = index; trackBy: trackDiscounts" class="form-group">
+			<div class="input-group">
+				<label  for="discountName{{j}}">Alennus:</label>
+				<input type="text" class="form-control" placeholder="Alennuksen syy" id="discountName{{j}}"  [(ngModel)]="product.discounts[j].name" name="discountName{{j}}"/>
+				<label  for="productPrice{{j}}">Määrä:</label>
+				<input type="text" class="form-control" placeholder="Määrä" id="discountAmount{{j}}"  [(ngModel)]="product.discounts[j].amount" name="discountAmount{{j}}"/>
+			</div>
 		</div>
 	</div>
 	<button type="submit" class="btn btn-success" >Päivitä tapahtuma</button>

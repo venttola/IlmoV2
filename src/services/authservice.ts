@@ -14,7 +14,7 @@ module Service {
 	                        console.log("ERROR OCCURED: " + err);
 	                        return reject(err);
 	                    } else {
-	                        console.log("User '" + user.email + "' admin status: " + isAdmin);
+	                        //console.log("User '" + user.email + "' admin status: " + isAdmin);
 	                        return resolve(isAdmin);
 	                    }
 	                });
@@ -22,14 +22,17 @@ module Service {
             });
         }
 
-		public getModeratedGroups = (username: string) => {
+		public getOrganizationMemberships = (username: string) => {
 			return new Promise((resolve, reject) => {
 				this.userService.getUser(username).then((user: any) => {
 					user.getOrganizations(function(err: any, organizations: any){
 						if (err) {
 							return reject(err);
 						} else {
-							 console.log("User '" + user.email + "' Organizations: " + JSON.stringify(organizations));
+							 //console.log("User '" + user.email + "' Organizations: " + JSON.stringify(organizations));
+							 let organizationIds = organizations.map((o: any) => {
+							 	return {id: o.id};
+							 });
 							return resolve(organizations);
 						}
 					});
@@ -37,15 +40,18 @@ module Service {
 			});
 
 		}
-		public getOrganizationMemberships = (username: string) => {
+		public getModeratedGroups = (username: string) => {
 			return new Promise((resolve, reject) => {
 				this.userService.getUser(username).then((user: any) => {
 					user.getModeratedGroups(function(err: any, groups: any){
 						if (err) {
 							return reject(err);
 						} else {
-							 console.log("User '" + user.email + "' Groups: " + JSON.stringify(groups));
-							return resolve(groups);
+							 //console.log("User '" + user.email + "' Groups: " + JSON.stringify(groups));
+							 let groupIds = groups.map((g: any) => {
+							 	return {id: g.id};
+							 });
+							return resolve(groupIds);
 						}
 					});
 				});

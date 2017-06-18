@@ -31,6 +31,7 @@ module Route {
     export class EventRoutes {
         constructor(private eventModel: any,
             private productModel: any,
+            private discountModel: any,
             private platoonModel: any,
             private participantGroupModel: any,
             private groupPaymentModel: any,
@@ -44,6 +45,7 @@ module Route {
         * @apiGroup Event
         * @apiParam {JSON} name {name: "Event name"}
         * @apiParam {JSON} startDate {startDate: "2017-01-01T12:00:00+0200"}
+        * @apiParam {JSON} endDate {endDate: "2017-01-02T12:00:00+0200"}
         * @apiSuccess (204) -
         * @apiError DatabaseInsertionError ERROR: Event data insertion failed
         */
@@ -63,6 +65,16 @@ module Route {
                 }
             });
         }
+        /**
+        * @api {patch} api/events/:event Updated event data
+        * @apiName New event
+        * @apiGroup Event
+        * @apiParam {JSON} name {name: "Event name"}
+        * @apiParam {JSON} startDate {startDate: "2017-01-01T12:00:00+0200"}
+        * @apiSuccess (204) -
+        * @apiError DatabaseInsertionError ERROR: Event data insertion failed
+        */
+
 
         /**
         * @api {delete} api/events/:event
@@ -119,7 +131,6 @@ module Route {
         * @apiError DatabaseReadError ERROR: Event product data could not be read from the database
         */
         public getEventProducts = (req: express.Request, res: express.Response) => {
-            console.log("Getting event products");
             let eventId = req.params.event;
 
             this.eventModel.one({ id: eventId }, function (err: Error, event: any) {
@@ -135,7 +146,6 @@ module Route {
                             let errorMsg = ErrorHandler.getErrorMsg("Event product data", ErrorType.DATABASE_READ);
                             return res.status(500).send(errorMsg);
                         } else {
-                            console.log(prods);
                             return res.status(200).json(prods);
                         }
                     });
@@ -150,6 +160,7 @@ module Route {
         * @apiParam {Number} event Events unique ID
         * @apiParam {JSON} name {name: "Product name"}
         * @apiParam {JSON} price {price: "Product price"}
+        * @apiParam {JSON} discounts [{name: "Free entry"}, amount: 10]
         * @apiSuccess (200) JSON {id: 1, name: "Product name", price: "Product price"}
         * @apiError DatabaseInsertionError ERROR: Product data insertion failed
         * @apiError NotFound ERROR: Event was not found
@@ -157,9 +168,20 @@ module Route {
         * @apiError DatabaseReadError ERROR: Event data could not be read from the database
         */
         public addProduct = (req: express.Request, res: express.Response) => {
+            console.log("Adding product");
+            console.log("Body: " + JSON.stringify(req.body));
+
             let eventId = req.params.event;
             let productName = req.body.name;
             let productPrice = req.body.price;
+            let discounts: any[] = [];
+
+            try {
+                discounts = JSON.parse(req.body.discounts);
+            } catch (e) {
+                console.log(e);
+            }
+
             this.getEvent(eventId).then((event: any) => {
                 this.productModel.create({
                     name: productName,
@@ -176,6 +198,62 @@ module Route {
                                 return res.status(204).send();
                             }
                         });
+                    }
+                });
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+
+        /**
+        * @api {patch} api/events/:event/product Adds event products
+        * @apiName Update event product
+        * @apiGroup Event
+        * @apiParam {Number} event Events unique ID
+        * @apiParam {JSON} name {name: "Product name"}
+        * @apiParam {JSON} price {price: "Product price"}
+        * @apiParam {JSON} discounts [{name:"Ilmainen tapahtuma", amount:10}]
+        * @apiSuccess (200) JSON {id: 1, name: "Product name", price: "Product price"}
+        * @apiError DatabaseInsertionError ERROR: Product data insertion failed
+        * @apiError NotFound ERROR: Event was not found
+        * @apiError DatabaseInsertionError ERROR: Adding product to event failed
+        * @apiError DatabaseReadError ERROR: Event data could not be read from the database
+        */
+        public updateProduct = (req: express.Request, res: express.Response) => {
+            let self = this;
+            let eventId: number = req.params.event;
+            let productId: number = req.body.id;
+            let productName = req.body.name;
+            let productPrice = req.body.price;
+            let discounts = req.body.discounts;
+            this.getEvent(eventId).then((event: any) => {
+                this.productModel.one({
+                    id: productId,
+                }, function (err: Error, product: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+                        return res.status(500).send(errorMsg);
+                    } else {
+                        let discountPromises: any = discounts.map((discount: any) => {
+                            if (!discount.id) {
+                                return self.createDiscount(product, discount);
+                            } else {
+                                return self.updateDiscount(product, discount);
+                            }
+
+                        });
+                        Promise.all(discountPromises).then((promises: any) => {
+                            return res.status(204).send();
+                        }).catch((err: APIError) => {
+                            return res.status(err.statusCode).send(err.message);
+                        });
+                        /* event.addProducts(prod, function (err: Error) {
+                             if (err) {
+                                 return res.status(500).send("ERROR: Adding product to event failed");
+                             } else {
+                                 return res.status(204).send();
+                             }
+                         });*/
                     }
                 });
             }).catch((err: APIError) => {
@@ -488,6 +566,62 @@ module Route {
                         }).catch((err: APIError) => {
                             return reject(err);
                         });
+                    }
+                });
+            });
+        }
+        private createDiscount = (product: any, discount: any) => {
+            let self = this;
+            return new Promise((resolve, reject) => {
+                self.discountModel.create({
+                    name: discount.name,
+                    amount: discount.amount
+                }, function (err: Error, discount: any) {
+                    if (err || !discount) {
+                        console.log(err);
+                        let errorMsg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(500, errorMsg));
+                    } else {
+                        discount.setProduct(product, function (err: Error) {
+                            if (err) {
+                                let msg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
+                                return reject(new DatabaseError(500, msg));
+                            } else {
+                                console.log(JSON.stringify(product));
+                                return resolve(discount);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        private updateDiscount = (product: any, newDiscount: any) => {
+            let self = this;
+            return new Promise((resolve, reject) => {
+                self.discountModel.find({
+                    id: newDiscount.id
+                }, function (err: Error, discount: any) {
+                    if (err || !discount) {
+                        console.log(err);
+                        let errorMsg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(500, errorMsg));
+                    } else {
+                        resolve(discount);
+                        /*console.log("Before saving");
+                        console.log(JSON.stringify( discount));
+                        discount.name = newDiscount.name;
+                        discount.amount = newDiscount.amount;
+                        console.log("Trying to save");
+                        console.log(JSON.stringify( discount));
+                        console.log("With this data");
+                        console.log(JSON.stringify(newDiscount));
+                        //The Discount need to be updated here, will be done on a later date
+                        // The orm is causing wierd behaviour at the moment
+                        discount.save(function(err: Error, discount: any){
+                             err ?
+                             reject(new DatabaseError(500, ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION))) :
+                             resolve(discount);
+                        });*/
                     }
                 });
             });

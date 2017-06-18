@@ -67,6 +67,10 @@ module Route {
         constructor(private groupModel: any,
             private productModel: any,
             private discountModel: any,
+            private participantModel: any,
+            private participantPaymentModel: any,
+            private productSelectionModel: any,
+            private groupPaymentModel: any,
             private userService: UserService,
             private groupService: GroupService) {
 
@@ -229,7 +233,7 @@ module Route {
                     } else {
                         member.getUserPayments((err: Error, userPayments: any) => {
                             console.log(userPayments);
-                            return err ? reject(err) : resolve(userPayments.filter((p: any) => p.payment[0].payee_id === groupId));
+                            return err ? reject(err) : resolve(userPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
                         });
                     }
                 });
@@ -306,6 +310,171 @@ module Route {
                 return res.status(err.statusCode).send(err.message);
             });
         }
+        //TODO APidocs
+        //Adds a nonregistered participant to group
+
+        public addParticipant = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            let groupId = +req.body.groupId;
+            let products = req.body.products;
+            let participant = req.body.participant;
+            let productIds = products.map((p: any) => p[0]);
+            let discountIds = products.map((p: any) => p[1]);
+            Promise.all([
+                this.getProductsFromDb(productIds),
+                this.createParticipant(participant),
+                this.groupService.getGroup(groupId)
+            ]).then((results: any) => {
+                let products = results[0];
+                let participant = results[1];
+                let group = results[2];
+                let paymentModel = this.participantPaymentModel;
+                let self = this;
+                participant.getPayments(function (err: Error, payments: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
+                        return res.status(500).send(errorMsg);
+                    } else {
+                        let firstOpenPayment = payments.filter((p: any) => p.payment[0].payee_id === groupId).find((p: any) => p.isPaid === false);
+
+                        // If there's open payments, add products to that one
+                        if (firstOpenPayment) {
+
+                            // Remove old product selections
+                            self.removeOldProducts(firstOpenPayment).then((result: any) => {
+
+                                // Add new product selections
+                                self.addPaymentProducts(firstOpenPayment, products, discountIds).then((empty: any) => {
+                                    return res.status(204).send();
+                                }).catch((err: APIError) => {
+                                    return res.status(err.statusCode).send(err.message);
+                                });
+                            });
+                        } else {
+                            // Create new participant payment
+                            paymentModel.create({
+                                isPaid: false
+                            }, function (err: Error, payment: any) {
+                                if (err) {
+                                    let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_INSERTION);
+                                    return res.status(500).send(errorMsg);
+                                } else {
+                                    // Add products to newly created user payment
+                                    self.addPaymentProducts(payment, products, discountIds).then((result: any) => {
+                                        group.getGroupPayment(function (err: Error, groupPayment: any) {
+                                            if (err) {
+                                                let errorMsg = ErrorHandler.getErrorMsg("Group payment", ErrorType.NOT_FOUND);
+                                                return res.status(404).send();
+                                            }
+
+                                            // Link user payment to group payment
+                                            groupPayment[0].addParticipantPayments(payment, function (err: Error) {
+                                                if (err) {
+                                                    let errorMsg = ErrorHandler.getErrorMsg("Group Payment data", ErrorType.DATABASE_UPDATE);
+                                                    return res.status(500).send(errorMsg);
+                                                } else {
+                                                    // Link user payment to user
+                                                    participant.addPayments(payment, function (err: Error) {
+                                                        if (err) {
+                                                            let errorMsg = ErrorHandler.getErrorMsg("Participant Payment data",
+                                                                                                     ErrorType.DATABASE_UPDATE);
+                                                            return res.status(500).send(errorMsg);
+                                                        }
+                                                        return res.status(200).json(participant);
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    }).catch((err: APIError) => {
+                                        return res.status(err.statusCode).send(err.message);
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }
+
+        public getParticipants = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group;
+            this.findParticipants(groupId).then((participantInfos: any) => {
+                return res.status(200).json(participantInfos);
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+        /*public getParticipantDetails = (req: express.Request, res: express.Response) => {
+
+        }*/
+
+        public getAvailableProducts = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group;
+            this.groupService.getAvailableProducts(groupId).
+            then((products: any) => {
+                return res.json(products);
+            }).
+            catch((error: APIError) => {
+                return res.status(error.statusCode).send(error.message);
+            });
+        }
+
+        public getParticipantPayments = (req: express.Request, res: express.Response) => {
+            let groupId = +req.params.group;
+            let participantId: number = +req.params.participant;
+
+            this.groupService.getParticipants(groupId).then((participants: any) => {
+                let participant = participants.find((p: any) => p.id === participantId);
+                return new Promise((resolve, reject) => {
+                    if (participant == null) {
+                        let msg = ErrorHandler.getErrorMsg("Participant not found in group", null);
+                        reject(new APIError(404, msg));
+                    } else {
+                        participant.getPayments((err: Error, participantPayments: any) => {
+                            return err ?
+                            reject(err) :
+                            resolve(participantPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
+                        });
+                    }
+                }).catch((err: APIError) => {
+                    console.log(err);
+                });
+            }).then((participantPayments: any) => {
+                return this.groupService.getPaymentProducts(participantPayments);
+            }).then((finalPayments: any[]) => {
+                return res.status(200).json(this.mapPaymentProducts(finalPayments));
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+
+        private findParticipants = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.groupService.getParticipants(groupId).then((participants: any) => {
+                    resolve (participants);
+                    /*let participantInfos = participants.map((payee: any) => {
+                        return {
+                            id: payee.id,
+                            name: payee.firstname + " " + payee.lastname,
+                        };
+                    });
+                    console.log("Got memberinfos");
+                    resolve(participantInfos);*/
+                }).catch((err: APIError) => {
+                    reject(err);
+                });
+            });
+        }
+         public removeParticipant = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group; // Group name or id?
+            let participantId: number = +req.params.participant;
+
+            this.groupService.removeParticipant(groupId, participantId)
+                .then((updatedParticipants: any[]) => {
+                    return res.status(200).json(updatedParticipants);
+                }).catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
+                });
+        }
 
         private getMembers = (groupId: number) => {
             return new Promise((resolve, reject) => {
@@ -335,6 +504,86 @@ module Route {
 
                 return new PaymentInfo(fp.id, prodSelectionInfos, fp.isPaid, fp.paidOn);
             });
+        }
+        //This has been copypasted from group route, refactor to a service at some point
+        private getProductsFromDb = (products: Number[]) => {
+            return new Promise((resolve, reject) => {
+                this.productModel.find({ id: products }, function (err: Error, products: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
+                        reject(new DatabaseError(500, errorMsg));
+                    } else if (!products) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Product", ErrorType.NOT_FOUND);
+                        reject(new DatabaseError(400, errorMsg));
+                    } else {
+                        return resolve(products);
+                    }
+                });
+            });
+        }
+        private createParticipant = (participant: any) => {
+            return new Promise((resolve, reject) => {
+                this.participantModel.create({
+                    firstname: participant.firstname,
+                    lastname: participant.lastname,
+                    age: participant.age,
+                    allergies: participant.allergies
+                }, function(error: any , newParticipant: any) {
+                    if (error) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Participant data", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(500, error));
+                    } else if (!newParticipant) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Participant data", ErrorType.DATABASE_INSERTION);
+                        reject(new DatabaseError(400, errorMsg));
+                    } else {
+                        return resolve(newParticipant);
+                    }
+                });
+            });
+        }
+
+        //More copypasta from User route
+        private addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
+            let selectionPromises: any = [];
+            products.forEach((p: any) => {
+                selectionPromises.push(new Promise((resolve, reject) => {
+                    this.productSelectionModel.create({}, function (err: Error, ps: any) {
+                        if (err) {
+                            console.log(err);
+                            reject(err);
+                        } else {
+                            ps.setProduct(p, function (err: Error) {
+                                let disc = p.discounts.find((d: any) => discountIds.some((di: any) => di === d.id));
+                                if (disc) {
+                                    ps.setDiscount(disc, (err: Error) =>
+                                        err ? reject(err)
+                                            : payment.addProductSelections(ps, (err: Error) =>
+                                                err ? reject(err)
+                                                    : resolve(true)));
+                                } else {
+                                    payment.addProductSelections(ps, (err: Error) => err ? reject(err) : resolve(true));
+                                }
+                            });
+                        }
+                    });
+                }));
+            });
+
+            return Promise.all(selectionPromises);
+        }
+        private removeOldProducts = (payment: any) => {
+            let promises: any = [];
+
+            payment.productSelections.forEach((ps: any) =>
+                promises.push(new Promise((resolve, reject) => {
+
+                    // Dereference product selections from payment
+                    payment.removeProductSelections(ps, function (err: Error) {
+                        // Delete product selections
+                        ps.remove((err: Error) => err ? reject(err) : resolve(payment));
+                    });
+                })));
+            return Promise.all(promises);
         }
     }
 }

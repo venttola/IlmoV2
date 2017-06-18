@@ -4,6 +4,7 @@ import { Routes, RouterModule, CanActivate } from '@angular/router';
 
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
+import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
 
 
 import { FrontPageComponent } from "./front-page/front-page.component";
@@ -71,11 +72,14 @@ const appRoutes: Routes = [
   {
     path: "moderation",
     component: GroupModerationComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ]
   },
   {
     path: "groups/:groupId",
-    canActivate: [AuthGuard],
+    // TODO: Fix GroupModerationGuard
+    // If you add new group, you'll be a moderator in backend but the JWT token doesn't refresh
+    // and so you won't be able to moderate the group until you log out and back in
+    canActivate: [AuthGuard/*, GroupModeratorGuard*/],
     children: [
       { path: '', component: GroupPageComponent },
       { path: 'checkout', component: GroupCheckoutPageComponent }

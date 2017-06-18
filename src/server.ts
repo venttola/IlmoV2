@@ -56,7 +56,13 @@ class Server {
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
 			this.authService = new AuthService(this.userService);
-			this.groupService = new GroupService(models.ParticipantGroup, this.userService, models.Product, models.Discount);
+			this.groupService = new GroupService(models.ParticipantGroup,
+				this.userService,
+				models.Product,
+				models.Discount,
+				models.Participant,
+				models.PlatoonModel,
+				this.eventService);
 
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
@@ -138,6 +144,7 @@ class Server {
 			new eventRoutes.EventRoutes(
 				models.Event,
 				models.Product,
+				models.Discount,
 				models.Platoon,
 				models.ParticipantGroup,
 				models.GroupPayment,
@@ -150,6 +157,7 @@ class Server {
 		router.post(this.API_PREFIX + "/events", /*this.priviledgeChecker.checkAdmin,*/ eventRoute.addEvent);
 		router.get(this.API_PREFIX + "/events/:event/product", eventRoute.getEventProducts);
 		router.post(this.API_PREFIX + "/events/:event/product", eventRoute.addProduct);
+		router.patch(this.API_PREFIX + "/events/:event/product", eventRoute.updateProduct);
 		router.post(this.API_PREFIX + "/events/:event/organization", eventRoute.setOrganization);
 		router.delete(this.API_PREFIX + "/events/:event", eventRoute.deleteEvent);
 		router.post(this.API_PREFIX + "/events/:event/group", eventRoute.addParticipantGroup);
@@ -168,6 +176,10 @@ class Server {
 				models.ParticipantGroup,
 				models.Product,
 				models.Discount,
+				models.Participant,
+				models.ParticipantPayment,
+				models.ProductSelection,
+				models.GroupPayment,
 				this.userService,
 				this.groupService
 			);
@@ -185,6 +197,12 @@ class Server {
 		router.post(this.API_PREFIX + "/group/:group/moderator/userpayment", groupRoute.receiptPayment);
 		router.patch(this.API_PREFIX + "/group/:group/moderator", groupRoute.addModerator);
 		router.delete(this.API_PREFIX + "/group/:group/moderator/:member/moderator", groupRoute.removeModerator);
+		//Participant
+		router.post(this.API_PREFIX + "/group/:group/moderator/participants", groupRoute.addParticipant);
+		router.delete(this.API_PREFIX + "/group/:group/moderator/participants/:participant", groupRoute.removeParticipant);
+		router.get(this.API_PREFIX + "/group/:group/moderator/participants", groupRoute.getParticipants);
+		router.get(this.API_PREFIX + "/group/:group/moderator/participantpayment/:participant", groupRoute.getParticipantPayments);
+		router.get(this.API_PREFIX + "/group/:group/moderator/products", groupRoute.getAvailableProducts);
 		router.get(this.API_PREFIX + "/group/:group/checkout", groupRoute.getGroupCheckout);
 
 		console.log("Group routes set");
