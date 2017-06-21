@@ -4,6 +4,8 @@ import { UserService } from "../services/userservice";
 import { OrganizationService } from "../services/organizationservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
+const bankUtils = require("finnish-bank-utils");
+
 module Route {
 
     class Event {
@@ -166,10 +168,20 @@ module Route {
         * @apiError DatabaseReadError ERROR: Event data could not be read from the database
         */
         public addProduct = (req: express.Request, res: express.Response) => {
+            console.log("Adding product");
+            console.log("Body: " + JSON.stringify(req.body));
+
             let eventId = req.params.event;
             let productName = req.body.name;
             let productPrice = req.body.price;
-            let discounts: any[] = JSON.parse( req.body.discounts);
+            let discounts: any[] = [];
+
+            try {
+                discounts = JSON.parse(req.body.discounts);
+            } catch (e) {
+                console.log(e);
+            }
+
             this.getEvent(eventId).then((event: any) => {
                 this.productModel.create({
                     name: productName,
@@ -215,7 +227,7 @@ module Route {
             let productPrice = req.body.price;
             let discounts = req.body.discounts;
             this.getEvent(eventId).then((event: any) => {
-                this.productModel.one( {
+                this.productModel.one({
                     id: productId,
                 }, function (err: Error, product: any) {
                     if (err) {
@@ -235,13 +247,13 @@ module Route {
                         }).catch((err: APIError) => {
                             return res.status(err.statusCode).send(err.message);
                         });
-                       /* event.addProducts(prod, function (err: Error) {
-                            if (err) {
-                                return res.status(500).send("ERROR: Adding product to event failed");
-                            } else {
-                                return res.status(204).send();
-                            }
-                        });*/
+                        /* event.addProducts(prod, function (err: Error) {
+                             if (err) {
+                                 return res.status(500).send("ERROR: Adding product to event failed");
+                             } else {
+                                 return res.status(204).send();
+                             }
+                         });*/
                     }
                 });
             }).catch((err: APIError) => {
@@ -340,72 +352,98 @@ module Route {
             let self = this;
 
             this.getEvent(eventId).then((event: any) => {
-                event.getPlatoons(function (err: Error, platoons: Array<any>) {
-                    if (err) {
-                        let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
-                        return res.status(500).send(errorMsg);
-                    }
-
-                    let values = platoons.filter(p => p.id === platoonId);
-                    let platoon = values.length > 0 ? values[0] : null;
-
-                    if (platoon) {
-
-                        // Create new participant group
-                        self.participantGroupModel.create({
-                            name: newGroup.name,
-                            description: newGroup.description !== undefined ? newGroup.description : ""
-                        }, (err: Error, group: any) => {
-
-                            // Add new group to platoon
-                            platoon.addParticipantGroups(group, function (err: Error) {
-                                if (err) {
-                                    return res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE));
-                                } else {
-
-                                    // Create a group payment model
-                                    self.groupPaymentModel.create({
-                                        paidOn: null
-                                    }, function (err: Error, payment: any) {
-                                        if (err != null) {
-                                            return res.status(500).send(ErrorHandler.getErrorMsg("GroupPayment", ErrorType.DATABASE_UPDATE));
-                                        } else {
-
-                                            // Set the group to be the payee
-                                            payment.setPayee(group, function (err: Error) {
-                                                if (err) {
-                                                    return res.status(500).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.DATABASE_UPDATE));
-                                                } else {
-
-                                                    // Set the creator user to be the initial moderator of the group
-                                                    self.userService.getUser(moderator).then((user: any) => {
-                                                        if (!user) {
-                                                            return res.status(500).send(ErrorHandler.getErrorMsg("User", ErrorType.NOT_FOUND));
-                                                        } else {
-                                                            group.addModerator(user, (err: Error) => {
-                                                                console.log("Set " + user.email + " to be moderator of group " + group.name);
-                                                                return err != null
-                                                                    ? res.status(500)
-                                                                        .send(ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_UPDATE))
-                                                                    : res.status(200).json(group);
-                                                            });
-                                                        }
-                                                    }).catch((err: APIError) => {
-                                                        return res.status(err.statusCode).send(err.message);
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
+                return this.getEventPlatoon(event, platoonId);
+            }).then((platoon: any) => {
+                if (platoon) {
+                    let createdGroup: any = {};
+                    this.createGroup(newGroup)
+                        .then((group: any) => {
+                            createdGroup = group;
+                            return this.addGroupToPlatoon(platoon, group);
+                        })
+                        .then((group: any) => {
+                            return this.createGroupPayment();
+                        })
+                        .then((groupPayment: any) => {
+                            return this.setPayeeToPayment(groupPayment, createdGroup);
+                        })
+                        .then((group: any) => {
+                            return this.userService.getUser(moderator);
+                        })
+                        .then((user: any) => {
+                            createdGroup.addModerator(user, (err: Error) => {
+                                console.log("Set " + user.email + " to be moderator of group " + createdGroup.name);
+                                return err
+                                    ? res.status(500).send(ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_UPDATE))
+                                    : res.status(200).json(createdGroup);
                             });
+                        })
+                        .catch((err: APIError) => {
+                            return res.status(err.statusCode).send(err.message);
                         });
-                    } else {
-                        return res.status(404).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND));
-                    }
-                });
+                } else {
+                    return res.status(404).send(ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND));
+                }
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
+            });
+        }
+
+        private getEventPlatoon = (event: any, platoonId: number) => {
+            return new Promise((resolve, reject) => {
+                event.getPlatoons((err: Error, platoons: Array<any>) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        let platoon = this.findPlatoon(platoons, platoonId);
+                        resolve(platoon);
+                    }
+                });
+            });
+        }
+
+        private findPlatoon = (platoons: any[], platoonId: number) => {
+            let values = platoons.filter(p => p.id === platoonId);
+            let platoon = values.length > 0 ? values[0] : null;
+
+            return platoon;
+        }
+
+        private addGroupToPlatoon = (platoon: any, group: any) => {
+            return new Promise((resolve, reject) => {
+                platoon.addParticipantGroups(group, (err: Error) => {
+                    err ? reject(err) : resolve(group);
+                });
+            });
+        }
+
+        private createGroup = (newGroup: any) => {
+            return new Promise((resolve, reject) => {
+                this.participantGroupModel.create({
+                    name: newGroup.name,
+                    description: newGroup.description !== undefined ? newGroup.description : ""
+                }, (err: Error, group: any) => {
+                    err ? reject(err) : resolve(group);
+                });
+            });
+        }
+
+        private createGroupPayment = () => {
+            return new Promise((resolve, reject) => {
+                this.groupPaymentModel.create({
+                    paidOn: null,
+                    referenceNumber: bankUtils.generateFinnishRefNumber()
+                }, (err: Error, payment: any) => {
+                    err ? reject(err) : resolve(payment);
+                });
+            });
+        }
+
+        private setPayeeToPayment = (payment: any, payee: any) => {
+            return new Promise((resolve, reject) => {
+                payment.setPayee(payee, function (err: Error) {
+                    err ? reject(err) : resolve(payee);
+                });
             });
         }
 
@@ -544,15 +582,15 @@ module Route {
                         let errorMsg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
                         reject(new DatabaseError(500, errorMsg));
                     } else {
-                            discount.setProduct(product, function (err: Error) {
-                                if (err) {
-                                    let msg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
-                                    return reject(new DatabaseError(500, msg));
-                                } else {
-                                    console.log(JSON.stringify(product));
-                                    return resolve(discount);
-                                }
-                            });
+                        discount.setProduct(product, function (err: Error) {
+                            if (err) {
+                                let msg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
+                                return reject(new DatabaseError(500, msg));
+                            } else {
+                                console.log(JSON.stringify(product));
+                                return resolve(discount);
+                            }
+                        });
                     }
                 });
             });

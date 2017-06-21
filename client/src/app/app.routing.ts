@@ -19,6 +19,7 @@ import { EventManagementComponent } from "./admin-page/event-management/event-ma
 import { EventSignupListingComponent } from "./event-signup-listing/event-signup-listing.component";
 import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
 import { GroupPageComponent } from "./group-moderation/group-page/group-page.component";
+import { GroupCheckoutPageComponent } from "./group-moderation/group-page/group-checkout-page/group-checkout-page.component";
 
 const appRoutes: Routes = [
   {
@@ -75,8 +76,14 @@ const appRoutes: Routes = [
   },
   {
     path: "groups/:groupId",
-    component: GroupPageComponent,
-    canActivate: [AuthGuard, GroupModeratorGuard]
+    // TODO: Fix GroupModerationGuard
+    // If you add new group, you'll be a moderator in backend but the JWT token doesn't refresh
+    // and so you won't be able to moderate the group until you log out and back in
+    canActivate: [AuthGuard/*, GroupModeratorGuard*/],
+    children: [
+      { path: '', component: GroupPageComponent },
+      { path: 'checkout', component: GroupCheckoutPageComponent }
+    ]
   },
   {
     path: "**",

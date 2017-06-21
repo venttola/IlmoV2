@@ -1,0 +1,47 @@
+<h3>Ryhmälle {{ checkoutDetails?.group.name }} maksetut osallistujamaksut</h3>
+
+<div class="checkout-table-section">
+    <table class="checkout-table">
+        <thead>
+            <th>Jäsen</th>
+            <th>Tuotteet (€)</th>
+            <th>Alennukset (€)</th>
+            <th>Yhteensä</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of checkoutDetails?.payments">
+                <td>{{ p.member }}</td>
+                <td>{{ p.productSum }}</td>
+
+                <ng-container *ngIf="p.discountSum">
+                    <td>{{ p.discountSum }}</td>
+                    <td *ngIf="p.discountSum">{{ p.productSum + p.discountSum }}</td>
+                </ng-container>
+
+                <ng-container *ngIf="!p.discountSum">
+                    <td>-</td>
+                    <td>{{ p.productSum }}</td>
+                </ng-container>
+            </tr>
+
+            <tr class="total-row">
+                <td class="total-label">Kokonaissumma</td>
+                <td></td>
+                <td></td>
+                <td class="total-cell">{{ checkoutDetails?.totalSum }} €</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="payment-info">
+    <h4>Maksutiedot</h4>
+    <div>Ryhmän viitenumero: {{ checkoutDetails?.refNumber }}</div>
+    <div>Organisaation tilinumero: {{ checkoutDetails?.organizationBankAccount }}</div>
+    <div>Maksun tila:
+        <span *ngIf="checkoutDetails?.isPaid">Maksettu</span>
+        <span *ngIf="!checkoutDetails?.isPaid">Maksamatta</span>
+    </div>
+</div>
+
+<button type="button" class="btn btn-primary" *ngIf="!checkoutDetails?.isPaid" (click)="onReceiptGroupPayment()">Kuittaa maksetuksi</button>

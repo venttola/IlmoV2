@@ -3,6 +3,7 @@ import * as express from "express";
 import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { GroupService } from "../services/groupservice";
+import { reduce } from "underscore";
 
 module Route {
     class DiscountInfo {
@@ -53,6 +54,15 @@ module Route {
         }
     }
 
+    class CheckoutData {
+        group: any;
+        payments: any[];
+        totalSum: number;
+        refNumber: string;
+        organizationBankAccount: string;
+        isPaid: boolean;
+    };
+
     export class GroupRoutes {
         constructor(private groupModel: any,
             private productModel: any,
@@ -76,29 +86,6 @@ module Route {
                 return res.status(err.statusCode).send(err.message);
             });
         }
-
-        /**
-        * @api {post} api/group Adds new group
-        * @apiName New group
-        * @apiGroup Group
-        * @apiParam {JSON} name {name: "Group name"}
-        * @apiParam {JSON} description {description: "Group description"}
-        * @apiSuccess (204) -
-        * @apiError DatabaseInsertionError ERROR: Group data insertion failed
-        */
-        // public addGroup = (req: express.Request, res: express.Response) => {
-        //     this.groupModel.create({
-        //         name: req.body.name,
-        //         description: req.body.description
-        //     }, function (err: Error, group: any) {
-        //         if (err) {
-        //             let errorMsg = ErrorHandler.getErrorMsg("Group data", ErrorType.DATABASE_INSERTION);
-        //             return res.status(500).send(errorMsg);
-        //         } else {
-        //             return res.status(204).send();
-        //         }
-        //     });
-        // }
 
         /**
         * @api {delete} api/group/:group/:username
@@ -190,47 +177,21 @@ module Route {
             });
         }
 
-        /**
-        * @api {get} api/group/:group/:username/products
-        * @apiName Ger product list of a specific user
-        * @apiGroup Group
-        * @apiParam {Number} group Group unique id
-        * @apiParam {String} username Username (email)
-        * @apiSuccess (204) -
-        * @apiError DatabaseReadError ERROR: Group data could not be read from the database
-        * @apiError DatabaseReadError ERROR: Group was not found
-        * @apiError DatabaseReadError ERROR: User data could not be read from the database
-        * @apiError DatabaseReadError ERROR: User was not found
-        * @apiError DatabaseConstraintError ERROR: User is not a member of the group
-        */
-        // public getMemberProducts = (req: express.Request, res: express.Response) => {
-        //     let groupId = req.params.group;
-        //     let username = req.params.username;
-
-        //     Promise.all([this.groupService.getGroup(groupId), this.userService.getUser(username)]).then(values => {
-        //         let group: any = values[0];
-        //         let user: any = values[1];
-
-        //         group.hasMembers(user, function (err: Error) {
-        //             if (err) {
-        //                 let msg = ErrorHandler.getErrorMsg("User is not a member of the group", null);
-        //                 return res.status(500).send(msg);
-        //             } else {
-        //                 // TODO: Check that this is correct (assuming user belongs only to one group)
-        //                 user.getProducts(function (err: Error, prods: any) {
-        //                     return res.status(200).send(prods);
-        //                 });
-        //             }
-        //         });
-        //     }).catch((err: APIError) => {
-        //         return res.status(err.statusCode).send(err.message);
-        //     });
-        // }
-
         public receiptPayment = (req: express.Request, res: express.Response) => {
+            console.log("Receipting Payment");
             this.groupService.receiptMemberPayment(req.body.groupId, req.body.memberId)
                 .then((paidPayments: any) => {
-                    return this.getPaymentProducts(paidPayments);
+                    return this.groupService.getPaymentProducts(paidPayments);
+                }).then((payments: any) => {
+                    return res.status(200).json(this.mapPaymentProducts(payments));
+                });
+        }
+
+        public receiptParticipantPayment = (req: express.Request, res: express.Response) => {
+            console.log("Receipting Participant Payment");
+            this.groupService.receiptParticipantPayment(req.body.groupId, req.body.participantId)
+                .then((paidPayments: any) => {
+                    return this.groupService.getPaymentProducts(paidPayments);
                 }).then((payments: any) => {
                     return res.status(200).json(this.mapPaymentProducts(payments));
                 });
@@ -265,26 +226,10 @@ module Route {
                 });
         }
 
-        private getMembers = (groupId: number) => {
-            return new Promise((resolve, reject) => {
-                this.groupService.getParticipantGroupMembers(groupId).then((members: any) => {
-                    let memberInfos = members.map((payee: any) => {
-                        return {
-                            id: payee.id,
-                            name: payee.firstname + " " + payee.lastname,
-                            isModerator: payee.isModerator
-                        };
-                    });
-                    resolve(memberInfos);
-                }).catch((err: APIError) => {
-                    reject(err.message);
-                });
-            });
-        }
-
         // TODO: ApiDocs
         // TODO: Error checking
         public getMemberPayments = (req: express.Request, res: express.Response) => {
+            console.log("Getting member payments");
             let groupId = +req.params.group;
             let memberId: number = +req.params.member;
 
@@ -303,12 +248,82 @@ module Route {
                     }
                 });
             }).then((userPayments: any) => {
-                return this.getPaymentProducts(userPayments);
+                return this.groupService.getPaymentProducts(userPayments);
             }).then((finalPayments: any[]) => {
                 return res.status(200).json(this.mapPaymentProducts(finalPayments));
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });
+        }
+
+        public getGroupCheckout = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group;
+
+            this.getParticipantgroupCheckout(groupId)
+                .then((checkout: any) => {
+                    return res.status(200).json(checkout);
+                }).catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
+                });
+        }
+
+        private getParticipantgroupCheckout = (groupId: number) => {
+            let checkoutData: CheckoutData = new CheckoutData();
+
+            return this.groupService.getGroup(groupId)
+                .then((group: any) => {
+                    checkoutData.group = group;
+                    return this.groupService.getParticipantGroupPayment(groupId);
+                }).then((groupPayment: any) => {
+                    checkoutData.isPaid = groupPayment[0].isPaid;
+                    return this.groupService.getPaidUserPayments(groupId);
+                }).then((paymentsByUser: any) => {
+                    checkoutData.payments = paymentsByUser;
+
+                    return this.groupService.getPaidParticipantPayments(groupId);
+                }).then((paymentsByParticipant: any) => {
+                    console.log("paymentsByParticipant: " + JSON.stringify(paymentsByParticipant));
+
+                    checkoutData.payments = checkoutData.payments.concat(paymentsByParticipant);
+
+                    checkoutData.totalSum =
+                        reduce(checkoutData.payments.map((p: any) =>
+                            (p.productSum + p.discountSum) as number),
+                            (currentSum: number, userSum: number) => (currentSum + userSum)
+                            , 0);
+
+                    return this.groupService.getGroupRefNumber(checkoutData.group);
+                }).then((refNumber: string) => {
+                    checkoutData.refNumber = refNumber;
+                    delete checkoutData.group.groupPayment; // Do not send all the payment info
+
+
+                    return new Promise((resolve, reject) => {
+                        this.groupService.getEventByGroup(checkoutData.group.id)
+                            .then((event: any) => {
+                                event.getOrganization((err: Error, organization: any) => {
+                                    err ? reject(err) : resolve(organization.bankAccount);
+                                });
+                            });
+                    });
+                }).then((organizationBankAccount: string) => {
+                    checkoutData.organizationBankAccount = organizationBankAccount;
+                    return checkoutData;
+                }).catch((err: APIError) => {
+                    return err;
+                });
+        }
+
+        public receiptGroupPayment = (req: any, res: express.Response) => {
+            let groupId = req.params.group;
+            this.groupService.receiptGroupPayment(groupId)
+                .then((groupPayment: any) => {
+                    return this.getParticipantgroupCheckout(groupId);
+                }).then((checkout: any) => {
+                    return res.status(200).json(checkout);
+                }).catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
+                });
         }
 
         // Req is marked as type of any because Typescript compiler refuses to admit the existence of req.user attribute
@@ -358,6 +373,7 @@ module Route {
                         let errorMsg = ErrorHandler.getErrorMsg("Payment data", ErrorType.DATABASE_READ);
                         return res.status(500).send(errorMsg);
                     } else {
+                        console.log("Payments: " + JSON.stringify(payments));
                         let firstOpenPayment = payments.filter((p: any) => p.payment[0].payee_id === groupId).find((p: any) => p.isPaid === false);
 
                         // If there's open payments, add products to that one
@@ -400,7 +416,7 @@ module Route {
                                                     participant.addPayments(payment, function (err: Error) {
                                                         if (err) {
                                                             let errorMsg = ErrorHandler.getErrorMsg("Participant Payment data",
-                                                                                                     ErrorType.DATABASE_UPDATE);
+                                                                ErrorType.DATABASE_UPDATE);
                                                             return res.status(500).send(errorMsg);
                                                         }
                                                         return res.status(200).json(participant);
@@ -434,12 +450,12 @@ module Route {
         public getAvailableProducts = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group;
             this.groupService.getAvailableProducts(groupId).
-            then((products: any) => {
-                return res.json(products);
-            }).
-            catch((error: APIError) => {
-                return res.status(error.statusCode).send(error.message);
-            });
+                then((products: any) => {
+                    return res.json(products);
+                }).
+                catch((error: APIError) => {
+                    return res.status(error.statusCode).send(error.message);
+                });
         }
 
         public getParticipantPayments = (req: express.Request, res: express.Response) => {
@@ -455,15 +471,15 @@ module Route {
                     } else {
                         participant.getPayments((err: Error, participantPayments: any) => {
                             return err ?
-                            reject(err) :
-                            resolve(participantPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
+                                reject(err) :
+                                resolve(participantPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
                         });
                     }
                 }).catch((err: APIError) => {
                     console.log(err);
                 });
             }).then((participantPayments: any) => {
-                return this.getPaymentProducts(participantPayments);
+                return this.groupService.getPaymentProducts(participantPayments);
             }).then((finalPayments: any[]) => {
                 return res.status(200).json(this.mapPaymentProducts(finalPayments));
             }).catch((err: APIError) => {
@@ -474,7 +490,7 @@ module Route {
         private findParticipants = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.groupService.getParticipants(groupId).then((participants: any) => {
-                    resolve (participants);
+                    resolve(participants);
                     /*let participantInfos = participants.map((payee: any) => {
                         return {
                             id: payee.id,
@@ -488,7 +504,7 @@ module Route {
                 });
             });
         }
-         public removeParticipant = (req: express.Request, res: express.Response) => {
+        public removeParticipant = (req: express.Request, res: express.Response) => {
             let groupId = req.params.group; // Group name or id?
             let participantId: number = +req.params.participant;
 
@@ -500,41 +516,33 @@ module Route {
                 });
         }
 
-        private getPaymentProducts = (userPayments: any) => {
-            let productPromises = userPayments.map((up: any) => {
-                return new Promise((resolve, reject) => {
-                    let promises = up.productSelections.map((ps: any) => {
-                        return new Promise((resolve, reject) => {
-                            this.productModel.one({ id: ps.product_id }, (err: Error, product: any) => {
-                                ps.product = product;
-
-                                this.discountModel.one({ id: ps.discount_id }, (err: Error, discount: any) => {
-                                    ps.discount = discount;
-                                    resolve(up);
-                                });
-                            });
-                        });
+        private getMembers = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.groupService.getParticipantGroupMembers(groupId).then((members: any) => {
+                    let memberInfos = members.map((payee: any) => {
+                        return {
+                            id: payee.id,
+                            name: payee.firstname + " " + payee.lastname,
+                            isModerator: payee.isModerator
+                        };
                     });
-
-                    Promise.all(promises).then((results: any) => {
-                        resolve(results);
-                    });
+                    resolve(memberInfos);
+                }).catch((err: APIError) => {
+                    reject(err.message);
                 });
             });
-
-            return Promise.all(productPromises);
         }
 
         private mapPaymentProducts = (finalPayments: any[]) => {
             return finalPayments.map((fp: any) => {
-                let prodSelectionInfos = fp[0].productSelections.map((ps: any) => {
+                let prodSelectionInfos = fp.productSelections.map((ps: any) => {
                     let discountInfo: any = ps.discount ? new DiscountInfo(ps.discount.id, ps.discount.name, ps.discount.amount) : null;
                     let productInfo: any = new ProductInfo(ps.product.id, ps.product.name, ps.product.price);
 
                     return new ProductSelectionInfo(productInfo, discountInfo);
                 });
 
-                return new PaymentInfo(fp[0].id, prodSelectionInfos, fp[0].isPaid, fp[0].paidOn);
+                return new PaymentInfo(fp.id, prodSelectionInfos, fp.isPaid, fp.paidOn);
             });
         }
         //This has been copypasted from group route, refactor to a service at some point
@@ -560,7 +568,7 @@ module Route {
                     lastname: participant.lastname,
                     age: participant.age,
                     allergies: participant.allergies
-                }, function(error: any , newParticipant: any) {
+                }, function (error: any, newParticipant: any) {
                     if (error) {
                         let errorMsg = ErrorHandler.getErrorMsg("Participant data", ErrorType.DATABASE_INSERTION);
                         reject(new DatabaseError(500, error));

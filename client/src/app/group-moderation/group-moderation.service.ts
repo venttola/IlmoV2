@@ -8,6 +8,8 @@ import { Participant } from "./participant.model";
 import { UserPayment } from "./userpayment";
 import { Product } from "../event-signup/product";
 import { Discount } from "../event-signup/discount";
+import { GroupCheckoutDetails } from "./group-page/group-checkout-page/group-checkout-details";
+
 @Injectable()
 export class GroupModerationService extends AuthorizedHttpService {
   constructor(protected http: Http) {
@@ -60,6 +62,20 @@ export class GroupModerationService extends AuthorizedHttpService {
       }).catch(this.handleError);
   }
 
+    receiptParticipantPayment(groupId: number, participantId: number): Observable<UserPayment[]> {
+    let data = {
+      groupId: groupId,
+      participantId: participantId,
+    };
+
+    return this.http.post("/api/group/" + groupId + "/moderator/participantpayment", data, { headers: this.headers })
+      .map((res: Response) => {
+        console.log(res);
+        return this.extractData(res).map(d => UserPayment.fromJSON(d));
+      }).catch(this.handleError);
+  }
+
+
   addModerator(groupId: number, memberId: number): Observable<Member[]> {
     let data = {
       memberId: memberId,
@@ -85,13 +101,14 @@ export class GroupModerationService extends AuthorizedHttpService {
     console.log("GroupId: " + groupId);
     return this.http.get("/api/group/" + groupId + "/moderator/participants", { headers: this.headers })
       .map((res: Response) => {
-        return this.extractData(res).map(data => { 
+        return this.extractData(res).map(data => {
           let participant = Participant.fromJSON(data);
           return participant;
 
         });
       }).catch(this.handleError);
   }
+
   createParticipant(groupId: number, participant: Participant, products: Product[]): Observable<any> {
     //Copypasted from EventSignupComponent.saveSignup()
     let prods = products
@@ -105,12 +122,12 @@ export class GroupModerationService extends AuthorizedHttpService {
     });
     let data = { groupId: groupId, participant: participant, products: prodIds };
     return this.http.post("/api/group/" + groupId + "/moderator/participants", JSON.stringify(data), { headers: this.headers })
-      .map((res:Response) => {
+      .map((res: Response) => {
         return this.extractData(res);
-       }).catch(this.handleError);
+      }).catch(this.handleError);
   }
   removeParticipant(groupId: number, participantId: number): Observable<any> {
-    return this.http.delete("/api/group/" + groupId + "/moderator/participants/" + participantId, {headers: this.headers })
+    return this.http.delete("/api/group/" + groupId + "/moderator/participants/" + participantId, { headers: this.headers })
       .map((res: Response) => {
         return this.extractData(res).map(p => {
           let participant = Participant.fromJSON(p);
@@ -120,10 +137,10 @@ export class GroupModerationService extends AuthorizedHttpService {
   }
 
   getAvailableProducts(groupId: number): Observable<Product[]> {
-    return this.http.get("/api/group/" + groupId + "/moderator/products", { headers: this.headers})
-    .map((res: Response) => {
-       return this.extractData(res).map(product => Product.fromJSON(product));
-    }).catch(this.handleError);
+    return this.http.get("/api/group/" + groupId + "/moderator/products", { headers: this.headers })
+      .map((res: Response) => {
+        return this.extractData(res).map(product => Product.fromJSON(product));
+      }).catch(this.handleError);
   }
 
   getParticipantPayments(groupId: number, participantId: number): Observable<UserPayment[]> {
@@ -131,5 +148,19 @@ export class GroupModerationService extends AuthorizedHttpService {
       .map((res: Response) => {
         return this.extractData(res).map(d => UserPayment.fromJSON(d));
       }).catch(this.handleError);
+  }
+
+  getGroupCheckoutDetails(groupId: number): Observable<GroupCheckoutDetails> {
+    return this.http.get("/api/group/" + groupId + "/checkout", { headers: this.headers })
+      .map((res: Response) => {
+        return GroupCheckoutDetails.fromJSON(res.json());
+      });
+  }
+
+  receiptGroupPayment(groupId: number): Observable<GroupCheckoutDetails> {
+        return this.http.get("/api/group/" + groupId + "/receipt", { headers: this.headers })
+      .map((res: Response) => {
+        return GroupCheckoutDetails.fromJSON(res.json());
+      });
   }
 }

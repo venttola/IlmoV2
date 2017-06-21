@@ -10,7 +10,7 @@ export class GroupModeratorGuard implements CanActivate {
   			  private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot)  {
-    if (!this.authService.loggedIn() || !this.authService.isModerator(route.params.groupId)) {
+    if (!this.authService.loggedIn() || !this.authService.isModerator(route.params["groupId"])) {
       this.router.navigate(["main"]);
       return false;
     }

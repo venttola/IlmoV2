@@ -31,7 +31,7 @@ export class GroupPageComponent implements OnInit {
 
   selectedParticipant: Participant;
   selectedParticipantPayments: UserPayment[];
-  
+
   @ViewChild('memberModal')
   memberModal: GroupModalComponent;
 
@@ -42,8 +42,8 @@ export class GroupPageComponent implements OnInit {
   infoMessage: string;
 
   constructor(private route: ActivatedRoute,
-              private participantGroupService: ParticipantGroupService,
-              private groupModerationService: GroupModerationService) { 
+    private participantGroupService: ParticipantGroupService,
+    private groupModerationService: GroupModerationService) {
     this.newParticipant = new Participant;
     this.errorMessage = "";
     this.infoMessage = "";
@@ -62,7 +62,7 @@ export class GroupPageComponent implements OnInit {
     this.route.params
       .switchMap((params: Params) => this.groupModerationService.getAvailableProducts(+params["groupId"]))
       .subscribe((products: Product[]) => this.availableProducts = products);
-      console.log(this.availableProducts);
+    console.log(this.availableProducts);
 
 
   }
@@ -96,6 +96,15 @@ export class GroupPageComponent implements OnInit {
       .subscribe((userPayments: UserPayment[]) => {
         console.log(userPayments);
         this.selectedMemberPayments = userPayments;
+      },
+      (error: any) => console.log(error));
+  }
+
+  onReceiptParticipantPayment() {
+    this.groupModerationService.receiptParticipantPayment(this.participantGroup.id, this.selectedParticipant.id)
+      .subscribe((userPayments: UserPayment[]) => {
+        console.log(userPayments);
+        this.selectedParticipantPayments = userPayments;
       },
       (error: any) => console.log(error));
   }
@@ -149,11 +158,11 @@ export class GroupPageComponent implements OnInit {
       .subscribe((participants: Participant[]) => this.participants = participants);
   }
 
-  addParticipant(){
+  addParticipant() {
     this.infoMessage = "";
     this.errorMessage = "";
     console.log("Adding participant");
-     let selectedProducts = this.availableProducts.filter((p: Product) => p.selected === true);
+    let selectedProducts = this.availableProducts.filter((p: Product) => p.selected === true);
 
     let prodIds = selectedProducts.map((p: Product) => {
       let discounts = p.discounts.filter((d: Discount) => d.selected === true);
@@ -166,16 +175,16 @@ export class GroupPageComponent implements OnInit {
       .subscribe((participant: any) => {
         console.log("Participant added succesfully");
         this.getParticipants();
-        this.infoMessage = "Osallistuja " + participant.firstname + " "  + participant.lastname + " lisätty onnistuneesti";
+        this.infoMessage = "Osallistuja " + participant.firstname + " " + participant.lastname + " lisätty onnistuneesti";
       }, error => {
         this.errorMessage = "Tapahtui virhe";
       });
   }
-  removeParticipant(){
+  removeParticipant() {
     console.log("Removing participant");
     this.groupModerationService.removeParticipant(this.participantGroup.id, this.selectedParticipant.id).
-      subscribe((participants: Participant[] ) => {
-        this.infoMessage ="Osallistuja " + this.selectedParticipant.firstname + " "  + this.selectedParticipant.lastname + " poistettu onnistuneesti";
+      subscribe((participants: Participant[]) => {
+        this.infoMessage = "Osallistuja " + this.selectedParticipant.firstname + " " + this.selectedParticipant.lastname + " poistettu onnistuneesti";
         this.participants = participants;
         this.participantModal.hide();
       });
@@ -191,5 +200,5 @@ export class GroupPageComponent implements OnInit {
       (error: any) => console.log(error));
 
   }
-  
+
 }

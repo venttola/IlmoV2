@@ -1,0 +1,15 @@
+.checkout-table {
+    background-color: white;
+    color: black;
+    width: 100%;
+}
+
+.total-row {
+    border-top: 2px solid black;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.payment-info {
+    margin-top: 3%;
+}

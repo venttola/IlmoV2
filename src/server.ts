@@ -49,15 +49,20 @@ class Server {
 
 		connection.then((conn: any) => {
 			let models = this.handler.getModels();
-			this.userService = new UserService(models.User);
+			this.userService = new UserService(models.User,
+				models.UserPayment,
+				models.ProductSelection,
+				models.Product);
 			this.eventService = new EventService(models.Event);
 			this.organizationService = new OrganizationService(models.Organization);
 			this.authService = new AuthService(this.userService);
 			this.groupService = new GroupService(models.ParticipantGroup,
-												 models.Participant,
-												 models.PlatoonModel,
-												 this.userService,
-												 this.eventService);
+				this.userService,
+				models.Product,
+				models.Discount,
+				models.Participant,
+				models.PlatoonModel,
+				this.eventService);
 
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
@@ -197,7 +202,13 @@ class Server {
 		router.delete(this.API_PREFIX + "/group/:group/moderator/participants/:participant", groupRoute.removeParticipant);
 		router.get(this.API_PREFIX + "/group/:group/moderator/participants", groupRoute.getParticipants);
 		router.get(this.API_PREFIX + "/group/:group/moderator/participantpayment/:participant", groupRoute.getParticipantPayments);
+		router.post(this.API_PREFIX + "/group/:group/moderator/participantpayment", groupRoute.receiptParticipantPayment);
+
 		router.get(this.API_PREFIX + "/group/:group/moderator/products", groupRoute.getAvailableProducts);
+		router.get(this.API_PREFIX + "/group/:group/checkout", groupRoute.getGroupCheckout);
+		router.get(this.API_PREFIX + "/group/:group/receipt", groupRoute.receiptGroupPayment);
+
+
 		console.log("Group routes set");
 	}
 
