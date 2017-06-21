@@ -4,6 +4,8 @@ import { UserService } from "../services/userservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { GroupService } from "../services/groupservice";
 import { reduce } from "underscore";
+var bankUtils = require("finnish-bank-utils");
+var dateFormat = require("dateformat");
 
 module Route {
     class DiscountInfo {
@@ -61,6 +63,7 @@ module Route {
         refNumber: string;
         organizationBankAccount: string;
         isPaid: boolean;
+        barcode: string;
     };
 
     export class GroupRoutes {
@@ -308,6 +311,15 @@ module Route {
                     });
                 }).then((organizationBankAccount: string) => {
                     checkoutData.organizationBankAccount = organizationBankAccount;
+
+                    let barcode = bankUtils.formatFinnishVirtualBarCode({
+                        iban: bankUtils.formatFinnishIBAN(organizationBankAccount),
+                        sum: checkoutData.totalSum,
+                        reference: bankUtils.formatFinnishRefNumber(checkoutData.refNumber),
+                        date: dateFormat(new Date(), "dd.mm.yyyy")
+                    });
+
+                    checkoutData.barcode = barcode;
                     return checkoutData;
                 }).catch((err: APIError) => {
                     return err;

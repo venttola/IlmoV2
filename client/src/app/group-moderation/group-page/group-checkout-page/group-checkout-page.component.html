@@ -38,6 +38,7 @@
     <h4>Maksutiedot</h4>
     <div>Ryhmän viitenumero: {{ checkoutDetails?.refNumber }}</div>
     <div>Organisaation tilinumero: {{ checkoutDetails?.organizationBankAccount }}</div>
+    <div>Virtuaaliviivakoodi: {{ checkoutDetails?.barcode }}</div>
     <div>Maksun tila:
         <span *ngIf="checkoutDetails?.isPaid">Maksettu</span>
         <span *ngIf="!checkoutDetails?.isPaid">Maksamatta</span>
