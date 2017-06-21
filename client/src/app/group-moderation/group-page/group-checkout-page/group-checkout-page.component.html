@@ -14,8 +14,8 @@
                 <td>{{ p.productSum }}</td>
 
                 <ng-container *ngIf="p.discountSum">
-                    <td>{{ p.discoutSum }}</td>
-                    <td *ngIf="p.discountSum">{{ p.productSum - p.discoutSum }}</td>
+                    <td>{{ p.discountSum }}</td>
+                    <td *ngIf="p.discountSum">{{ p.productSum + p.discountSum }}</td>
                 </ng-container>
 
                 <ng-container *ngIf="!p.discountSum">
@@ -38,4 +38,10 @@
     <h4>Maksutiedot</h4>
     <div>Ryhmän viitenumero: {{ checkoutDetails?.refNumber }}</div>
     <div>Organisaation tilinumero: {{ checkoutDetails?.organizationBankAccount }}</div>
+    <div>Maksun tila:
+        <span *ngIf="checkoutDetails?.isPaid">Maksettu</span>
+        <span *ngIf="!checkoutDetails?.isPaid">Maksamatta</span>
+    </div>
 </div>
+
+<button type="button" class="btn btn-primary" *ngIf="!checkoutDetails?.isPaid" (click)="onReceiptGroupPayment()">Kuittaa maksetuksi</button>

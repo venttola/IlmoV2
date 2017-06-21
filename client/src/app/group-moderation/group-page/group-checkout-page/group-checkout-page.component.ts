@@ -28,4 +28,11 @@ export class GroupCheckoutPageComponent implements OnInit {
       });
   }
 
+  onReceiptGroupPayment() {
+    this.groupModerationService.receiptGroupPayment(this.checkoutDetails.group.id)
+      .subscribe((checkoutDetails: GroupCheckoutDetails) => {
+        console.log(JSON.stringify(checkoutDetails));
+        this.checkoutDetails = checkoutDetails;
+      });
+  }
 }

@@ -62,6 +62,20 @@ export class GroupModerationService extends AuthorizedHttpService {
       }).catch(this.handleError);
   }
 
+    receiptParticipantPayment(groupId: number, participantId: number): Observable<UserPayment[]> {
+    let data = {
+      groupId: groupId,
+      participantId: participantId,
+    };
+
+    return this.http.post("/api/group/" + groupId + "/moderator/participantpayment", data, { headers: this.headers })
+      .map((res: Response) => {
+        console.log(res);
+        return this.extractData(res).map(d => UserPayment.fromJSON(d));
+      }).catch(this.handleError);
+  }
+
+
   addModerator(groupId: number, memberId: number): Observable<Member[]> {
     let data = {
       memberId: memberId,
@@ -138,6 +152,13 @@ export class GroupModerationService extends AuthorizedHttpService {
 
   getGroupCheckoutDetails(groupId: number): Observable<GroupCheckoutDetails> {
     return this.http.get("/api/group/" + groupId + "/checkout", { headers: this.headers })
+      .map((res: Response) => {
+        return GroupCheckoutDetails.fromJSON(res.json());
+      });
+  }
+
+  receiptGroupPayment(groupId: number): Observable<GroupCheckoutDetails> {
+        return this.http.get("/api/group/" + groupId + "/receipt", { headers: this.headers })
       .map((res: Response) => {
         return GroupCheckoutDetails.fromJSON(res.json());
       });

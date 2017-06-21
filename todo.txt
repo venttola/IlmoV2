@@ -1,4 +1,0 @@
-- Ei päivitä uusia tuotteita eventin päivityksessä
-- Group moderation guardin korjaus, token pitää päivittää groupin lisäyksen jälkeen, muuten ei pääse moderoimaan
-- Rekistöröitymättömät ei näy ryhmän payment checkoutissa
-- User payment checkout-napit puuttuu rekistöröitymättömien modaalista

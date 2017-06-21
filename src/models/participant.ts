@@ -5,5 +5,11 @@ export function Participant(db: any) {
 		lastname: {type: "text", require: true},
 		age: {type: "number", time: false, required: true},
 		allergies: {type: "text"}
+	}, {
+		methods: {
+			fullName: function () {
+				return this.firstname + " " + this.lastname;
+			}
+		}
 	});
 };

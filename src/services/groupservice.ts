@@ -89,6 +89,58 @@ module Service {
             });
         }
 
+        public getPaidParticipantPayments = (groupId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getParticipantGroupPayment(groupId)
+                    .then((groupPayment: any) => new Promise((resolve, reject) => {
+                        groupPayment[0].getParticipantPayments((err: Error, participantPayments: any) => {
+                            err ? reject(err) : resolve(participantPayments);
+                        });
+                    }))
+                    .then((participantPayments: any[]) => {
+                        let promises = participantPayments.filter((up: any) => up.isPaid).map((up: any) => new Promise((resolve, reject) => {
+                            up.getPayee((err: Error, payeeUser: any) => {
+                                up.payee = payeeUser[0].fullName();
+                                resolve(up);
+                            });
+                        }));
+
+                        return Promise.all(promises);
+                    }).then((payments: any) => {
+                        let paymentsByUser: any = groupBy(payments, (p: any) => p.payee);
+                        let promises = [];
+
+                        for (let payee in paymentsByUser) {
+                            if (payee) {
+                                let promise = new Promise((resolve, reject) => {
+                                    this.getPaymentProducts(paymentsByUser[payee]).then((paymentsWithProds: any) => {
+                                        let allProducts = flatten(paymentsWithProds);
+
+                                        let prods = flatten(allProducts.map((payment: any) =>
+                                            payment.productSelections.map((prodSelection: any) => prodSelection.product)));
+
+                                        let discounts = flatten(allProducts.map((payment: any) =>
+                                            payment.productSelections.map((prodSelection: any) => prodSelection.discount)));
+
+                                        resolve({
+                                            member: payee,
+                                            productSum: reduce(prods.filter((p: any) => p != null)
+                                                .map((p: any) => p.price), (memo, num) => (memo + num), 0),
+                                            discountSum: reduce(discounts.filter((d: any) => d != null)
+                                                .map((d: any) => d.amount), (memo, num) => (memo + num), 0)
+                                        });
+                                    });
+                                });
+
+                                promises.push(promise);
+                            }
+                        }
+
+                        Promise.all(promises).then((results: any) => resolve(results));
+                    });
+            });
+        }
+
         public getParticipantGroupMembers = (groupId: number) => {
             return new Promise((resolve, reject) => {
                 this.getParticipantGroupPayment(groupId)
@@ -182,11 +234,58 @@ module Service {
             });
         }
 
+        public receiptGroupPayment = (groupId: number) => {
+            console.log("Receipting group payment");
+
+            return this.getParticipantGroupPayment(groupId)
+                .then((groupPayment: any) => {
+                    console.log("Grouppayment: " + JSON.stringify(groupPayment[0]));
+                    groupPayment[0].isPaid = true;
+                    groupPayment[0].paidOn = new Date();
+
+                    groupPayment[0].save((err: Error) => {
+                        console.log("Saved");
+                        if (err) {
+                            return err;
+                        } else {
+                            return groupPayment;
+                        }
+                    });
+                });
+        }
+
         public receiptMemberPayment(groupId: number, memberId: number) {
             return new Promise((resolve, reject) => {
                 this.getAllMemberPayments(groupId)
                     .then((userPayments: any[]) => {
                         let unpaidPayments = userPayments.filter((up: any) => up.payeeId === memberId)
+                            .map((up: any) => new Promise((resolve, reject) => {
+                                if (!up.isPaid) {
+                                    up.paidOn = new Date();
+                                    up.isPaid = true;
+
+                                    up.save((err: Error) => {
+                                        if (err) {
+                                            reject(err);
+                                        } else {
+                                            resolve(up);
+                                        }
+                                    });
+                                } else {
+                                    resolve(up);
+                                }
+                            }));
+
+                        Promise.all(unpaidPayments).then((paidPayments: any) => resolve(paidPayments));
+                    });
+            });
+        }
+
+        public receiptParticipantPayment(groupId: number, participantId: number) {
+            return new Promise((resolve, reject) => {
+                this.getAllParticipantPayments(groupId)
+                    .then((userPayments: any[]) => {
+                        let unpaidPayments = userPayments.filter((up: any) => up.payeeId === participantId)
                             .map((up: any) => new Promise((resolve, reject) => {
                                 if (!up.isPaid) {
                                     up.paidOn = new Date();
