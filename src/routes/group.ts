@@ -288,7 +288,7 @@ module Route {
 
                     checkoutData.totalSum =
                         reduce(checkoutData.payments.map((p: any) =>
-                            (p.productSum - p.discountSum) as number),
+                            (p.productSum + p.discountSum) as number),
                             (currentSum: number, userSum: number) => (currentSum + userSum)
                             , 0);
 
