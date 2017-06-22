@@ -7,7 +7,7 @@ module Service {
 
         public getAllUsers = (query: string) => {
             return new Promise((resolve, reject) => {
-                console.log(JSON.stringify (this.userModel));
+                console.log(query);
                 this.userModel.all(function (err: Error, users: any) {
                     if (err) {
                         let errorMsg = ErrorHandler.getErrorMsg("User data", ErrorType.DATABASE_READ);
@@ -17,9 +17,19 @@ module Service {
                         reject(new DatabaseError(400, errorMsg));
                     } else {
                         let userData = users.map((user: any) => {
-                                user.password = undefined; 
-                                return user});
-                        return resolve(users);
+                                user.password = undefined;
+                                return user;
+                            });
+                     //   userdata       .filter((user: any) => );
+                         if (query) {
+                             userData = userData.filter((user: any) => {
+                                 if (user.firstname.contains(query) ||
+                                    user.lastname.contains(query)) {
+                                     return user;
+                                 }
+                             });
+                         }
+                        return resolve(userData);
                     }
                 });
             });

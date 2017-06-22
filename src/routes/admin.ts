@@ -69,11 +69,8 @@ module Route {
 		/** Not working yet!
         */
 		public getAllUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			let query: string = req.body.query;
-			console.log("Getting users");
+			let query: string = req.params.query;
 			this.adminService.getAllUsers(query).then((users: any) => {
-				console.log("Found users");
-				
 				return res.status(200).send(JSON.stringify(users));
 			}).catch((err: APIError) => {
 				return res.status(err.statusCode).send(err.message);
