@@ -23,8 +23,8 @@ module Service {
                      //   userdata       .filter((user: any) => );
                          if (query) {
                              userData = userData.filter((user: any) => {
-                                 if (user.firstname.contains(query) ||
-                                    user.lastname.contains(query)) {
+                                 if (user.firstname.indexOf(query) !== -1 ||
+                                     user.lastname.indexOf(query) !== -1 ) {
                                      return user;
                                  }
                              });
