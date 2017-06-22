@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from "@angular/http";
+import { Http, Response, URLSearchParams } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
@@ -16,8 +16,10 @@ export class AdminService extends AuthorizedHttpService {
 		this.adminURL = this.urlBase + "admin" 
 	}
 
-	public getUsers(): Observable<any>{
-		return this.http.get(this.adminURL + "/users", { headers:this.headers }).
+	public getUsers(query: string): Observable<any>{
+		let params = new URLSearchParams();
+		params.set("search", query);
+		return this.http.get(this.adminURL + "/users", { search: params, headers:this.headers }).
 		map(this.extractData).
 		catch(this.handleError);
 	}
