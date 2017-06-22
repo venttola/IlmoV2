@@ -8,7 +8,7 @@ import { Discount } from "../../event-signup/discount";
 import { EventCreatorService } from "./event-creator.service";
 
 @Component({
-  selector: 'event-creator-component',
+  selector: 'admin-event-creator-component',
   templateUrl: './event-creator.component.html',
   styleUrls: ['./event-creator.component.css']
 })

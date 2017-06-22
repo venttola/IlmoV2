@@ -11,7 +11,7 @@ import { EventService } from "../../event.service";
 import { EventDetailsService } from "../../event-details/event-details.service";
 import { EventManagementService } from "./event-management.service";
 @Component({
-	selector: 'event-management',
+	selector: 'admin-event-management',
 	templateUrl: './event-management.component.html',
 	styleUrls: ['./event-management.component.css']
 })

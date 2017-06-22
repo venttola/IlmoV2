@@ -39,6 +39,8 @@ import { GroupPageComponent } from './group-moderation/group-page/group-page.com
 
 import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-policy-modal.component';
 import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-checkout-page/group-checkout-page.component';
+import { PasswordResetComponent } from './admin-page/password-reset/password-reset.component';
+import { AdminService } from './admin-page/shared/admin.service';
 
 @NgModule({
   declarations: [
@@ -55,7 +57,8 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     GroupModerationComponent,
     GroupPageComponent,
     PrivacyPolicyModalComponent,
-    GroupCheckoutPageComponent
+    GroupCheckoutPageComponent,
+    PasswordResetComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +84,8 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     EventSignupService,
     EventManagementService,
     SignupListingService,
-    GroupModerationService
+    GroupModerationService,
+    AdminService
   ],
   bootstrap: [AppComponent]
 })

@@ -4,7 +4,7 @@ import { OrganizationService } from "./organization.service";
 import { OrganizationMember } from "../organization-member.model";
 
 @Component({
-	selector: 'organization-handler',
+	selector: 'admin-organization-handler',
 	templateUrl: './organization-handler.component.html',
 	styleUrls: ['./organization-handler.component.css']
 })
@@ -20,7 +20,8 @@ export class OrganizationHandlerComponent implements OnInit {
 	ngOnInit() {
 	}
 	public addOrganization(){
-		this.organizationService.createOrganization(this.newOrganization, this.organizationMembers).subscribe(function(result){
+		this.organizationService.createOrganization(this.newOrganization, this.organizationMembers).
+		subscribe(function(result){
 			console.log("In AdminPageComponent" + result);
 		}, error => this.error = <any>error);
 	}
