@@ -12,13 +12,14 @@ import { UserService } from "./services/userservice";
 import { OrganizationService } from "./services/organizationservice";
 import { EventService } from "./services/eventservice";
 import { AuthService } from "./services/authservice";
-
+import { GroupService } from "./services/groupservice";
+import { AdminService } from "./services/adminservice";
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
 import * as eventRoutes from "./routes/event";
 import * as groupRoutes from "./routes/group";
 import * as organizationRoutes from "./routes/organization";
-import { GroupService } from "./services/groupservice";
+import * as adminRoutes from "./routes/admin";
 
 class Server {
 	public app: express.Application;
@@ -34,6 +35,7 @@ class Server {
 	private organizationService: OrganizationService;
 	private authService: AuthService;
 	private groupService: GroupService;
+	private adminService: AdminService;
 
 	constructor() {
 		let config = require("./config.json");
@@ -62,7 +64,9 @@ class Server {
 				models.Discount,
 				models.Participant,
 				models.PlatoonModel,
-				this.eventService);
+				this.eventService,
+				);
+			this.adminService = new AdminService(models.User);
 
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
@@ -90,6 +94,8 @@ class Server {
 		this.setUserRoutes(router);
 		this.setGroupRoutes(router);
 		this.setOrganizationRoutes(router);
+		this.setAdminRoutes(router);
+
 		this.app.use(bodyparser.json());
 		this.app.use(router);
 	}
@@ -223,6 +229,17 @@ class Server {
 		router.get(this.API_PREFIX + "/organizations", organizationRoute.getOrganizations);
 		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
 		router.post(this.API_PREFIX + "/organizations/:organization/members", organizationRoute.addOrganizationMembers);
+	}
+	private setAdminRoutes(router: express.Router) {
+		let adminRoute: adminRoutes.AdminRoutes =
+			new adminRoutes.AdminRoutes(
+				this.userService,
+				this.eventService,
+				this.groupService,
+				this.adminService,
+				this.SALT_ROUNDS);
+		router.get(this.API_PREFIX + "/admin/users", adminRoute.getAllUsers);
+		router.patch(this.API_PREFIX + "/admin/users/resetpassword/:username", adminRoute.resetUserPassword);
 	}
 	private checkAuth() {
 		return jwt({
