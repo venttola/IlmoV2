@@ -51,6 +51,11 @@ export class EventManagementService extends AuthorizedHttpService {
 		console.log("Updating product " + product);
 		return this.http.patch(this.eventsUrl + eventId +"/product", JSON.stringify(product), {headers: this.headers}).catch(this.handleError);
 	}
-
+	//DO NOT use this for any other thing than updatinf ref numbers for Sotahuuto 2017
+	public generateReferenceNumbers(): Observable<any>{
+		console.log("Generating refs...");
+		return this.http.patch(this.urlBase + "admin/generatereferencenumbers", {}, {headers: this.headers}).
+		catch(this.handleError);
+	}
 
 }
