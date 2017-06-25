@@ -66,8 +66,6 @@ module Route {
 				return res.status(err.statusCode).send(err.message);
 			});
 		}
-		/** Not working yet!
-        */
 		public getAllUsers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			let query: string = req.query.search;
 			console.log(req.query);
