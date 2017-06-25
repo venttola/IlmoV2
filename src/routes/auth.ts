@@ -51,7 +51,7 @@ module Route {
                                     let moderatedGroups = values[1];
                                     let organizationMemberships = values[2];
                                     //Create the token for auth
-                                    let options: any =  {"expiresIn": "1h"};
+                                    let options: any =  {"expiresIn": "2h"};
 
                                     let userInfo: any = {
                                         "email": email,
@@ -98,7 +98,6 @@ module Route {
         */
         public signup = (req: express.Request, res: express.Response, next: express.NextFunction) => {
             let self = this;
-            console.log(req.body);
             console.log(req.body.email);
             if (!req.body.email ||
                 !req.body.password ||
@@ -112,20 +111,14 @@ module Route {
             let firstname: string = req.body.firstname;
             let lastname: string = req.body.lastname;
             let phone: string = req.body.phone;
-            console.log(req.body.dob);
             let dob: string = req.body.dob;
-            console.log(req.body.dob);
             let saltRounds: number = this.saltRounds;
-            console.log("Checking username " + email);
-            console.log("Amount of saltRounds. " + this.saltRounds);
             self.userModel.one({ email: email }, function (err: any, user: any) {
-                console.log("Result of user query: " + user);
                 if (user) {
                     return res.status(409).send("Error: Username in use \n");
                 } else {
                     bcrypt.hash(password, saltRounds, function (err: any, hash: any) {
                         if (err) {
-                            console.log(err);
                         } else {
                             self.userModel.create({
                                 email: email,
@@ -142,6 +135,7 @@ module Route {
                                     // It's not a final one, but it's good to let the user know something went wrong.
                                     return res.status(500).send("Failed to add user:" + err);
                                 } else {
+                                    console.log("Added user: " + result.email);
                                     let response = JSON.stringify({"id": result.id, "email": result.email});
                                     return res.status(201).json(response);
                                 }
