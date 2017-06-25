@@ -52,7 +52,7 @@ module Service {
                             let newRef = bankUtils.generateFinnishRefNumber();
                             console.log(newRef);
                             payment.referenceNumber = newRef;
-                            payment.save(function(err) {
+                            payment.save(function(err: any) {
                                 if (err) {
                                     reject(err);
                                 }
