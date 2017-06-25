@@ -119,6 +119,7 @@ module Route {
                 } else {
                     bcrypt.hash(password, saltRounds, function (err: any, hash: any) {
                         if (err) {
+                             return res.status(500).send("Error: Password saving failed \n");
                         } else {
                             self.userModel.create({
                                 email: email,
