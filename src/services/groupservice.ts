@@ -156,11 +156,11 @@ module Service {
                         });
 
                         Promise.all(promises).then((payees: any) => {
-                            console.log("Payees: " + JSON.stringify(payees));
+                            //console.log("Payees: " + JSON.stringify(payees));
                             // Get only unique users, there can be multiple userpayments per user
                             let uniquePayees = uniq(payees, false, (p: any) => p.id);
 
-                            console.log("Unique payees: " + JSON.stringify(uniquePayees));
+                            //console.log("Unique payees: " + JSON.stringify(uniquePayees));
 
                             this.getGroupModerators(groupId).then((moderators: any) => {
                                 let moderatorIds = moderators.map((m: any) => m.id);

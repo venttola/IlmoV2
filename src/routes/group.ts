@@ -173,7 +173,6 @@ module Route {
             let self = this;
 
             this.groupService.removeModerator(groupId, memberId).then((members: any) => {
-                console.log(members);
                 return res.status(200).json(members);
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
@@ -285,7 +284,6 @@ module Route {
 
                     return this.groupService.getPaidParticipantPayments(groupId);
                 }).then((paymentsByParticipant: any) => {
-                    console.log("paymentsByParticipant: " + JSON.stringify(paymentsByParticipant));
 
                     checkoutData.payments = checkoutData.payments.concat(paymentsByParticipant);
 
