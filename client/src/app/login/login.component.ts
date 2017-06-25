@@ -31,10 +31,10 @@ export class LoginComponent implements OnInit {
         this.authService.saveToken(this.credentials.email, response.token);
         this.authService.login();
       }, error => {
-        if (error.status = 400){
+        if (error.status === 400){
            this.errorMessage = "Käyttäjänimeä ei löytynyt!";
         }
-        else if (error.status = 403) {
+        else if (error.status === 403) {
           this.errorMessage = "Virheellinen salasana!";
         }
        
