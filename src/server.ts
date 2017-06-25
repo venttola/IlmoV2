@@ -66,7 +66,8 @@ class Server {
 				models.PlatoonModel,
 				this.eventService,
 				);
-			this.adminService = new AdminService(models.User);
+			this.adminService = new AdminService(models.User,
+												 models.GroupPayment);
 
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
@@ -240,6 +241,7 @@ class Server {
 				this.SALT_ROUNDS);
 		router.get(this.API_PREFIX + "/admin/users", adminRoute.getAllUsers);
 		router.patch(this.API_PREFIX + "/admin/users/resetpassword/:username", adminRoute.resetUserPassword);
+		router.patch(this.API_PREFIX + "/admin/generatereferencenumbers", adminRoute.generateReferenceNumbers);
 	}
 	private checkAuth() {
 		return jwt({

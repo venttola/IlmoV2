@@ -75,6 +75,15 @@ module Route {
 				return res.status(err.statusCode).send(err.message);
 			});
 		}
+		//Only to be used with Sotahuuto 2017. Generates a sane reference number fir 
+		public generateReferenceNumbers = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+			this.adminService.generateReferencenumbers().then((payments: any) => {
+				return res.status(200).send(JSON.stringify(payments));
+			}).catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
+			});
+		}
 	}
 }
 
