@@ -53,10 +53,10 @@ export class AuthService {
       return [];
     }
   }
-  public getOrganizationMemberships(): any {
+  public getOrganizationMemberships(): any[] {
     if(localStorage.getItem("id_token")){
       let token = this.jwtHelper.decodeToken(localStorage.getItem("id_token"));
-      return token.organizationMemberships;
+      return JSON.parse(token.organizationMemberships);
     }
     else {
       return [];
@@ -64,5 +64,8 @@ export class AuthService {
   }
   public isModerator(groupId: number): boolean {
     return this.getModeratedGroups().some(group => group.id == groupId);
+  }
+  public isOrganizer(organizationId: number): boolean {
+     return this.getOrganizationMemberships().some(organization => organization.id == organizationId);
   }
 }

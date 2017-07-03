@@ -18,6 +18,12 @@ export class NavBarComponent implements OnInit {
   isAdmin(): boolean {
     return this.authService.isAdmin();
   }
+  hasModeratedGroups(): boolean {
+    return this.authService.getModeratedGroups().length !== 0;
+  }
+  hasOrganizationMemberships(): boolean {
+    return this.authService.getOrganizationMemberships().length !== 0;
+  }
   logout(): void{
   	this.authService.logout();
   }
