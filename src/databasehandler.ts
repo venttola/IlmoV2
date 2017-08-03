@@ -4,6 +4,8 @@ var fs = require("fs");
 var path = require("path");
 //import Promise from "ts-promise";
 import * as Models from "./models/models";
+import * as config from "config";
+
 export class DatabaseHandler {
 	private dbConnection: any;
 	private models: any;
@@ -52,7 +54,17 @@ export class DatabaseHandler {
 
 	private connectToDb() {
 		return new Promise((resolve: any, reject: any) => {
-			orm.connect("mysql://devuser@localhost/ILMOV2", function (err: string, db: any) {
+			let dbOpt: any = config.get("database");
+
+			let dbPassword = dbOpt.password
+				? ":" + dbOpt.password
+				: "";
+
+			let dbUrl = `mysql://${dbOpt.user}${dbPassword}@${dbOpt.host}/${dbOpt.schema}`;
+
+			console.log("Url: " + dbUrl);
+
+			orm.connect(dbUrl, function (err: string, db: any) {
 				if (err) {
 					console.error(err);
 					reject(new Error(err));

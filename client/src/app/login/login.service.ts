@@ -9,8 +9,6 @@ import "rxjs/add/observable/forkJoin";
 import { Credentials } from "./credentials.model";
 import { AuthService } from "../authentication/auth.service";
 
-const loginURL = "http://localhost:8080/api/login";
-
 @Injectable()
 export class LoginService{
 	headers : Headers;
@@ -22,7 +20,7 @@ export class LoginService{
 
 	public sendLoginRequest(credentials: Credentials): Observable<any> {
 		this.credentials = credentials;
-		return this.http.post(loginURL, JSON.stringify(credentials), { headers: this.headers }).
+		return this.http.post("/api/login", JSON.stringify(credentials), { headers: this.headers }).
 		map(this.handleLogin).
 		catch(this.handleError);
 	}

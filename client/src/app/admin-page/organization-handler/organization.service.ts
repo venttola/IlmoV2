@@ -15,7 +15,7 @@ export class OrganizationService extends AuthorizedHttpService {
 	organizationUrl: string;
 	constructor(protected http: Http) {
 		super(http);
-		this.organizationUrl = this.urlBase + "organizations/";
+		this.organizationUrl = "/api/organizations/";
 	}
 	public getOrganizations(): Observable<Organization[]> {
 		return this.http.get(this.organizationUrl, {headers: this.headers}).

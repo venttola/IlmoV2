@@ -1,0 +1,8 @@
+{
+    "database": {
+        "host": "localhost",
+        "user": "productionuser",
+        "password": "asdasd",
+        "schema": "ILMOV2"
+    }
+}

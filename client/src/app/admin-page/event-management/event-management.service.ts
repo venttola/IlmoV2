@@ -20,7 +20,7 @@ export class EventManagementService extends AuthorizedHttpService {
 	constructor(protected http: Http,
 				private eventCreatorService: EventCreatorService) {
 		super(http);
-		this.eventsUrl = this.urlBase + "events/";
+		this.eventsUrl = "/api/events/";
 	}
 
 	public openSignup(eventId: number): Observable<boolean> {
@@ -54,7 +54,7 @@ export class EventManagementService extends AuthorizedHttpService {
 	//DO NOT use this for any other thing than updatinf ref numbers for Sotahuuto 2017
 	public generateReferenceNumbers(): Observable<any>{
 		console.log("Generating refs...");
-		return this.http.patch(this.urlBase + "admin/generatereferencenumbers", {}, {headers: this.headers}).
+		return this.http.patch("/api/admin/generatereferencenumbers", {}, {headers: this.headers}).
 		catch(this.handleError);
 	}
 

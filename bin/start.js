@@ -1,9 +1,9 @@
 var server   = require("../dist/server");
 var http  = require("http");
+var config = require("config");
 
-var port = normalizePort(process.env.PORT || 8080);
+var port = normalizePort(process.env.PORT || config.port);
 server.app.set("port", port);
-
 
 var httpServer = http.createServer(server.app);
 

@@ -7,7 +7,6 @@ import "rxjs/add/operator/map";
 import { SignupData } from "./signupdata.model";
 import { UserData } from "./user-data.model";
 
-const signupURL = "http://localhost:8080/api/signup";
 @Injectable()
 export class SignupService {
 	headers: Headers;
@@ -16,7 +15,7 @@ export class SignupService {
 	}
 
 	public sendSignupRequest(signup: SignupData): Observable<UserData> {
-		return this.http.post(signupURL, JSON.stringify(signup), { headers: this.headers }).
+		return this.http.post("/api/signup", JSON.stringify(signup), { headers: this.headers }).
 			map(this.handleSignup).
 			catch(this.handleError);
 	}

@@ -15,7 +15,7 @@ export class UserSettingsService extends AuthorizedHttpService {
     usersUrl: string;
 	constructor(protected http: Http) {
 		super(http);
-		this.usersUrl = this.urlBase +"user/";
+		this.usersUrl = "/api/user/";
 	}
 	getUserData(): Observable<UserData>{
 		console.log(this.usersUrl + localStorage.getItem("user"));

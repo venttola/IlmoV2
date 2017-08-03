@@ -1,0 +1,6 @@
+{
+    "api_prefix": "/api",
+    "salt_rounds": 10,
+    "secret": "testisalaisuus",
+    "port": 8080
+}

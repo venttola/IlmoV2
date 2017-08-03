@@ -19,7 +19,7 @@ export class EventCreatorService extends AuthorizedHttpService {
 	error: any;
 	constructor(protected http: Http) {
 		super(http);
-		this.eventsUrl = this.urlBase + "events/";
+		this.eventsUrl = "/api/events/";
 	}
 
 	public createEvent(event: Event, platoons: Platoon[], organization: Organization, products: Product[]): Observable<any> {

@@ -14,7 +14,7 @@ export class EventDetailsService extends AuthorizedHttpService {
 
 	constructor(protected http: Http) {
 		super(http);
-		this.eventUrl = this.urlBase + "events/";
+		this.eventUrl = "/api/events/";
 	}
 
 	public getEventDetails(id: number): Observable<EventDetails> {

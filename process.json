@@ -1,0 +1,13 @@
+{
+   "apps" : [{
+    "name": "IlmoV2",
+    "script": "deploy/serverbundle.js",
+    "instance_var": "INSTANCE_ID",
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "env_production" : {
+       "NODE_ENV": "production"
+    }
+  }]
+}

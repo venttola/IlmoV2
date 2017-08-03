@@ -12,7 +12,7 @@ export class ParticipantGroupService extends AuthorizedHttpService {
 	groupUrl: string
 	constructor(protected http: Http) {
 		super(http);
-		this.groupUrl = this.urlBase + "group/"
+		this.groupUrl = "/api/group/"
 	}
 	// public getEventGroups(data: any): Observable <any> {
 

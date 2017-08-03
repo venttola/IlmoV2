@@ -20,11 +20,12 @@ import * as eventRoutes from "./routes/event";
 import * as groupRoutes from "./routes/group";
 import * as organizationRoutes from "./routes/organization";
 import * as adminRoutes from "./routes/admin";
+import * as config from "config";
 
 class Server {
 	public app: express.Application;
 
-	private readonly API_PREFIX: String;
+	private readonly API_PREFIX: string;
 	private readonly SALT_ROUNDS: number;
 	private readonly SECRET: string;
 
@@ -38,13 +39,12 @@ class Server {
 	private adminService: AdminService;
 
 	constructor() {
-		let config = require("./config.json");
-		let corsOptions: any = {
-			origin: "http://localhost:4200"
+		const corsOptions: any = {
+			origin: config.get("corsOrigin")
 		};
-		this.API_PREFIX = config.API_PREFIX;
-		this.SALT_ROUNDS = config.SALT_ROUNDS;
-		this.SECRET = config.SECRET;
+		this.API_PREFIX = <string>config.get("api_prefix");
+		this.SALT_ROUNDS = <number>config.get("salt_rounds");
+		this.SECRET = <string>config.get("secret");
 
 		this.handler = new DatabaseHandler();
 		let connection = this.handler.syncDbModels();

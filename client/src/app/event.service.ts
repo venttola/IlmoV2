@@ -16,11 +16,10 @@ export class EventService extends AuthorizedHttpService {
   eventsUrl: string;
   constructor(protected http: Http) {
     super(http);
-    this.eventsUrl = this.urlBase + "events";
   }
 
   getEventListing(): Observable<Event[]> {
-    return this.http.get(this.eventsUrl, { headers: this.headers }).map(this.extractData).catch(this.handleError);
+    return this.http.get("/api/events", { headers: this.headers }).map(this.extractData).catch(this.handleError);
   }
 
   createGroup(group: ParticipantGroup, eventId: number): Observable<ParticipantGroup> {
