@@ -2,11 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 
 
 @Component({
-	selector: 'admin-page',
-	templateUrl: './admin-page.component.html',
-	styleUrls: ['./admin-page.component.css']
+	selector: 'admin-dashboard',
+	templateUrl: './admin-dashboard.component.html',
+	styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminPageComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit {
 	constructor() { 
 	}
 	ngOnInit() {
