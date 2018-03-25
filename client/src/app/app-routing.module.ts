@@ -1,4 +1,4 @@
-import  { ModuleWithProviders } from "@angular/core";
+import { NgModule } from '@angular/core';
 
 import { Routes, RouterModule, CanActivate } from '@angular/router';
 
@@ -6,16 +6,13 @@ import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
 import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
 
-
 import { FrontPageComponent } from "./front-page/front-page.component";
 import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
 import { MainPageComponent } from "./main-page/main-page.component";
-import { AdminPageComponent } from "./admin-page/admin-page.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
 import { EventDetailsComponent } from "./event-details/event-details.component";
 import { EventSignupComponent } from "./event-signup/event-signup.component";
-import { EventManagementComponent } from "./admin-page/event-management/event-management.component";
 import { EventSignupListingComponent } from "./event-signup-listing/event-signup-listing.component";
 import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
 import { GroupPageComponent } from "./group-moderation/group-page/group-page.component";
@@ -40,11 +37,6 @@ const appRoutes: Routes = [
  
   },
   {
-    path: "admin",
-    component: AdminPageComponent,
-    canActivate: [AdminGuard] 
-  },
-  {
     path: "settings",
     component: UserSettingsComponent,
     canActivate: [AuthGuard]
@@ -58,11 +50,6 @@ const appRoutes: Routes = [
     path: "events/:eventId/group/:groupId",
     component: EventSignupComponent,
     canActivate: [AuthGuard]
-  },
-  {
-    path: "events/:eventId/manage",
-    component: EventManagementComponent,
-    canActivate: [AdminGuard]
   },
   {
     path: "signups",
@@ -90,15 +77,26 @@ const appRoutes: Routes = [
     redirectTo: "",
     pathMatch: "full"
   }
-];
+]
 
-export const Routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+@NgModule({
+  imports: [
+    RouterModule.forRoot(
+      appRoutes
+    )
+  ],
+  exports: [
+    RouterModule
+  ]
+})
+export class AppRoutingModule {}
+
+//export const Routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
 
 export const RoutedComponents = [FrontPageComponent, 
-								                 MainPageComponent,  
-                                 AdminPageComponent,
+                                 MainPageComponent,  
                                  LoginComponent,
                                  SignupComponent,
                                  UserSettingsComponent,
-                                 EventDetailsComponent,
-                                 EventManagementComponent];
+                                 EventDetailsComponent
+                                 ];

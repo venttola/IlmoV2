@@ -6,7 +6,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { BootstrapModalModule } from "ng2-bootstrap-modal";
 
-import { AdminDashboardModule } from "./admin-dashboard";
+import { AdminDashboardModule } from "./admin-dashboard/admin-dashboard.module";
 /*
 import { EventCreatorService } from "./admin-page/event-creator/event-creator.service";
 import { EventCreatorComponent } from './admin-page/event-creator/event-creator.component';
@@ -18,7 +18,7 @@ import { AdminService } from './admin-page/shared/admin.service';
 */
 import { AppComponent } from "./app.component";
 import { NavBarComponent } from './nav-bar/nav-bar.component';
-import { Routing, RoutedComponents } from './app.routing';
+import { AppRoutingModule, RoutedComponents } from './app-routing.module';
 
 
 import { AuthService } from "./authentication/auth.service";
@@ -66,9 +66,9 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     HttpModule,
     NgbModule.forRoot(),
     FormsModule,
-    Routing,
     BootstrapModalModule,
-    AdminDashboardModule
+    AdminDashboardModule,
+    AppRoutingModule,
   ],
   providers: [
     AuthService,
@@ -83,8 +83,8 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     ParticipantGroupService,
     EventSignupService,
     SignupListingService,
-    GroupModerationService,
-    AdminService
+    GroupModerationService
+   // AdminService
   ],
   bootstrap: [AppComponent]
 })
