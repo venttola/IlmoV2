@@ -12,11 +12,15 @@ import { OrganizationHandlerComponent } from './organization-handler/organizatio
 import { OrganizationService } from "./organization-handler/organization.service";
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 
-import {AdminDashboardRouterModule} from './admin-dashboard-router.module'
+import { AdminDashboardRouterModule } from './admin-dashboard-router.module';
+
+import { SharedModule } from '../shared/shared.module';
+
 @NgModule({
   imports: [
     CommonModule,
-    AdminDashboardRouterModule
+    AdminDashboardRouterModule,
+    SharedModule
   ],
   declarations: [
     AdminDashboardComponent,

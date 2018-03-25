@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Event } from "../event.model";
+import { Event } from "../shared/event.model";
 import { AuthService } from "../authentication/auth.service";
 @Component({
   selector: 'main-page',

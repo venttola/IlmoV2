@@ -6,9 +6,9 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 
-import { Platoon } from "../../platoon.model";
-import { Organization } from "../../organization.model";
-import { Event } from "../../event.model";
+import { Platoon } from "../../shared/platoon.model";
+import { Organization } from "../../shared/organization.model";
+import { Event } from "../../shared/event.model";
 import { Product } from "../../event-signup/product";
 import { Discount } from "../../event-signup/discount";
 import { AuthorizedHttpService } from "../../authorizedhttp.service";

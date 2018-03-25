@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Organization } from "../../organization.model";
+import { Organization } from "../../shared/organization.model";
 import { OrganizationService } from "./organization.service";
 import { OrganizationMember } from "../organization-member.model";
 

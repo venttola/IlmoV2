@@ -1,5 +1,5 @@
 import { Platoon } from "./platoon.model";
-import { Event } from "../event.model";
+import { Event } from "../shared/event.model";
 
 export class EventDetails {
 	event: Event;

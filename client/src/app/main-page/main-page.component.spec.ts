@@ -11,7 +11,7 @@ import { UserSettingsComponent } from "../user-settings/user-settings.component"
 import { FormsModule } from "@angular/forms";
 import { APP_BASE_HREF } from "@angular/common";
 import { AuthService } from "../authentication/auth.service";
-import { EventService } from "../event.service";
+import { EventService } from "../shared/event.service";
 import { HttpModule } from "@angular/http";
 
 describe('MainPageComponent', () => {

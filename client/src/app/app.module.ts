@@ -7,6 +7,7 @@ import { FormsModule } from "@angular/forms";
 import { BootstrapModalModule } from "ng2-bootstrap-modal";
 
 import { AdminDashboardModule } from "./admin-dashboard/admin-dashboard.module";
+import { SharedModule } from './shared/shared.module';
 /*
 import { EventCreatorService } from "./admin-page/event-creator/event-creator.service";
 import { EventCreatorComponent } from './admin-page/event-creator/event-creator.component';
@@ -25,11 +26,9 @@ import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
 import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
-import { EventService } from "./event.service";
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
 import { UserSettingsService } from './user-settings/user-settings.service';
-import { EventListingComponent } from './event-listing/event-listing.component';
 import { EventDetailsService } from "./event-details/event-details.service";
 import { GroupModalComponent } from './event-details/group-modal/group-modal.component';
 
@@ -51,7 +50,6 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     AppComponent,
     RoutedComponents,
     NavBarComponent,
-    EventListingComponent, 
     GroupModalComponent,
     EventSignupComponent,
     ProductRowComponent,
@@ -68,14 +66,14 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     FormsModule,
     BootstrapModalModule,
     AdminDashboardModule,
-    AppRoutingModule,
+    SharedModule,
+    AppRoutingModule
   ],
   providers: [
     AuthService,
     AuthGuard,
     AdminGuard,
     GroupModeratorGuard,
-    EventService,
     LoginService,
     SignupService,
     UserSettingsService,

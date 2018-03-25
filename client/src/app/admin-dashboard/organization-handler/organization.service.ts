@@ -5,9 +5,9 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 
-import { Organization } from "../../organization.model";
+import { Organization } from "../../shared/organization.model";
 import { OrganizationMember } from "../organization-member.model";
-import { Event } from "../../event.model";
+import { Event } from "../../shared/event.model";
 import { AuthorizedHttpService } from "../../authorizedhttp.service";
 
 @Injectable()

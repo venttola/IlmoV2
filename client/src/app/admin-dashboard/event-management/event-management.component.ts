@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from "@angular/router";
-import { Event } from "../../event.model";
+import { Event } from "../../shared/event.model";
 import { Platoon } from "../../event-details/platoon.model";
 import { ParticipantGroup } from "../../event-details/participantgroup.model";
 import { EventDetails } from "../../event-details/event-details.model";
 
 import { Product } from "../../event-signup/product";
 import { Discount } from "../../event-signup/discount";
-import { EventService } from "../../event.service";
+import { EventService } from "../../shared/event.service";
 import { EventDetailsService } from "../../event-details/event-details.service";
 import { EventManagementService } from "./event-management.service";
 @Component({

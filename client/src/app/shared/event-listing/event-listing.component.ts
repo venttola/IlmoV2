@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { EventService } from "../event.service";
-import { AuthService } from "../authentication/auth.service";
+import { AuthService } from "../../authentication/auth.service";
 import { Event } from "../event.model"; 
 @Component({
   selector: "event-listing",

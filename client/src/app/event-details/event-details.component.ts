@@ -10,7 +10,7 @@ import { ParticipantGroup } from "./participantgroup.model";
 import { ModalDirective } from "ng2-bootstrap/modal";
 import { GroupModalComponent } from "./group-modal/group-modal.component";
 import { DialogService } from "ng2-bootstrap-modal";
-import { EventService } from "../event.service";
+import { EventService } from "../shared/event.service";
 
 @Component({
   selector: 'event-details',
