@@ -16,7 +16,7 @@ export class AdminService extends AuthorizedHttpService {
 		this.adminURL = "/api/admin" 
 	}
 
-	public getUsers(query: string): Obs'ervable<any>{
+	public getUsers(query: string): Observable<any>{
 		let params = new URLSearchParams();
 		params.set("search", query);
 		return this.http.get(this.adminURL + "/users", { search: params, headers:this.headers }).
