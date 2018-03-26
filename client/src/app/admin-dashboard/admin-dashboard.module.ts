@@ -5,7 +5,7 @@ import { AdminDashboardRouterModule } from './admin-dashboard-router.module';
 import { SharedModule } from '../shared/shared.module';
 
 import { AdminDashboardComponent } from './admin-dashboard.component';
-import { AdminDashboardHomeComponent } from './admin-dashboard-home.component';
+import { AdminDashboardHomeComponent } from './admin-dashboard-home/admin-dashboard-home.component';
 import { EventCreatorComponent } from './event-creator/event-creator.component';
 import { EventManagementComponent } from "./event-management/event-management.component"
 import { OrganizationHandlerComponent } from './organization-handler/organization-handler.component';
