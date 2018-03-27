@@ -4,6 +4,7 @@ import { RouterModule, Routes, CanActivate } from '@angular/router';
 
 import { AdminDashboardComponent } from "./admin-dashboard.component";
 import { AdminDashboardHomeComponent } from "./admin-dashboard-home/admin-dashboard-home.component";
+import { SimpleEventListingComponent } from "./simple-event-listing/simple-event-listing.component";
 import { EventManagementComponent } from "./event-management/event-management.component";
 import { EventCreatorComponent }  from "./event-creator/event-creator.component";
 import { OrganizationHandlerComponent } from "./organization-handler/organization-handler.component";
@@ -24,8 +25,12 @@ const adminRoutes: Routes = [
         canActivateChild: [AdminGuard],
         children: [
           {
-           path: 'events/:eventId/',
+           path: 'events/:eventId',
            component: EventManagementComponent
+          },
+          {
+            path: 'events',
+            component: SimpleEventListingComponent
           },
           {
             path: 'events/new',

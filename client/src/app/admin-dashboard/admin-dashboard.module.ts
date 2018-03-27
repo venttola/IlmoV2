@@ -10,6 +10,7 @@ import { EventCreatorComponent } from './event-creator/event-creator.component';
 import { EventManagementComponent } from "./event-management/event-management.component"
 import { OrganizationHandlerComponent } from './organization-handler/organization-handler.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { SimpleEventListingComponent } from './simple-event-listing/simple-event-listing.component';
 
 import { AdminService } from './shared/admin.service';
 import { EventCreatorService } from "./event-creator/event-creator.service";
@@ -30,7 +31,8 @@ import { OrganizationService } from "./organization-handler/organization.service
     EventManagementComponent,
     EventCreatorComponent,
     OrganizationHandlerComponent,
-    PasswordResetComponent
+    PasswordResetComponent,
+    SimpleEventListingComponent
   ],
   providers: [
     AdminService,
