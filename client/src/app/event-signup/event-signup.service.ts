@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { AuthorizedHttpService } from "../authorizedhttp.service";
 import { Http, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
-import { Product } from "./product";
+import { Product } from "./product.model";
 
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
-import { SignUpData } from "./event-signup.component";
+import { SignupData } from "./signup-data.model";
 
 @Injectable()
 export class EventSignupService extends AuthorizedHttpService {
@@ -15,7 +15,7 @@ export class EventSignupService extends AuthorizedHttpService {
 		super(http);
 	}
 
-	public getSignUpData(groupId: number, eventId: number): Observable<SignUpData> {
+	public getSignupData(groupId: number, eventId: number): Observable<SignupData> {
 		let username = localStorage.getItem("user");
 		let data = {
 			"groupId": groupId,
@@ -25,7 +25,7 @@ export class EventSignupService extends AuthorizedHttpService {
 		return this.http.post("/api/user/" + username + "/event/data", data, { headers: this.headers })
 			.map((res: Response) => {
 				let body = res.json();
-				return SignUpData.fromJSON(body);
+				return SignupData.fromJSON(body);
 			})
 			.catch(err => this.handleError(err));
 	}

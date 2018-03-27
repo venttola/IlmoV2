@@ -9,8 +9,8 @@ import "rxjs/add/observable/forkJoin";
 import { Platoon } from "../../shared/platoon.model";
 import { Organization } from "../../shared/organization.model";
 import { Event } from "../../shared/event.model";
-import { Product } from "../../event-signup/product";
-import { Discount } from "../../event-signup/discount";
+import { Product } from "../../event-signup/product.model";
+import { Discount } from "../../event-signup/discount.model";
 import { AuthorizedHttpService } from "../../authorizedhttp.service";
 import { EventCreatorService } from "../event-creator/event-creator.service";
 

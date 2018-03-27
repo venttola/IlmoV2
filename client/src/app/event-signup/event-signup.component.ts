@@ -4,22 +4,10 @@ import { EventDetailsService } from "../event-details/event-details.service";
 import { ParticipantGroupService } from "../event-details/participant-group.service";
 import { ParticipantGroup } from "../event-details/participantgroup.model";
 import { Observable } from "rxjs/Observable";
-import { Product } from "./product";
+import { Product } from "./product.model";
 import { EventSignupService } from "./event-signup.service";
-import { Discount } from "./discount";
-
-export class SignUpData {
-  signedUp: boolean;
-  group: ParticipantGroup;
-  eventProducts: Product[];
-  isRegistrationOpen: boolean;
-
-  static fromJSON(json: any): SignUpData {
-    let data = Object.create(SignUpData.prototype);
-    Object.assign(data, json);
-    return data;
-  }
-}
+import { Discount } from "./discount.model";
+import { SignupData } from "./signup-data.model"; 
 
 @Component({
   selector: 'app-event-signup',

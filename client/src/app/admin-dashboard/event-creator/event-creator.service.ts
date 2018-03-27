@@ -8,7 +8,7 @@ import "rxjs/add/observable/forkJoin";
 import { Platoon } from "../../shared/platoon.model";
 import { Organization } from "../../shared/organization.model";
 import { Event } from "../../shared/event.model";
-import { Product } from "../../event-signup/product";
+import { Product } from "../../event-signup/product.model";
 
 import { AuthorizedHttpService } from "../../authorizedhttp.service";
 

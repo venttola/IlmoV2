@@ -7,7 +7,7 @@ import "rxjs/add/operator/map";
 import { EventDetails } from "./event-details.model";
 
 import { AuthorizedHttpService } from "../authorizedhttp.service";
-import { Product } from "../event-signup/product";
+import { Product } from "../event-signup/product.model";
 @Injectable()
 export class EventDetailsService extends AuthorizedHttpService {
 	eventUrl: string;

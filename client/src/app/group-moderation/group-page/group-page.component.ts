@@ -7,8 +7,8 @@ import { Member } from "../member";
 import { Participant } from "../participant.model";
 import { GroupModalComponent } from "../../event-details/group-modal/group-modal.component";
 import { UserPayment } from "../userpayment";
-import { Product } from "../../event-signup/product";
-import { Discount } from "../../event-signup/discount";
+import { Product } from "../../event-signup/product.model";
+import { Discount } from "../../event-signup/discount.model";
 
 @Component({
   selector: 'app-group-page',

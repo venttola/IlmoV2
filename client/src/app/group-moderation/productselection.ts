@@ -1,5 +1,5 @@
-import { ProductInfo } from "../event-signup/product";
-import { DiscountInfo } from "../event-signup/discount";
+import { ProductInfo } from "../event-signup/product.model";
+import { DiscountInfo } from "../../event-signup/discount.model";
 
 export class ProductSelection {
     product: ProductInfo;

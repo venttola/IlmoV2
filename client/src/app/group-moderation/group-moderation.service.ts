@@ -6,8 +6,8 @@ import { ParticipantGroup } from "../event-details/participantgroup.model";
 import { Member } from "./member";
 import { Participant } from "./participant.model";
 import { UserPayment } from "./userpayment";
-import { Product } from "../event-signup/product";
-import { Discount } from "../event-signup/discount";
+import { Product } from "../event-signup/product.model";
+import { Discount } from "../event-signup/discount.model";
 import { GroupCheckoutDetails } from "./group-page/group-checkout-page/group-checkout-details";
 
 @Injectable()

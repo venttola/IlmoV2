@@ -3,8 +3,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Event } from "../../shared/event.model";
 import { Platoon } from "../../shared/platoon.model";
 import { Organization } from "../../shared/organization.model";
-import { Product } from "../../event-signup/product";
-import { Discount } from "../../event-signup/discount";
+import { Product } from "../../event-signup/product.model";
+import { Discount } from "../../event-signup/discount.model";
 
 import { EventCreatorService } from "./event-creator.service";
 
