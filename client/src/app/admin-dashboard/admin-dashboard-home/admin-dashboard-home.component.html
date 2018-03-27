@@ -1,22 +1,2 @@
-<div class="btn-group" role="group">
-	<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#eventCreator" aria-expanded="false" aria-controls="eventCreator">Lisää uusi tapahtuma</button>
-
-	<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#organizationAdder" aria-expanded="false" aria-controls="organizationAdder">Lisää uusi organisaatio</button>
-
-	<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Valitse muokattava tapahtuma</button>
-	<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#passwordreset" aria-expanded="false" aria-controls="passwordreset">Resetoi käyttäjän salasana</button>
-</div>
-
-<div class="collapse" id="organizationAdder">
-	<admin-organization-handler></admin-organization-handler>
-</div>
-<div class="collapse" id="eventCreator">
-	<admin-event-creator-component></admin-event-creator-component>
-</div>
-<div class="collapse" id="events">
-	<event-listing></event-listing>
-</div>
-<div class="collapse" id="passwordreset">
-	<admin-password-reset></admin-password-reset>
-</div>
-
+<h2>Admin Home</h2>
+<router-outlet></router-outlet>
