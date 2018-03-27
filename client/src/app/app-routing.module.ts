@@ -11,9 +11,7 @@ import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
 import { MainPageComponent } from "./main-page/main-page.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
-import { EventDetailsComponent } from "./event-details/event-details.component";
-import { EventSignupComponent } from "./event-signup/event-signup.component";
-import { EventSignupListingComponent } from "./event-signup-listing/event-signup-listing.component";
+
 import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
 import { GroupPageComponent } from "./group-moderation/group-page/group-page.component";
 import { GroupCheckoutPageComponent } from "./group-moderation/group-page/group-checkout-page/group-checkout-page.component";
@@ -40,21 +38,6 @@ const appRoutes: Routes = [
     path: "settings",
     component: UserSettingsComponent,
     canActivate: [AuthGuard]
-  },
-  {
-    path: "events/:id",
-    component: EventDetailsComponent,
-    canActivate: [AuthGuard]
-  },
-  {
-    path: "events/:eventId/group/:groupId",
-    component: EventSignupComponent,
-    canActivate: [AuthGuard]
-  },
-  {
-    path: "signups",
-    component: EventSignupListingComponent,
-    canActivate: [AuthGuard],
   },
   {
     path: "moderation",
@@ -97,6 +80,5 @@ export const RoutedComponents = [FrontPageComponent,
                                  MainPageComponent,  
                                  LoginComponent,
                                  SignupComponent,
-                                 UserSettingsComponent,
-                                 EventDetailsComponent
+                                 UserSettingsComponent                                 
                                  ];

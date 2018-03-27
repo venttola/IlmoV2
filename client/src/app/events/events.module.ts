@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from "@angular/forms";
 
+import { EventsRouterModule } from "./events-router.module";
 
 import { EventListingComponent } from './event-listing/event-listing.component';
 import { EventDetailsComponent } from './event-details/event-details.component';
@@ -18,7 +20,9 @@ import { SignupListingService } from "./event-signup-listing/signup-listing.serv
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    EventsRouterModule
   ],
   declarations: [
     EventDetailsComponent,
