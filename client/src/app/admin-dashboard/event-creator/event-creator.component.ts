@@ -5,6 +5,7 @@ import { Platoon } from "../../shared/platoon.model";
 import { Organization } from "../../shared/organization.model";
 import { Product } from "../../event-signup/product";
 import { Discount } from "../../event-signup/discount";
+
 import { EventCreatorService } from "./event-creator.service";
 
 @Component({

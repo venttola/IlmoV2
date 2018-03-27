@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from "../shared/admin.service";
 import { Subject } from 'rxjs/Subject';
 import { Observable } from "rxjs/Observable";
+
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
+
+import { AdminService } from "../shared/admin.service";
 
 @Component({
 	selector: 'admin-password-reset',
