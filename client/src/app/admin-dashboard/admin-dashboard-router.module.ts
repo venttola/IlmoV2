@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, CanActivate } from '@angular/router';
 
 
 import { AdminDashboardComponent } from "./admin-dashboard.component";
@@ -8,35 +8,37 @@ import { EventManagementComponent } from "./event-management/event-management.co
 import { EventCreatorComponent }  from "./event-creator/event-creator.component";
 import { OrganizationHandlerComponent } from "./organization-handler/organization-handler.component";
 import { PasswordResetComponent } from "./password-reset/password-reset.component";
+
 import { AdminGuard } from "../authentication/admin-guard.service";
 
 const adminRoutes: Routes = [
   {
-    path: "admin",
+    path: 'admin',
     component: AdminDashboardComponent,
     canActivate: [AdminGuard],
     children: [
       {
-        path: "",
+        path: '',
         component: AdminDashboardHomeComponent,
+        canActivate: [AdminGuard], 
+        canActivateChild: [AdminGuard],
         children: [
           {
-           path: "events/:eventId/",
-           component: EventManagementComponent,
-           canActivate: [AdminGuard] // Do we need these for all child routes as well?
+           path: 'events/:eventId/',
+           component: EventManagementComponent
           },
           {
-            path: "events/new",
+            path: 'events/new',
             component: EventCreatorComponent
           },
           {
-            path: "organization",
+            path: 'organization',
             component: OrganizationHandlerComponent
           },
           {
-            path: "resetuserpassword",
+            path: 'resetuserpassword',
             component: PasswordResetComponent
-          }
+          },
         ]
       }
     ]
