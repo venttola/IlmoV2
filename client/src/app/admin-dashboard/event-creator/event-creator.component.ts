@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Event } from "../../shared/event.model";
-import { Platoon } from "../../shared/platoon.model";
+import { Event } from "../../events/shared/event.model";
+import { Platoon } from "../../events/shared/platoon.model";
 import { Organization } from "../../shared/organization.model";
-import { Product } from "../../event-signup/product.model";
-import { Discount } from "../../event-signup/discount.model";
+import { Product } from "../../events/shared/product.model";
+import { Discount } from "../../events/shared/discount.model";
 
 import { EventCreatorService } from "./event-creator.service";
 

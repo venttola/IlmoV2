@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from "@angular/router";
 
-import { Event } from "../../shared/event.model";
-import { Platoon } from "../../event-details/platoon.model";
-import { ParticipantGroup } from "../../event-details/participantgroup.model";
-import { EventDetails } from "../../event-details/event-details.model";
+import { Event } from "../../events/shared/event.model";
+import { Platoon } from "../../events/shared/platoon.model";
+import { ParticipantGroup } from "../../events/shared/participantgroup.model";
+import { EventDetails } from "../../events/event-details/event-details.model";
 
-import { Product } from "../../event-signup/product.model";
-import { Discount } from "../../event-signup/discount.model";
-import { EventService } from "../../shared/event.service";
+import { Product } from "../../events/shared/product.model";
+import { Discount } from "../../events/shared/discount.model";
+import { EventService } from "../../events/shared/event.service";
 
-import { EventDetailsService } from "../../event-details/event-details.service";
+import { EventDetailsService } from "../../events/event-details/event-details.service";
 import { EventManagementService } from "./event-management.service";
 
 @Component({

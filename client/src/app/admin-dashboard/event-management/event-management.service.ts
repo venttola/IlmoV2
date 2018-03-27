@@ -6,13 +6,14 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 
-import { Platoon } from "../../shared/platoon.model";
-import { Organization } from "../../shared/organization.model";
-import { Event } from "../../shared/event.model";
-import { Product } from "../../event-signup/product.model";
-import { Discount } from "../../event-signup/discount.model";
 import { AuthorizedHttpService } from "../../authorizedhttp.service";
 import { EventCreatorService } from "../event-creator/event-creator.service";
+
+import { Platoon } from "../../events/shared/platoon.model";
+import { Organization } from "../../shared/organization.model";
+import { Event } from "../../events/shared/event.model";
+import { Product } from "../../events/shared/product.model";
+import { Discount } from "../../events/shared/discount.model";
 
 @Injectable()
 export class EventManagementService extends AuthorizedHttpService {

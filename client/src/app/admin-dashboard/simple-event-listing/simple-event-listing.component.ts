@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
-import { EventService } from "../../shared/event.service";
-import { Event } from "../../shared/event.model";
+import { EventService } from "../../events/shared/event.service";
+import { Event } from "../../events/shared/event.model";
 @Component({
   selector: 'app-simple-event-listing',
   templateUrl: './simple-event-listing.component.html',

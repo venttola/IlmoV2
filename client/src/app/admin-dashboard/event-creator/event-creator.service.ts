@@ -5,12 +5,13 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 
-import { Platoon } from "../../shared/platoon.model";
-import { Organization } from "../../shared/organization.model";
-import { Event } from "../../shared/event.model";
-import { Product } from "../../event-signup/product.model";
-
 import { AuthorizedHttpService } from "../../authorizedhttp.service";
+
+import { Event } from "../../events/shared/event.model";
+import { Organization } from "../../shared/organization.model";
+import { Platoon } from "../../events/shared/platoon.model";
+import { Product } from "../../events/shared/product.model";
+
 
 @Injectable()
 export class EventCreatorService extends AuthorizedHttpService {
