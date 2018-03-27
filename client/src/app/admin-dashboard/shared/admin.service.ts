@@ -13,7 +13,7 @@ export class AdminService extends AuthorizedHttpService {
 	adminURL: string;	
 	constructor(protected http: Http) {
 		super (http);
-		this.adminURL = "/api/admin" 
+		this.adminURL = "/api/admin";
 	}
 
 	public getUsers(query: string): Observable<any>{
