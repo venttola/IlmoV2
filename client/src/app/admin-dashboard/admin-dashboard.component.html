@@ -1,12 +1,9 @@
 <h2>Hallintanäkymä</h2>
-<div class="btn-group" role="group">
-	<a routerLink="">Koti</a>
-	<a routerLink="events/new">Lisää uusi tapahtuma</a>
-
-	<a  routerLink="organization" >Lisää uusi organisaatio</a>
-
-	<a  routerLink="">Valitse muokattava tapahtuma</a>
-	<a  routerLink="resetuserpassword">Resetoi käyttäjän salasana</a>
-	<a routerLink="fii">Fiii</a>
-</div>
+<nav class="nav bg-light">
+	<a class="nav-item nav-link" routerLink="">Koti</a>
+	<a class="nav-item nav-link" routerLink="events/new">Uusi tapahtuma</a>
+	<a class="nav-item nav-link" routerLink="organization" >Uusi organisaatio</a>
+	<a class="nav-item nav-link" routerLink="">Muokkaa tapahtumia</a>
+	<a class="nav-item nav-link" routerLink="resetuserpassword">Resetoi käyttäjän salasana</a>
+</nav>
 <router-outlet></router-outlet>
