@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { EventDetailsService } from "../event-details/event-details.service";
-import { ParticipantGroupService } from "../event-details/participant-group.service";
-import { ParticipantGroup } from "../event-details/participantgroup.model";
 import { Observable } from "rxjs/Observable";
-import { Product } from "./product.model";
+
+import { EventDetailsService } from "../event-details/event-details.service";
 import { EventSignupService } from "./event-signup.service";
+import { ParticipantGroupService } from "../event-details/participant-group.service";
+
+import { ParticipantGroup } from "../event-details/participantgroup.model";
+import { Product } from "./product.model";
 import { Discount } from "./discount.model";
 import { SignupData } from "./signup-data.model"; 
 
