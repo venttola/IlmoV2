@@ -5,8 +5,8 @@ import { EventDetails } from "./event-details.model";
 import { Response } from "@angular/http";
 
 import 'rxjs/add/operator/switchMap';
-import { Platoon } from "./platoon.model";
-import { ParticipantGroup } from "./participantgroup.model";
+import { Platoon } from "../shared/platoon.model";
+import { ParticipantGroup } from "../shared/participantgroup.model";
 import { ModalDirective } from "ng2-bootstrap/modal";
 import { GroupModalComponent } from "./group-modal/group-modal.component";
 import { DialogService } from "ng2-bootstrap-modal";

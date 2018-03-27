@@ -5,11 +5,10 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 
 import { Event } from "./event.model";
-import { AuthorizedHttpService } from "./../authorizedhttp.service";
+import { AuthorizedHttpService } from "../../authorizedhttp.service";
 
-import { AuthService } from "../authentication/auth.service";
-import { ParticipantGroup } from "../event-details/participantgroup.model";
-import { Platoon } from "../event-details/platoon.model";
+import { ParticipantGroup } from "./participantgroup.model";
+import { Platoon } from "./platoon.model";
 
 @Injectable()
 export class EventService extends AuthorizedHttpService {

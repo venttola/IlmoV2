@@ -1,4 +1,4 @@
-import { Platoon } from "./platoon.model";
+import { Platoon } from "../shared/platoon.model";
 import { Event } from "../shared/event.model";
 
 export class EventDetails {

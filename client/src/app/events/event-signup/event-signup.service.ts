@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AuthorizedHttpService } from "../authorizedhttp.service";
+import { AuthorizedHttpService } from "../../authorizedhttp.service";
 import { Http, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
-import { Product } from "./product.model";
+import { Product } from "../shared/product.model";
 
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";

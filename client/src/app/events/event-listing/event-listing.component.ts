@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { EventService } from "../event.service";
+
 import { AuthService } from "../../authentication/auth.service";
-import { Event } from "../event.model"; 
+import { EventService } from "../shared/event.service";
+
+import { Event } from "../shared/event.model"; 
 @Component({
   selector: "event-listing",
   templateUrl: "./event-listing.component.html",

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EventListingComponent } from './event-listing.component';
 import { Router, RouterModule } from "@angular/router";
-import { EventService } from "../event.service";
+import { EventService } from "../shared/event.service";
 import { HttpModule } from "@angular/http";
 
 describe('EventListingComponent', () => {

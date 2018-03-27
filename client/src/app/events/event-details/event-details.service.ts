@@ -4,10 +4,10 @@ import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 
-import { EventDetails } from "./event-details.model";
+import { AuthorizedHttpService } from "../../authorizedhttp.service";
 
-import { AuthorizedHttpService } from "../authorizedhttp.service";
-import { Product } from "../event-signup/product.model";
+import { EventDetails } from "./event-details.model";
+import { Product } from "../shared/product.model";
 @Injectable()
 export class EventDetailsService extends AuthorizedHttpService {
 	eventUrl: string;

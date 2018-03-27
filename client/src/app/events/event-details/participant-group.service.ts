@@ -4,8 +4,8 @@ import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 
-import { AuthorizedHttpService } from "../authorizedhttp.service";
-import { ParticipantGroup } from "./participantgroup.model";
+import { AuthorizedHttpService } from "../../authorizedhttp.service";
+import { ParticipantGroup } from "../shared/participantgroup.model";
 
 @Injectable()
 export class ParticipantGroupService extends AuthorizedHttpService {
