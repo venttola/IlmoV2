@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/Observable";
 import { AuthorizedHttpService } from "../authorizedhttp.service";
 import { Http, Response } from "@angular/http";
-import { ParticipantGroup } from "../event-details/participantgroup.model";
+import { ParticipantGroup } from "../events/shared/participantgroup.model";
 import { Member } from "./member";
 import { Participant } from "./participant.model";
 import { UserPayment } from "./userpayment";
-import { Product } from "../event-signup/product.model";
-import { Discount } from "../event-signup/discount.model";
+import { Product } from "../events/shared/product.model";
+import { Discount } from "../events/shared/discount.model";
 import { GroupCheckoutDetails } from "./group-page/group-checkout-page/group-checkout-details";
 
 @Injectable()

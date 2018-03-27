@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ParticipantGroup } from "../event-details/participantgroup.model";
+import { ParticipantGroup } from "../events/shared/participantgroup.model";
 import { GroupModerationService } from "./group-moderation.service";
 
 @Component({
