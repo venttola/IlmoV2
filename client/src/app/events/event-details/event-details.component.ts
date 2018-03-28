@@ -8,7 +8,7 @@ import 'rxjs/add/operator/switchMap';
 import { Platoon } from "../shared/platoon.model";
 import { ParticipantGroup } from "../shared/participantgroup.model";
 import { ModalDirective } from "ng2-bootstrap/modal";
-import { GroupModalComponent } from "./group-modal/group-modal.component";
+import { GroupModalComponent } from "../../shared/group-modal/group-modal.component";
 import { DialogService } from "ng2-bootstrap-modal";
 import { EventService } from "../shared/event.service";
 

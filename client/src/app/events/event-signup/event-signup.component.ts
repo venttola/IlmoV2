@@ -6,9 +6,9 @@ import { EventDetailsService } from "../event-details/event-details.service";
 import { EventSignupService } from "./event-signup.service";
 import { ParticipantGroupService } from "../event-details/participant-group.service";
 
-import { ParticipantGroup } from "../event-details/participantgroup.model";
-import { Product } from "./product.model";
-import { Discount } from "./discount.model";
+import { ParticipantGroup } from "../shared/participantgroup.model";
+import { Product } from "../shared/product.model";
+import { Discount } from "../shared/discount.model";
 import { SignupData } from "./signup-data.model"; 
 
 @Component({
@@ -35,8 +35,8 @@ export class EventSignupComponent implements OnInit {
   ngOnInit() {
     this.signupSuccessful = false;
     this.route.params
-      .switchMap((params: Params) => this.eventSignupService.getSignUpData(+params["groupId"], +params["eventId"]))
-      .subscribe((data: SignUpData) => {
+      .switchMap((params: Params) => this.eventSignupService.getSignupData(+params["groupId"], +params["eventId"]))
+      .subscribe((data: SignupData) => {
         this.signedUp = data.signedUp;
         this.isRegistrationOpen = data.isRegistrationOpen;
         this.participantGroup = data.group;
