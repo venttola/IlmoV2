@@ -9,7 +9,6 @@ import { GroupModeratorGuard } from "./authentication/group-moderator-guard.serv
 import { FrontPageComponent } from "./front-page/front-page.component";
 import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
-import { MainPageComponent } from "./main-page/main-page.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
 
 import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
@@ -28,11 +27,6 @@ const appRoutes: Routes = [
   {
     path: "signup",
     component: SignupComponent
-  },
-  {
-  	path: "events",
-  	component: MainPageComponent
- 
   },
   {
     path: "settings",
@@ -77,7 +71,6 @@ export class AppRoutingModule {}
 //export const Routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
 
 export const RoutedComponents = [FrontPageComponent, 
-                                 MainPageComponent,  
                                  LoginComponent,
                                  SignupComponent,
                                  UserSettingsComponent                                 
