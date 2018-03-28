@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Product } from "../../shared/product.model";
-import { Discount } from "../../shared/discount.model";
+import { Product } from "../../events/shared/product.model";
+import { Discount } from "../../events/shared/discount.model";
 
 @Component({
   selector: 'product-row',
