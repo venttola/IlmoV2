@@ -5,10 +5,12 @@ import { ActivatedRoute, Params } from "@angular/router";
 import { GroupModerationService } from "../group-moderation.service";
 import { Member } from "../member";
 import { Participant } from "../participant.model";
-import { GroupModalComponent } from "../../events/event-details/group-modal/group-modal.component";
 import { UserPayment } from "../userpayment";
 import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
+//a temporary crutch before groups are wrapped into a module
+//import G
+import { GroupModalComponent } from "../../shared/group-modal/group-modal.component";
 
 @Component({
   selector: 'app-group-page',
