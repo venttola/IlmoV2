@@ -7,7 +7,7 @@ import "rxjs/add/observable/forkJoin";
 
 import { Organization } from "../../shared/organization.model";
 import { OrganizationMember } from "../organization-member.model";
-import { Event } from "../../shared/event.model";
+import { Event } from "../../events/shared/event.model";
 import { AuthorizedHttpService } from "../../authorizedhttp.service";
 
 @Injectable()
