@@ -1,5 +1,5 @@
-import { ParticipantGroup } from "../event-details/participantgroup.model";
-import { Product } from "./product.model";
+import { ParticipantGroup } from "../shared/participantgroup.model";
+import { Product } from "../shared/product.model";
 export class SignupData {
   signedUp: boolean;
   group: ParticipantGroup;
