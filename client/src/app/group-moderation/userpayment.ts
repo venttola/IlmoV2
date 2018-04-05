@@ -1,4 +1,4 @@
-import { Product } from "../event-signup/product.model";
+import { Product } from "../events/shared/product.model";
 import { ProductSelection } from "./productselection";
 
 export class UserPayment {

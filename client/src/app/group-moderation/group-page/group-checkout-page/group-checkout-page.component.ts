@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { GroupModerationService } from "../../group-moderation.service";
-import { ParticipantGroupService } from "../../../event-details/participant-group.service";
-import { ParticipantGroup } from "../../../event-details/participantgroup.model";
+import { ParticipantGroupService } from "../../../events/event-details/participant-group.service";
+import { ParticipantGroup } from "../../../events/shared/participantgroup.model";
 import { GroupCheckoutDetails } from "./group-checkout-details";
 
 
