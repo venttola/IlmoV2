@@ -8,7 +8,7 @@ import { BootstrapModalModule } from "ng2-bootstrap-modal";
 
 import { AdminDashboardModule } from "./admin-dashboard/admin-dashboard.module";
 import { EventsModule } from "./events/events.module";
-import { GroupsModule } from "./groups/groups.module";
+import { GroupModerationModule } from "./group-moderation/group-moderation.module";
 import { SharedModule } from './shared/shared.module';
 
 import { AppComponent } from "./app.component";
@@ -35,7 +35,7 @@ import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-poli
     BootstrapModalModule,
     AdminDashboardModule,
     EventsModule,
-    GroupsModule,
+    GroupModerationModule,
     SharedModule,
     AppRoutingModule
   ],
