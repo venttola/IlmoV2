@@ -14,11 +14,11 @@ import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
 
 @Component({
-  selector: 'app-group-page',
-  templateUrl: './group-page.component.html',
-  styleUrls: ['./group-page.component.css', '../../styles/common-list.style.css']
+  selector: 'app-group-details',
+  templateUrl: './group-details.component.html',
+  styleUrls: ['./group-details.component.css', '../../styles/common-list.style.css']
 })
-export class GroupPageComponent implements OnInit {
+export class GroupDetailsComponent implements OnInit {
 
   selectedMember: Member;
   selectedMemberPayments: UserPayment[];

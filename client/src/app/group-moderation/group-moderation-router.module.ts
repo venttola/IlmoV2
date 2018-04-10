@@ -3,7 +3,7 @@ import { RouterModule, Routes, CanActivate } from '@angular/router';
 
 
 import { GroupListingComponent } from "./group-listing/group-listing.component";
-import { GroupPageComponent } from "./group-page/group-page.component";
+import { GroupDetailsComponent } from "./group-details/group-details.component";
 import { GroupCheckoutPageComponent } from "./group-checkout-page/group-checkout-page.component";
 
 import { AuthGuard } from "../authentication/auth-guard.service";
@@ -21,7 +21,7 @@ const groupsRoutes: Routes = [
     // and so you won't be able to moderate the group until you log out and back in
     canActivate: [AuthGuard/*, GroupModeratorGuard*/],
     children: [
-      { path: '', component: GroupPageComponent },
+      { path: '', component: GroupDetailsComponent },
       { path: 'checkout', component: GroupCheckoutPageComponent }
     ]
   },
