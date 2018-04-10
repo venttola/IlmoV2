@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/Observable";
-import { AuthorizedHttpService } from "../authorizedhttp.service";
+import { AuthorizedHttpService } from "../../authorizedhttp.service";
 import { Http, Response } from "@angular/http";
-import { ParticipantGroup } from "../events/shared/participantgroup.model";
-import { Member } from "./member";
+import { ParticipantGroup } from "../../events/shared/participantgroup.model";
+import { Member } from "./member.model";
 import { Participant } from "./participant.model";
-import { UserPayment } from "./userpayment";
-import { Product } from "../events/shared/product.model";
-import { Discount } from "../events/shared/discount.model";
-import { GroupCheckoutDetails } from "./group-page/group-checkout-page/group-checkout-details";
+import { UserPayment } from "./userpayment.model";
+import { Product } from "../../events/shared/product.model";
+import { Discount } from "../../events/shared/discount.model";
+import { GroupCheckoutDetails } from "../group-checkout-page/group-checkout-details";
 
 @Injectable()
 export class GroupModerationService extends AuthorizedHttpService {

@@ -1,16 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ParticipantGroup } from "../../events/shared/participantgroup.model";
-import { ParticipantGroupService } from "../../events/event-details/participant-group.service";
 import { ActivatedRoute, Params } from "@angular/router";
-import { GroupModerationService } from "../group-moderation.service";
-import { Member } from "../member";
-import { Participant } from "../participant.model";
-import { UserPayment } from "../userpayment";
+
+import { GroupModalComponent } from "../../shared/group-modal/group-modal.component";
+
+import { GroupModerationService } from "../shared/group-moderation.service";
+import { ParticipantGroupService } from "../../events/event-details/participant-group.service";
+
+import { ParticipantGroup } from "../../events/shared/participantgroup.model";
+import { Member } from "../shared/member.model";
+import { Participant } from "../shared/participant.model";
+import { UserPayment } from "../shared/userpayment.model";
 import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
-//a temporary crutch before groups are wrapped into a module
-//import G
-import { GroupModalComponent } from "../../shared/group-modal/group-modal.component";
 
 @Component({
   selector: 'app-group-page',

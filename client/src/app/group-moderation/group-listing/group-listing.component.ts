@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+
+import { GroupModerationService } from "../shared/group-moderation.service";
+
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
-import { GroupModerationService } from "./group-moderation.service";
 
 @Component({
   selector: 'app-group-moderation',

@@ -1,5 +1,5 @@
-import { Product } from "../events/shared/product.model";
-import { ProductSelection } from "./productselection";
+import { Product } from "../../events/shared/product.model";
+import { ProductSelection } from "./productselection.model";
 
 export class UserPayment {
     products: ProductSelection[];

@@ -1,5 +1,5 @@
 import { MemberPayment } from "./member-payment";
-import { ParticipantGroup } from "../../../events/shared/participantgroup.model";
+import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 
 export class GroupCheckoutDetails {
   group: ParticipantGroup;

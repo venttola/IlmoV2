@@ -8,7 +8,7 @@ import { GroupPageComponent } from "./group-page/group-page.component";
 import { GroupCheckoutPageComponent } from "./group-checkout-page/group-checkout-page.component";
 
 
-import { GroupModerationService } from "./group-listing/group-moderation.service";
+import { GroupModerationService } from "./shared/group-moderation.service";
 
 
 @NgModule({

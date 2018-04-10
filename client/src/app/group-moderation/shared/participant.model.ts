@@ -1,4 +1,4 @@
-import { UserPayment } from "./userpayment";
+import { UserPayment } from "./userpayment.model";
 
 export class Participant {
   id: number;
