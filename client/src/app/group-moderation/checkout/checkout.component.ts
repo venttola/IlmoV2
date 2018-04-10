@@ -3,18 +3,18 @@ import { Router, ActivatedRoute, Params } from "@angular/router";
 
 import { GroupModerationService } from "../shared/group-moderation.service";
 
-import { GroupCheckoutDetails } from "./group-checkout-details";
+import { CheckoutDetails } from "./checkout-details.model";
 import { ParticipantGroupService } from "../../events/event-details/participant-group.service";
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 
 
 @Component({
-  selector: 'app-group-checkout-page',
-  templateUrl: './group-checkout-page.component.html',
-  styleUrls: ['./group-checkout-page.component.css']
+  selector: 'group-moderation-checkout',
+  templateUrl: './checkout.component.html',
+  styleUrls: ['./checkout.component.css']
 })
-export class GroupCheckoutPageComponent implements OnInit {
-  checkoutDetails: GroupCheckoutDetails;
+export class CheckoutComponent implements OnInit {
+  checkoutDetails: CheckoutDetails;
 
   constructor(private route: ActivatedRoute,
     private groupModerationService: GroupModerationService) { }
@@ -22,7 +22,7 @@ export class GroupCheckoutPageComponent implements OnInit {
   ngOnInit() {
     this.route.params
       .switchMap((params: Params) => this.groupModerationService.getGroupCheckoutDetails(+params["groupId"]))
-      .subscribe((checkoutDetails: GroupCheckoutDetails) => {
+      .subscribe((checkoutDetails: CheckoutDetails) => {
         console.log(JSON.stringify(checkoutDetails));
         this.checkoutDetails = checkoutDetails;
       });
@@ -30,7 +30,7 @@ export class GroupCheckoutPageComponent implements OnInit {
 
   onReceiptGroupPayment() {
     this.groupModerationService.receiptGroupPayment(this.checkoutDetails.group.id)
-      .subscribe((checkoutDetails: GroupCheckoutDetails) => {
+      .subscribe((checkoutDetails: CheckoutDetails) => {
         console.log(JSON.stringify(checkoutDetails));
         this.checkoutDetails = checkoutDetails;
       });

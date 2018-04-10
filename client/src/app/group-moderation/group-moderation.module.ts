@@ -7,7 +7,7 @@ import { SharedModule } from "../shared/shared.module";
 
 import { GroupListingComponent } from "./group-listing/group-listing.component";
 import { GroupDetailsComponent } from "./group-details/group-details.component";
-import { GroupCheckoutPageComponent } from "./group-checkout-page/group-checkout-page.component";
+import { CheckoutComponent } from "./checkout/checkout.component";
 
 
 import { GroupModerationService } from "./shared/group-moderation.service";
@@ -21,7 +21,7 @@ import { GroupModerationService } from "./shared/group-moderation.service";
     GroupModerationRouterModule
   ],
   declarations: [
-    GroupCheckoutPageComponent,
+    CheckoutComponent,
     GroupListingComponent,
     GroupDetailsComponent
   ],

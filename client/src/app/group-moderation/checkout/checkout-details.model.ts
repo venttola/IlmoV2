@@ -1,7 +1,7 @@
-import { MemberPayment } from "./member-payment";
+import { MemberPayment } from "./member-payment.model";
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 
-export class GroupCheckoutDetails {
+export class CheckoutDetails {
   group: ParticipantGroup;
   isPaid: boolean;
   payments: MemberPayment[];
@@ -9,8 +9,8 @@ export class GroupCheckoutDetails {
   refNumber: string;
   organizationBankAccount: string;
 
-  static fromJSON(json: any): GroupCheckoutDetails {
-    let checkout = Object.create(GroupCheckoutDetails.prototype);
+  static fromJSON(json: any): CheckoutDetails {
+    let checkout = Object.create(CheckoutDetails.prototype);
     Object.assign(checkout, json);
     return checkout;
   }

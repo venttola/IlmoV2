@@ -8,7 +8,7 @@ import { Participant } from "./participant.model";
 import { UserPayment } from "./userpayment.model";
 import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
-import { GroupCheckoutDetails } from "../group-checkout-page/group-checkout-details";
+import { CheckoutDetails } from "../checkout/checkout-details.model";
 
 @Injectable()
 export class GroupModerationService extends AuthorizedHttpService {
@@ -150,17 +150,17 @@ export class GroupModerationService extends AuthorizedHttpService {
       }).catch(this.handleError);
   }
 
-  getGroupCheckoutDetails(groupId: number): Observable<GroupCheckoutDetails> {
+  getGroupCheckoutDetails(groupId: number): Observable<CheckoutDetails> {
     return this.http.get("/api/group/" + groupId + "/checkout", { headers: this.headers })
       .map((res: Response) => {
-        return GroupCheckoutDetails.fromJSON(res.json());
+        return CheckoutDetails.fromJSON(res.json());
       });
   }
 
-  receiptGroupPayment(groupId: number): Observable<GroupCheckoutDetails> {
+  receiptGroupPayment(groupId: number): Observable<CheckoutDetails> {
         return this.http.get("/api/group/" + groupId + "/receipt", { headers: this.headers })
       .map((res: Response) => {
-        return GroupCheckoutDetails.fromJSON(res.json());
+        return CheckoutDetails.fromJSON(res.json());
       });
   }
 }

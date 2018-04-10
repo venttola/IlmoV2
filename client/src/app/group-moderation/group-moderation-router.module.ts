@@ -4,7 +4,7 @@ import { RouterModule, Routes, CanActivate } from '@angular/router';
 
 import { GroupListingComponent } from "./group-listing/group-listing.component";
 import { GroupDetailsComponent } from "./group-details/group-details.component";
-import { GroupCheckoutPageComponent } from "./group-checkout-page/group-checkout-page.component";
+import { CheckoutComponent } from "./checkout/checkout.component";
 
 import { AuthGuard } from "../authentication/auth-guard.service";
 
@@ -22,7 +22,7 @@ const groupsRoutes: Routes = [
     canActivate: [AuthGuard/*, GroupModeratorGuard*/],
     children: [
       { path: '', component: GroupDetailsComponent },
-      { path: 'checkout', component: GroupCheckoutPageComponent }
+      { path: 'checkout', component: CheckoutComponent }
     ]
   },
   
