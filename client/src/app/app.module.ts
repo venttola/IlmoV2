@@ -8,6 +8,7 @@ import { BootstrapModalModule } from "ng2-bootstrap-modal";
 
 import { AdminDashboardModule } from "./admin-dashboard/admin-dashboard.module";
 import { EventsModule } from "./events/events.module";
+import { GroupsModule } from "./groups/groups.module";
 import { SharedModule } from './shared/shared.module';
 
 import { AppComponent } from "./app.component";
@@ -23,12 +24,7 @@ import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
 import { UserSettingsService } from './user-settings/user-settings.service';
 
-import { GroupModerationComponent } from './group-moderation/group-moderation.component';
-import { GroupModerationService } from "./group-moderation/group-moderation.service";
-import { GroupPageComponent } from './group-moderation/group-page/group-page.component';
-
 import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-policy-modal.component';
-import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-checkout-page/group-checkout-page.component';
 
 @NgModule({
   imports: [
@@ -39,6 +35,7 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     BootstrapModalModule,
     AdminDashboardModule,
     EventsModule,
+    GroupsModule,
     SharedModule,
     AppRoutingModule
   ],
@@ -46,10 +43,7 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     AppComponent,
     RoutedComponents,
     NavBarComponent,
-    GroupModerationComponent,
-    GroupPageComponent,
-    PrivacyPolicyModalComponent,
-    GroupCheckoutPageComponent,
+    PrivacyPolicyModalComponent
   ],
   providers: [
     AuthService,
@@ -58,8 +52,7 @@ import { GroupCheckoutPageComponent } from './group-moderation/group-page/group-
     GroupModeratorGuard,
     LoginService,
     SignupService,
-    UserSettingsService,
-    GroupModerationService
+    UserSettingsService
   ],
   bootstrap: [AppComponent]
 })

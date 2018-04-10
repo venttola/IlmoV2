@@ -11,10 +11,6 @@ import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
 
-import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
-import { GroupPageComponent } from "./group-moderation/group-page/group-page.component";
-import { GroupCheckoutPageComponent } from "./group-moderation/group-page/group-checkout-page/group-checkout-page.component";
-
 const appRoutes: Routes = [
   {
     path: "",
@@ -32,22 +28,6 @@ const appRoutes: Routes = [
     path: "settings",
     component: UserSettingsComponent,
     canActivate: [AuthGuard]
-  },
-  {
-    path: "moderation",
-    component: GroupModerationComponent,
-    canActivate: [AuthGuard, ]
-  },
-  {
-    path: "groups/:groupId",
-    // TODO: Fix GroupModerationGuard
-    // If you add new group, you'll be a moderator in backend but the JWT token doesn't refresh
-    // and so you won't be able to moderate the group until you log out and back in
-    canActivate: [AuthGuard/*, GroupModeratorGuard*/],
-    children: [
-      { path: '', component: GroupPageComponent },
-      { path: 'checkout', component: GroupCheckoutPageComponent }
-    ]
   },
   {
     path: "**",
