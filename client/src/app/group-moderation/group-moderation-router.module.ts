@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, CanActivate } from '@angular/router';
 
 
-import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
+import { GroupListingComponent } from "./group-listing/group-listing.component";
 import { GroupPageComponent } from "./group-page/group-page.component";
 import { GroupCheckoutPageComponent } from "./group-checkout-page/group-checkout-page.component";
 
@@ -11,7 +11,7 @@ import { AuthGuard } from "../authentication/auth-guard.service";
 const groupsRoutes: Routes = [
    {
     path: "moderation",
-    component: GroupModerationComponent,
+    component: GroupListingComponent,
     canActivate: [AuthGuard, ]
   },
   {

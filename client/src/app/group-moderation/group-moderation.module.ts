@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { GroupModerationRouterModule } from "./group-moderation-router.module";
+import { GroupModerationRouterModule } from "./group-moderation-router.module"
 
-import { GroupModerationComponent } from "./group-moderation/group-moderation.component";
+import { GroupListingComponent } from "./group-listing/group-listing.component";
 import { GroupPageComponent } from "./group-page/group-page.component";
 import { GroupCheckoutPageComponent } from "./group-checkout-page/group-checkout-page.component";
 
 
-import { GroupModerationService } from "./group-moderation/group-moderation.service";
+import { GroupModerationService } from "./group-listing/group-moderation.service";
 
 
 @NgModule({
@@ -17,7 +17,7 @@ import { GroupModerationService } from "./group-moderation/group-moderation.serv
   ],
   declarations: [
     GroupCheckoutPageComponent,
-    GroupModerationComponent,
+    GroupListingComponent,
     GroupPageComponent
   ],
   providers:[
