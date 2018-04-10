@@ -14,7 +14,7 @@ import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
 
 @Component({
-  selector: 'app-group-details',
+  selector: 'group-moderation-group-details',
   templateUrl: './group-details.component.html',
   styleUrls: ['./group-details.component.css', '../../styles/common-list.style.css']
 })
