@@ -5,9 +5,9 @@ import { GroupModerationService } from "../shared/group-moderation.service";
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 
 @Component({
-  selector: 'app-group-moderation',
-  templateUrl: './group-moderation.component.html',
-  styleUrls: ['./group-moderation.component.css', '../styles/common-list.style.css']
+  selector: 'app-group-listing',
+  templateUrl: './group-listing.component.html',
+  styleUrls: ['./group-listing.component.css', '../../styles/common-list.style.css']
 })
 export class GroupListingComponent implements OnInit {
 
