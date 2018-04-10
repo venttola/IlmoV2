@@ -27,8 +27,7 @@
     <p>Ei rekisteröitymättömiä jäseniä.</p>
   </div>
 
-  <button type="button" class="btn btn-primary" [routerLink]="['/groups', participantGroup?.id, 'checkout']">Ryhmän maksuerittely</button>
-
+  <button type="button" class="btn btn-primary" [routerLink]="['./checkout']">Ryhmän maksuerittely</button>
   <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#participantAdding" aria-expanded="false"
   aria-controls="participantAdding">Lisää osallistuja ryhmään</button>
   <div class="collapse" id="participantAdding">
@@ -211,4 +210,3 @@
   </div>
 </app-group-modal>
 
-<router-outlet></router-outlet>
