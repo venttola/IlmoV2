@@ -73,7 +73,7 @@
 </div>
 
 
-<app-group-modal #memberModal>
+<shared-group-modal #memberModal>
   <div class="group-modal-header">
     <h4>{{selectedMember?.name}}</h4>
   </div>
@@ -142,9 +142,9 @@
       <button type="button" class="btn btn-primary cancel-button" (click)="onCloseMemberModal()">Sulje</button>
     </div>
   </div>
-</app-group-modal>
+</shared-group-modal>
 
-<app-group-modal #participantModal>
+<shared-group-modal #participantModal>
   <div class="group-modal-header">
     <h4>{{selectedParticipant?.firstname}} {{selectedParticipant?.lastname}}</h4>
   </div>
@@ -208,5 +208,5 @@
       <button type="button" class="btn btn-primary cancel-button" (click)="onCloseParticipantModal()">Sulje</button>
     </div>
   </div>
-</app-group-modal>
+</shared-group-modal>
 

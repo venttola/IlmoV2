@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-group-modal',
+  selector: 'shared-group-modal',
   templateUrl: './group-modal.component.html',
   styleUrls: ['./group-modal.component.css']
 })
