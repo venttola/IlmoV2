@@ -7,7 +7,7 @@
 				<h6 class="card-subtitle">{{event.startDate | date:"dd.MM.yyyy" }} - {{event.endDate | date:"dd.MM.yyyy"}} </h6>
 				<p class="card-text"> {{event.description}} </p>
 				<div *ngIf="event.registerationOpen">
-					<a [routerLink]="['/events', event.id]" class="text-success">Ilmoittaudu tästä</a>  
+					<a [routerLink]="['./', event.id]" class="text-success">Ilmoittaudu tästä</a>  
 				</div>
 				<div *ngIf="!event.registerationOpen"> 	
 					<p class="text-danger">Ilmoittautuminen on sulkeutunut </p>
