@@ -18,11 +18,7 @@ const adminRoutes: Routes = [
         path: "",
         component: EventListingComponent
       },
-      {
-        path: ":id",
-        component: EventDetailsComponent,
-        canActivate: [AuthGuard]
-      },
+      
       {
         path: ":eventId/group/:groupId",
         component: EventSignupComponent,
@@ -32,6 +28,11 @@ const adminRoutes: Routes = [
         path: "signups",
         component: EventSignupListingComponent,
         canActivate: [AuthGuard],
+      },
+      {
+        path: ":id",
+        component: EventDetailsComponent,
+        canActivate: [AuthGuard]
       },
   ]
   }
