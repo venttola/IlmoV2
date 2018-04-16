@@ -9,7 +9,6 @@ import { GroupModeratorGuard } from "./authentication/group-moderator-guard.serv
 import { FrontPageComponent } from "./front-page/front-page.component";
 import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
-import { UserSettingsComponent } from "./user-settings/user-settings.component";
 
 const appRoutes: Routes = [
   {
@@ -23,11 +22,6 @@ const appRoutes: Routes = [
   {
     path: "signup",
     component: SignupComponent
-  },
-  {
-    path: "settings",
-    component: UserSettingsComponent,
-    canActivate: [AuthGuard]
   },
   {
     path: "**",
@@ -52,6 +46,5 @@ export class AppRoutingModule {}
 
 export const RoutedComponents = [FrontPageComponent, 
                                  LoginComponent,
-                                 SignupComponent,
-                                 UserSettingsComponent                                 
+                                 SignupComponent
                                  ];

@@ -5,7 +5,7 @@ import { UserData } from "./userdata.model";
 import { CredentialUpdate } from "./credentialupdate.model";
 import { UserSettingsService } from "./user-settings.service";
 @Component({
-	selector: 'user-settings',
+	selector: 'users-user-settings',
 	templateUrl: './user-settings.component.html',
 	styleUrls: ['./user-settings.component.css']
 })

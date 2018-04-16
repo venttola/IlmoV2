@@ -9,6 +9,7 @@ import { BootstrapModalModule } from "ng2-bootstrap-modal";
 import { AdminDashboardModule } from "./admin-dashboard/admin-dashboard.module";
 import { EventsModule } from "./events/events.module";
 import { GroupModerationModule } from "./group-moderation/group-moderation.module";
+import { UsersModule } from "./users/users.module";
 import { SharedModule } from './shared/shared.module';
 
 import { AppComponent } from "./app.component";
@@ -22,7 +23,6 @@ import { AdminGuard } from "./authentication/admin-guard.service";
 import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
-import { UserSettingsService } from './user-settings/user-settings.service';
 
 import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-policy-modal.component';
 
@@ -37,6 +37,7 @@ import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-poli
     EventsModule,
     GroupModerationModule,
     SharedModule,
+    UsersModule,
     AppRoutingModule
   ],
   declarations: [
@@ -51,8 +52,7 @@ import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-poli
     AdminGuard,
     GroupModeratorGuard,
     LoginService,
-    SignupService,
-    UserSettingsService
+    SignupService
   ],
   bootstrap: [AppComponent]
 })
