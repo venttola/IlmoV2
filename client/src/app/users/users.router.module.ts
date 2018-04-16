@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, CanActivate } from '@angular/router';
 
+import { PasswordChangeComponent } from "./password-change/password-change.component";
 import { UsersComponent } from "./users.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
+
 import { AuthGuard } from "../authentication/auth-guard.service";
 //Fix this
 const usersRoutes: Routes = [
@@ -14,6 +16,10 @@ const usersRoutes: Routes = [
       {
         path: "settings",
         component: UserSettingsComponent
+      },
+      {
+        path: "password",
+        component: PasswordChangeComponent
       }
 /*      {
         path: "signups",

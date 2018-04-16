@@ -6,7 +6,8 @@ import { UsersRouterModule } from "./users.router.module";
 
 import { UsersComponent } from "./users.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
-
+import { PasswordChangeComponent } from "./password-change/password-change.component";
+import { PasswordChangeService } from "./password-change/password-change.service";
 import { UserSettingsService } from "./user-settings/user-settings.service"
 
 @NgModule({
@@ -16,10 +17,12 @@ import { UserSettingsService } from "./user-settings/user-settings.service"
     UsersRouterModule
   ],
   declarations: [
+  	PasswordChangeComponent,
   	UsersComponent,
     UserSettingsComponent
   ],
   providers: [
+    PasswordChangeService,
   	UserSettingsService
   ]
 })

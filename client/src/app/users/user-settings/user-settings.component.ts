@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from "@angular/forms";
 
 import { UserData } from "./userdata.model";
-import { CredentialUpdate } from "./credentialupdate.model";
 import { UserSettingsService } from "./user-settings.service";
 @Component({
 	selector: 'users-user-settings',
@@ -11,7 +10,7 @@ import { UserSettingsService } from "./user-settings.service";
 })
 export class UserSettingsComponent implements OnInit {
 	@Input() userData: UserData;
-	@Input() credentialUpdate: CredentialUpdate;
+	
 	userDataUpdateMessage: string;
 	credentialUpdateMessage: string;
 	errorMessage: string;
@@ -25,7 +24,6 @@ export class UserSettingsComponent implements OnInit {
 
 	ngOnInit() {
 		this.userData = new UserData;
-		this.credentialUpdate = new CredentialUpdate;
 		this.userDataService.getUserData().subscribe(userData => {this.userData = userData; console.log(JSON.stringify(this.userData));},
 			error => this.error = <any>error);
 		
@@ -45,21 +43,7 @@ export class UserSettingsComponent implements OnInit {
 			this.setErrorMessage(error.status);
 		});
 	}
-	updatePassword(): void{
-		this.errorMessage = "";
-		this.credentialUpdateMessage = "";
-		this.userDataService.updatePassword(this.credentialUpdate).
-		subscribe(response => {
-			console.log(response)
-			this.credentialUpdateMessage = "Salasanan vaihto onnistui.";
-
-		}, 
-		error => {
-			this.error = <any>error;
-			this.setErrorMessage(error.status);
-		});
-
-	}
+	
 	private setErrorMessage(statusCode: number){
 		console.log("Status: " + statusCode);
 		if (statusCode == 403){
