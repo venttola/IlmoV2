@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { PasswordResetService } from "./password-reset.service";
 
 @Component({
   selector: 'public-password-reset',
@@ -8,7 +9,8 @@ import { Component, OnInit, Input } from '@angular/core';
 export class PasswordResetComponent implements OnInit {
   @Input() userEmail: string;
   errorMessage: string;
-  constructor() { 
+  error: any;
+  constructor(private passwordResetService: PasswordResetService) { 
   	this.errorMessage = "";
   }
 
@@ -16,6 +18,9 @@ export class PasswordResetComponent implements OnInit {
   	this.userEmail ="";
   }
   requestPasswordReset(): void {
+  	this.passwordResetService.sendResetRequest(this.userEmail).
+		subscribe(function(result){
+		}, error => this.error = <any>error);
 
   }
 

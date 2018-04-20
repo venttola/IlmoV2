@@ -10,6 +10,7 @@ import { SignupComponent } from "./signup/signup.component";
 
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
+import { PasswordResetService } from "./password-reset/password-reset.service";
 @NgModule({
   imports: [
     CommonModule,
@@ -24,6 +25,7 @@ import { SignupService } from "./signup/signup.service";
   ],
   providers: [
     LoginService,
+    PasswordResetService,
     SignupService
   ]
 })
