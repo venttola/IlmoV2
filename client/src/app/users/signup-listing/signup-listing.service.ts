@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AuthorizedHttpService } from "../../authorizedhttp.service";
 import { Http, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
-import { SignupDetails } from "./signup-details";
+import { SignupDetails } from "./signup-details.model";
+import { AuthorizedHttpService } from "../../authorizedhttp.service";
 
 @Injectable()
 export class SignupListingService extends AuthorizedHttpService {

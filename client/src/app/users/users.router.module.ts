@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, CanActivate } from '@angular/router';
 
 import { PasswordChangeComponent } from "./password-change/password-change.component";
+import { SignupListingComponent } from "./signup-listing/signup-listing.component";
 import { UsersComponent } from "./users.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
 
@@ -20,11 +21,11 @@ const usersRoutes: Routes = [
       {
         path: "password",
         component: PasswordChangeComponent
-      }
-/*      {
+      },
+      {
         path: "signups",
-        component: EventSignupListingComponent,
-      },*/
+        component: SignupListingComponent,
+      },
   ]
   }
 ];

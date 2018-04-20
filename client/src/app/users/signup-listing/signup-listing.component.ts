@@ -3,11 +3,11 @@ import { SignupDetails } from "./signup-details";
 import { SignupListingService } from "./signup-listing.service";
 
 @Component({
-  selector: 'app-event-signup-listing',
-  templateUrl: './event-signup-listing.component.html',
-  styleUrls: ['./event-signup-listing.component.css']
+  selector: 'user-signup-listing',
+  templateUrl: './signup-listing.component.html',
+  styleUrls: ['./signup-listing.component.css']
 })
-export class EventSignupListingComponent implements OnInit {
+export class SignupListingComponent implements OnInit {
 
   signupDetails: SignupDetails[] = [];
 

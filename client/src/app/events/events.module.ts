@@ -10,14 +10,14 @@ import { EventsComponent } from "./events.component";
 import { EventListingComponent } from './event-listing/event-listing.component';
 import { EventDetailsComponent } from './event-details/event-details.component';
 import { EventSignupComponent } from './event-signup/event-signup.component';
-import { EventSignupListingComponent } from "./event-signup-listing/event-signup-listing.component"
+
 
 import { EventDetailsService } from "./event-details/event-details.service";
 import { EventService } from "./shared/event.service";
 import { EventSignupService } from "./event-signup/event-signup.service";
 
 import { ParticipantGroupService } from "./event-details/participant-group.service";
-import { SignupListingService } from "./event-signup-listing/signup-listing.service";
+
 
 
 @NgModule({
@@ -31,16 +31,14 @@ import { SignupListingService } from "./event-signup-listing/signup-listing.serv
     EventsComponent,
     EventDetailsComponent,
     EventListingComponent,
-    EventSignupComponent,
-    EventSignupListingComponent
+    EventSignupComponent
   ],
   providers: [
     EventDetailsService,
     EventListingComponent,
     EventService,
     EventSignupService,
-    ParticipantGroupService,
-    SignupListingService
+    ParticipantGroupService
   ]
 })
 export class EventsModule { }
