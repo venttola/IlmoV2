@@ -7,7 +7,7 @@ import "rxjs/add/observable/forkJoin";
 
 
 import { Credentials } from "./credentials.model";
-import { AuthService } from "../authentication/auth.service";
+import { AuthService } from "../../authentication/auth.service";
 
 @Injectable()
 export class LoginService{

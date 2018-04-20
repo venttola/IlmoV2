@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { Credentials } from "./credentials.model";
 import { LoginService } from "./login.service";
-import { AuthService } from "../authentication/auth.service";
+import { AuthService } from "../../authentication/auth.service";
 
 @Component({
   selector: 'login',

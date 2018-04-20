@@ -9,20 +9,20 @@ import { BootstrapModalModule } from "ng2-bootstrap-modal";
 import { AdminDashboardModule } from "./admin-dashboard/admin-dashboard.module";
 import { EventsModule } from "./events/events.module";
 import { GroupModerationModule } from "./group-moderation/group-moderation.module";
-import { UsersModule } from "./users/users.module";
+import { PublicModule } from "./public/public.module";
 import { SharedModule } from './shared/shared.module';
+import { UsersModule } from "./users/users.module";
 
 import { AppComponent } from "./app.component";
 import { NavBarComponent } from './nav-bar/nav-bar.component';
-import { AppRoutingModule, RoutedComponents } from './app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 
 
 import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
 import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
-import { LoginService } from "./login/login.service";
-import { SignupService } from "./signup/signup.service";
+
 
 import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-policy-modal.component';
 
@@ -36,13 +36,13 @@ import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-poli
     AdminDashboardModule,
     EventsModule,
     GroupModerationModule,
+    PublicModule,
     SharedModule,
     UsersModule,
     AppRoutingModule
   ],
   declarations: [
     AppComponent,
-    RoutedComponents,
     NavBarComponent,
     PrivacyPolicyModalComponent
   ],
@@ -50,9 +50,7 @@ import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-poli
     AuthService,
     AuthGuard,
     AdminGuard,
-    GroupModeratorGuard,
-    LoginService,
-    SignupService
+    GroupModeratorGuard
   ],
   bootstrap: [AppComponent]
 })
