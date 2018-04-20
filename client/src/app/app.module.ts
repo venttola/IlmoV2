@@ -14,7 +14,6 @@ import { SharedModule } from './shared/shared.module';
 import { UsersModule } from "./users/users.module";
 
 import { AppComponent } from "./app.component";
-import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { AppRoutingModule } from './app-routing.module';
 
 
@@ -24,7 +23,7 @@ import { AdminGuard } from "./authentication/admin-guard.service";
 import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
 
 
-import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-policy-modal.component';
+
 
 @NgModule({
   imports: [
@@ -43,8 +42,6 @@ import { PrivacyPolicyModalComponent } from './privacy-policy-modal/privacy-poli
   ],
   declarations: [
     AppComponent,
-    NavBarComponent,
-    PrivacyPolicyModalComponent
   ],
   providers: [
     AuthService,
