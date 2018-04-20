@@ -30,7 +30,6 @@ export class PasswordChangeComponent implements OnInit {
 		subscribe(response => {
 			console.log(response)
 			this.credentialUpdateMessage = "Salasanan vaihto onnistui.";
-
 		}, 
 		error => {
 			this.error = <any>error;
@@ -43,11 +42,8 @@ export class PasswordChangeComponent implements OnInit {
 		console.log("Status: " + statusCode);
 		if (statusCode == 403){
 			this.errorMessage = "Virheellinen salasana.";
-		} else if (statusCode == 404) {
-			this.errorMessage = "Käyttäjää ei löytynyt.";
 		} else {
 			this.errorMessage = "Tuntematon virhe.";
 		}
 	}
-
 }

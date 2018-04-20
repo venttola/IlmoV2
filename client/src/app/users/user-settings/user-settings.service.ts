@@ -8,7 +8,6 @@ import "rxjs/add/operator/map";
 
 import { AuthorizedHttpService } from "../../authorizedhttp.service";
 import { UserData } from "./userdata.model";
-import { CredentialUpdate } from "./credentialupdate.model";
 
 @Injectable()
 export class UserSettingsService extends AuthorizedHttpService {
@@ -30,12 +29,5 @@ export class UserSettingsService extends AuthorizedHttpService {
 			 				   JSON.stringify(data),
 							   {headers:this.headers}).map(this.extractData).catch(this.handleError); 
 
-	}
-	updatePassword(data: CredentialUpdate): Observable<any> {
-		data.email = localStorage.getItem("user");
-		console.log(this.usersUrl + localStorage.getItem("user") + "/credentials");
-		return this.http.patch(this.usersUrl + localStorage.getItem("user") + "/credentials",
-							   JSON.stringify(data),
-							   {headers:this.headers}).map(this.extractData).catch(this.handleError);
 	}
 }
