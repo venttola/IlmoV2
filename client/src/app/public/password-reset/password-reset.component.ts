@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'public-password-reset',
@@ -6,10 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./password-reset.component.css']
 })
 export class PasswordResetComponent implements OnInit {
-
-  constructor() { }
+  @Input() userEmail: string;
+  errorMessage: string;
+  constructor() { 
+  	this.errorMessage = "";
+  }
 
   ngOnInit() {
+  	this.userEmail ="";
+  }
+  requestPasswordReset(): void {
+
   }
 
 }
