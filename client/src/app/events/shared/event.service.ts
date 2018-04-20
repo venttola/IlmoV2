@@ -5,7 +5,7 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 
 import { Event } from "./event.model";
-import { AuthorizedHttpService } from "../../authorizedhttp.service";
+import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 
 import { ParticipantGroup } from "./participantgroup.model";
 import { Platoon } from "./platoon.model";

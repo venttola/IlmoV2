@@ -6,7 +6,7 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 
-import { AuthorizedHttpService } from "../../authorizedhttp.service";
+import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 import { EventCreatorService } from "../event-creator/event-creator.service";
 
 import { Platoon } from "../../events/shared/platoon.model";

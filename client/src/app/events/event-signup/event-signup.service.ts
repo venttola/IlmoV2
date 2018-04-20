@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthorizedHttpService } from "../../authorizedhttp.service";
+import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 import { Http, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import { Product } from "../shared/product.model";

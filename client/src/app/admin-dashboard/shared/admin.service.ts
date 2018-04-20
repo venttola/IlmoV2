@@ -6,7 +6,7 @@ import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
 
 
-import { AuthorizedHttpService } from "../../authorizedhttp.service";
+import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 
 @Injectable()
 export class AdminService extends AuthorizedHttpService {

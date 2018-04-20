@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/Observable";
-import { AuthorizedHttpService } from "../../authorizedhttp.service";
+import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 import { Http, Response } from "@angular/http";
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 import { Member } from "./member.model";
