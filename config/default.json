@@ -1,4 +1,5 @@
 {
+	"domain": "domain_url",
     "api_prefix": "/api",
     "salt_rounds": 10,
     "secret": "testisalaisuus",
