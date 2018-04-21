@@ -5,14 +5,19 @@ import * as express from "express";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { AuthService } from "../services/authservice";
+import { MailerService } from "../services/mailerservice";
+
 import { DatabaseHandler } from "../databasehandler";
+
+import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 module Route {
 
     export class AuthRoutes {
         constructor(private superSecret: string,
                     private saltRounds: number,
                     private userModel: any,
-                    private authService: AuthService) {
+                    private authService: AuthService,
+                    private mailerService: MailerService) {
             console.log("Creating authroutes");
         }
         /**
@@ -147,10 +152,13 @@ module Route {
             });
         }
         public requestPasswordReset = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-          //  console.log("User requested password reset");
-           // console.log(req.body);
-           // let userEmail = req.body.email;
-            return res.status(200).send("Ok");
+          let self = this;
+          let email = req.body.email;
+          self.mailerService.sendPasswordResetLink(email).then((response: any) => {
+            return res.status(200).send();
+          }).catch((err: APIError) => {
+            return res.status(err.statusCode).send(err.message);
+          });
         }
     }
 }

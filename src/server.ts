@@ -14,6 +14,7 @@ import { EventService } from "./services/eventservice";
 import { AuthService } from "./services/authservice";
 import { GroupService } from "./services/groupservice";
 import { AdminService } from "./services/adminservice";
+import { MailerService } from "./services/mailerservice";
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
 import * as eventRoutes from "./routes/event";
@@ -37,6 +38,7 @@ class Server {
 	private authService: AuthService;
 	private groupService: GroupService;
 	private adminService: AdminService;
+	private mailerService: MailerService;
 
 	constructor() {
 		const corsOptions: any = {
@@ -68,7 +70,7 @@ class Server {
 				);
 			this.adminService = new AdminService(models.User,
 												 models.GroupPayment);
-
+			this.mailerService = new MailerService(this.userService);
 			this.setRoutes();
 			this.priviledgeChecker = new PriviledgeChecker();
 		}).catch((err: Error) => {
@@ -103,7 +105,11 @@ class Server {
 
 	private setAuthRoutes(router: express.Router) {
 		let models = this.handler.getModels();
-		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes(this.SECRET, this.SALT_ROUNDS, models.User, this.authService);
+		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes(this.SECRET,
+																		 this.SALT_ROUNDS,
+																		 models.User,
+																		 this.authService,
+																		 this.mailerService);
 		router.post(this.API_PREFIX + "/signup", authRoute.signup);
 		router.post(this.API_PREFIX + "/login", authRoute.login);
 		router.post(this.API_PREFIX + "/forgotpassword", authRoute.requestPasswordReset);
