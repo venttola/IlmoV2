@@ -106,6 +106,7 @@ class Server {
 		let authRoute: authRoutes.AuthRoutes = new authRoutes.AuthRoutes(this.SECRET, this.SALT_ROUNDS, models.User, this.authService);
 		router.post(this.API_PREFIX + "/signup", authRoute.signup);
 		router.post(this.API_PREFIX + "/login", authRoute.login);
+		router.post(this.API_PREFIX + "/forgotpassword", authRoute.requestPasswordReset);
 	}
 
 	private setUserRoutes(router: express.Router) {

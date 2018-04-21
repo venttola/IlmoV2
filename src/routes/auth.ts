@@ -146,6 +146,12 @@ module Route {
                 }
             });
         }
+        public requestPasswordReset = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+          //  console.log("User requested password reset");
+           // console.log(req.body);
+           // let userEmail = req.body.email;
+            return res.status(200).send("Ok");
+        }
     }
 }
 export = Route;

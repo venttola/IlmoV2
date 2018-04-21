@@ -12,7 +12,7 @@ export class PasswordResetService  {
    }
   sendResetRequest(userEmail: string): Observable<any>{
   	let body = {email: userEmail};
-  	return this.http.post("/api/passwordreset/", JSON.stringify(body), { headers: this.headers })
+  	return this.http.post("/api/forgotpassword/", JSON.stringify(body), { headers: this.headers })
 		.catch(this.handleError);
 
   }
