@@ -7,7 +7,9 @@ export function User(db: any) {
 		lastname: { type: "text", require: true },
 		dob: { type: "date", time: false, required: true },
 		allergies: { type: "text" },
-		phone: { type: "text" }
+		phone: { type: "text" },
+		passwordResetToken: {type: "text"},
+		passwordResetExpires: {type: "number", size: 8, time: true}
 	}, {
 		methods: {
 			fullName: function () {
