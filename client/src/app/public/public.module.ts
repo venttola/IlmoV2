@@ -5,12 +5,12 @@ import { PublicRouterModule } from "./public.router.module";
 
 import { FrontPageComponent } from "./front-page/front-page.component";
 import { LoginComponent } from "./login/login.component";
-import { PasswordResetComponent } from "./password-reset/password-reset.component";
+import { ForgotPasswordComponent } from "./forgot-password/forgot-password.component";
 import { SignupComponent } from "./signup/signup.component";
 
 import { LoginService } from "./login/login.service";
 import { SignupService } from "./signup/signup.service";
-import { PasswordResetService } from "./password-reset/password-reset.service";
+import { ForgotPasswordService } from "./forgot-password/forgot-password.service";
 @NgModule({
   imports: [
     CommonModule,
@@ -20,12 +20,12 @@ import { PasswordResetService } from "./password-reset/password-reset.service";
   declarations: [
     FrontPageComponent,
     LoginComponent,
-    PasswordResetComponent,
+    ForgotPasswordComponent,
     SignupComponent
   ],
   providers: [
     LoginService,
-    PasswordResetService,
+    ForgotPasswordService,
     SignupService
   ]
 })

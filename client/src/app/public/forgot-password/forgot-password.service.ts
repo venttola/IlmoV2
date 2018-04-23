@@ -5,12 +5,12 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 
 @Injectable()
-export class PasswordResetService  {
+export class ForgotPasswordService  {
   headers : Headers;
   constructor(protected http: Http) {
   	this.headers =  new Headers( {"Content-Type": "application/json"});
    }
-  sendResetRequest(userEmail: string): Observable<any>{
+   sendResetRequest(userEmail: string): Observable<any>{
   	let body = {email: userEmail};
   	return this.http.post("/api/forgotpassword/", JSON.stringify(body), { headers: this.headers })
 		.catch(this.handleError);
