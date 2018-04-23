@@ -16,25 +16,25 @@ module Service {
     constructor(private userService: UserService) {
 
     // create reusable transporter object using the default SMTP transport
-        this.transporter = nodemailer.createTransport({
-          host: "smtp.ethereal.email",
-          port: 587,
-          secure: false, // true for 465, false for other ports
-          auth: {
-              user: config.get("email"), // generated ethereal user
-              pass: config.get("email_password") // generated ethereal password
-          }
-        });
-        this.handlebarsOptions = {
-          viewEngine: "handlebars",
-          viewPath: path.resolve("./src/services/mailtemplates/"),
-          extName: ".html"
-        };
-        this.transporter.use("compile", hbs(this.handlebarsOptions));
+      this.transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: config.get("email"), // generated ethereal user
+          pass: config.get("email_password") // generated ethereal password
+        }
+      });
+      this.handlebarsOptions = {
+        viewEngine: "handlebars",
+        viewPath: path.resolve("./src/services/mailtemplates/"),
+        extName: ".html"
+      };
+      this.transporter.use("compile", hbs(this.handlebarsOptions));
     }
-   public sendPasswordResetLink = (email: string) => {
-     let self = this;
-     return new Promise((resolve, reject) => {
+    public sendPasswordResetLink = (email: string) => {
+      let self = this;
+      return new Promise((resolve, reject) => {
         self.userService.getUser(email).then((user: any) => {
           crypto.randomBytes(20, function(err: any, buffer: any) {
             if (err) {
@@ -55,8 +55,8 @@ module Service {
                 subject: "Ilmoportaalin salasanan resetointi", // Subject line
                 template: "forgot-password-email",
                 context: {
-                   url: config.get("domain") + "/reset_password?token=" + token,
-                   name: user.firstname + " " + user.lastname
+                  url: config.get("domain") + "/reset_password?token=" + token,
+                  name: user.firstname + " " + user.lastname
                 }
               };
               self.transporter.sendMail(mailOptions, (error: any, info: any) => {
@@ -69,13 +69,12 @@ module Service {
               });
             });
           });
-      }).catch((error: any) => {
-        let errorMsg = ErrorHandler.getErrorMsg("User", ErrorType.NOT_FOUND);
-        reject(new DatabaseError(404, errorMsg));
+        }).catch((error: any) => {
+          let errorMsg = ErrorHandler.getErrorMsg("User", ErrorType.NOT_FOUND);
+          reject(new DatabaseError(404, errorMsg));
+        });
       });
-  });
-   }
-
+    }
   }
 }
 
