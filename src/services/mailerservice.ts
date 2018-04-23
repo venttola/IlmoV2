@@ -55,7 +55,7 @@ module Service {
                 subject: "Ilmoportaalin salasanan resetointi", // Subject line
                 template: "forgot-password-email",
                 context: {
-                  url: config.get("domain") + "/reset_password?token=" + token,
+                  url: config.get("domain") + "/resetpassword?token=" + token,
                   name: user.firstname + " " + user.lastname
                 }
               };
