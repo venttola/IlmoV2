@@ -38,28 +38,38 @@ module Service {
         self.userService.getUser(email).then((user: any) => {
           crypto.randomBytes(20, function(err: any, buffer: any) {
             if (err) {
+              reject(new APIError(500, "Unexpected error"));
             }
             let token: string = buffer.toString("hex");
-            let mailOptions = {
-              from: "\"Ilmoportaali\" <ilmoportaali@sotahuuto.fi>", // sender address
-              to: email, // list of receivers
-              subject: "Ilmoportaalin salasanan resetointi", // Subject line
-              template: "forgot-password-email",
-              context: {
-                 url: config.get("domain") + "/reset_password?token=" + token,
-                 name: user.firstname + " " + user.lastname
+            user.passwordResetToken = token;
+            let expires: number = Date.now() + 86400000;
+            console.log(expires);
+            user.passwordResetExpires = expires;
+            user.save(function (err: Error) {
+              if (err)   {
+                reject(new DatabaseError(500, "User update failed!"));
               }
-            };
-            self.transporter.sendMail(mailOptions, (error: any, info: any) => {
-              if (!error) {
-                return resolve();
-              } else {
-                let errorMsg = "Reset mail sending failed!";
-                return reject(new APIError(500, errorMsg));
-              }
+              let mailOptions = {
+                from: "\"Ilmoportaali\" <ilmoportaali@sotahuuto.fi>", // sender address
+                to: email, // list of receivers
+                subject: "Ilmoportaalin salasanan resetointi", // Subject line
+                template: "forgot-password-email",
+                context: {
+                   url: config.get("domain") + "/reset_password?token=" + token,
+                   name: user.firstname + " " + user.lastname
+                }
+              };
+              self.transporter.sendMail(mailOptions, (error: any, info: any) => {
+                if (!error) {
+                  return resolve();
+                } else {
+                  let errorMsg = "Reset mail sending failed!";
+                  return reject(new APIError(500, errorMsg));
+                }
+              });
             });
           });
-      }).catch((error:any) => {
+      }).catch((error: any) => {
         let errorMsg = ErrorHandler.getErrorMsg("User", ErrorType.NOT_FOUND);
         reject(new DatabaseError(404, errorMsg));
       });
