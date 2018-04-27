@@ -8,10 +8,12 @@ import { ForgotPasswordService } from "./forgot-password.service";
 })
 export class ForgotPasswordComponent implements OnInit {
   @Input() userEmail: string;
+  successMessage: string; 
   errorMessage: string;
   error: any;
   constructor(private forgotPasswordService: ForgotPasswordService) { 
   	this.errorMessage = "";
+    this.successMessage = "";
   }
 
   ngOnInit() {
@@ -19,7 +21,9 @@ export class ForgotPasswordComponent implements OnInit {
   }
   requestPasswordReset(): void {
   	this.forgotPasswordService.sendResetRequest(this.userEmail).
-		subscribe(function(result){
+		subscribe((result) => {
+      this.successMessage = "Salasanan resetointilinkki on lähetetty sähköpostiisi.";
+      console.log(this.successMessage);
 		}, error => this.error = <any>error);
 
   }
