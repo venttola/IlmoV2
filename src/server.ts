@@ -113,6 +113,7 @@ class Server {
 		router.post(this.API_PREFIX + "/signup", authRoute.signup);
 		router.post(this.API_PREFIX + "/login", authRoute.login);
 		router.post(this.API_PREFIX + "/forgotpassword", authRoute.requestPasswordReset);
+		router.post(this.API_PREFIX + "/resetpassword", authRoute.resetPassword);
 	}
 
 	private setUserRoutes(router: express.Router) {

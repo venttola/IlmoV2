@@ -160,6 +160,45 @@ module Route {
             return res.status(err.statusCode).send(err.message);
           });
         }
+         public resetPassword = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+          let self = this;
+          let token = req.body.token;
+          let password = req.body.password;
+          let verifyPassword = req.body.verifyPassword;
+          let saltRounds: number = this.saltRounds;
+          self.userModel.one({ passwordResetToken: token }, function (err: any, user: any) {
+                if (!user) {
+                    return res.status(404).send("User not found!");
+                } else {
+                    //We could tell the user if the reset request has timed out.
+                    if (user.passwordResetExpires < Date.now() || password !== verifyPassword) {
+                        return res.status(500).send("Error: Could not reset password.");
+                    } else {
+                        bcrypt.hash(password, saltRounds, function (err: any, hash: any) {
+                            if (err) {
+                                return res.status(500).send("Error: Password saving failed.");
+                            } else {
+                                user.password = hash;
+                                user.passwordResetToken = undefined;
+                                user.passwordResetExpires = undefined;
+                                user.save( function (err: any, result: any) {
+                                    if (err) {
+                                        console.log("Error resetting: " + err);
+                                        return res.status(500).send("Failed to reset password:" + err);
+                                    } else {
+                                        self.mailerService.sendPasswordResetNotification(user.email).then((response: any) => {
+                                            return res.status(204).json({message: "Password reset succeeded"});
+                                          }).catch((err: APIError) => {
+                                            return res.status(err.statusCode).send(err.message);
+                                          });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 }
 export = Route;

@@ -75,6 +75,33 @@ module Service {
         });
       });
     }
+    public sendPasswordResetNotification = (email: string) => {
+      let self = this;
+      return new Promise((resolve, reject) => {
+        self.userService.getUser(email).then((user: any) => {
+          let mailOptions = {
+              to: user.email,
+              from: "\"Ilmoportaali\" <ilmoportaali@sotahuuto.fi>", // sender address,
+              template: "reset-password-email",
+              subject: "Salasanan resetointi onnistui!",
+              context: {
+                name:   user.firstname + " " + user.lastname
+              }
+            };
+            self.transporter.sendMail(mailOptions, function(error: any) {
+              if (!error) {
+                  return resolve();
+                } else {
+                  let errorMsg = "Reset mail sending failed!";
+                  return reject(new APIError(500, errorMsg));
+                }
+            });
+        }).catch((error: any) => {
+          let errorMsg = ErrorHandler.getErrorMsg("User", ErrorType.NOT_FOUND);
+          reject(new DatabaseError(404, errorMsg));
+        });
+      });
+    }
   }
 }
 
