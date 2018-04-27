@@ -6,11 +6,14 @@ import { PublicRouterModule } from "./public.router.module";
 import { FrontPageComponent } from "./front-page/front-page.component";
 import { LoginComponent } from "./login/login.component";
 import { ForgotPasswordComponent } from "./forgot-password/forgot-password.component";
+import { ResetPasswordComponent } from "./reset-password/reset-password.component";
 import { SignupComponent } from "./signup/signup.component";
 
 import { LoginService } from "./login/login.service";
-import { SignupService } from "./signup/signup.service";
 import { ForgotPasswordService } from "./forgot-password/forgot-password.service";
+import { ResetPasswordService } from "./reset-password/reset-password.service";
+import { SignupService } from "./signup/signup.service";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -21,11 +24,13 @@ import { ForgotPasswordService } from "./forgot-password/forgot-password.service
     FrontPageComponent,
     LoginComponent,
     ForgotPasswordComponent,
+    ResetPasswordComponent,
     SignupComponent
   ],
   providers: [
     LoginService,
     ForgotPasswordService,
+    ResetPasswordService,
     SignupService
   ]
 })
