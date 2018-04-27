@@ -3,5 +3,7 @@
     "api_prefix": "/api",
     "salt_rounds": 10,
     "secret": "testisalaisuus",
-    "port": 8080
+    "port": 8080,
+    "email": "mail@example.com",
+    "email_password": "password"
 }
