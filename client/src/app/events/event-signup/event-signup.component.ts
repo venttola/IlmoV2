@@ -5,7 +5,7 @@ import { Observable } from "rxjs/Observable";
 import { EventDetailsService } from "../event-details/event-details.service";
 import { EventSignupService } from "./event-signup.service";
 import { ParticipantGroupService } from "../event-details/participant-group.service";
-
+import { EventDetailsService } from "../event-details/event-details.service";
 import { ParticipantGroup } from "../shared/participantgroup.model";
 import { Product } from "../shared/product.model";
 import { Discount } from "../shared/discount.model";
@@ -21,6 +21,7 @@ export class EventSignupComponent implements OnInit {
   private participantGroup: ParticipantGroup;
 
   private products: Product[] = [];
+  private selectedProducts: Product[] = [];
 
   private signedUp: boolean = false;
   private signupSuccessful: boolean;
@@ -41,6 +42,8 @@ export class EventSignupComponent implements OnInit {
         this.isRegistrationOpen = data.isRegistrationOpen;
         this.participantGroup = data.group;
         this.products = data.eventProducts;
+        this.selectedProducts = this.products
+                                .filter((p: Product) => p.selected === true);
       });
   }
 
@@ -48,7 +51,7 @@ export class EventSignupComponent implements OnInit {
     let prods = this.products
       .filter((p: Product) => p.selected === true);
 
-    let prodIds = prods.map((p: Product) => {
+    let prodIds = this.selectedProducts.map((p: Product) => {
       let discounts = p.discounts.filter((d: Discount) => d.selected === true);
       let discountId: number = discounts && discounts.length > 0 ? discounts[0].id : null;
 
@@ -66,7 +69,7 @@ export class EventSignupComponent implements OnInit {
     let prods = this.products
       .filter((p: Product) => p.selected === true);
 
-    let prodIds = prods.map((p: Product) => {
+    let prodIds = this.selectedProducts.map((p: Product) => {
       let discounts = p.discounts.filter((d: Discount) => d.selected === true);
       let discountId: number = discounts && discounts.length > 0 ? discounts[0].id : null;
 
@@ -84,5 +87,20 @@ export class EventSignupComponent implements OnInit {
   cancelSignUp() {
     this.eventSignupService.cancelSignup(this.participantGroup.id)
       .subscribe((success: boolean) => this.router.navigate(["signups"]));
+  }
+  selectProduct(productId: number) {
+    console.log("selected");
+    console.log(productId);
+    let prods = this.products
+      .filter((p: Product) => p.id == productId);
+    prods.map((p: Product) => p.selected = true);
+    console.log(prods);
+    this.selectedProducts = this.selectedProducts.concat(prods);
+    console.log(this.selectedProducts);
+  }
+  deselectProduct(productId: number) {
+     console.log("remooved");
+    console.log(productId);
+    this.selectedProducts = this.selectedProducts.filter((p: Product) => p.id != productId);
   }
 }

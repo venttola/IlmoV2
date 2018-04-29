@@ -9,13 +9,23 @@
 
   <div class="product-sections">
     <h4>Tuotteet</h4>
+    <select class="form-control" #product (change)="selectProduct(product.value)">
+      <option disabled>Valitse tuote</option>
+      <option  *ngFor="let p of products" [value]="p.id">
+        {{p.name}} {{p.price}}€ 
+      </option>
+    </select>
+  </div>
+  
+  <div class="product-sections">
+    <h4>Valitut tuotteet </h4> 
     <ul class="product-list">
-      <li *ngFor="let p of products">
-        <product-row [product]="p"></product-row>
+      <li *ngFor="let p of selectedProducts">
+        <product-row [product]="p" (removed)="deselectProduct(p.id)"></product-row>
       </li>
     </ul>
+  
   </div>
-
   <div *ngIf="isRegistrationOpen === true" class="actions">
     <button *ngIf="!signedUp" type="button" class="btn btn-primary" (click)="addSignup()">Ilmoittaudu</button>
     <div *ngIf="signedUp">
@@ -24,5 +34,5 @@
     </div>
   </div>
   <div [hidden]="!signupSuccessful" class="alert alert-success">Ilmoittautuminen onnistui!  Siirry <a routerLink="/user/signups">tästä</a> tarkastelemaan ilmoittautumisiasi. </div>
-    <div [hidden]="!updateSuccessful" class="alert alert-success">Tietojen muuttaminen onnistui  Siirry <a routerLink="/user/signups">tästä</a> tarkastelemaan ilmoittautumisiasi. </div>
+  <div [hidden]="!updateSuccessful" class="alert alert-success">Tietojen muuttaminen onnistui  Siirry <a routerLink="/user/signups">tästä</a> tarkastelemaan ilmoittautumisiasi. </div>
 </div>

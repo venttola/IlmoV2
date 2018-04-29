@@ -1,19 +1,17 @@
 <div class="product form-group">
   <div class="product-name">{{product?.name}} {{product?.price}}€</div>
-  <div class="selection checkbox">
-    <input type="checkbox" class="product-checkbox" name="isSelected" [(ngModel)]="product.selected">
-  </div>
+  <button type="button" class="btn btn-danger btn-sm product-button" (click)="deselect()">Poista</button>  
 
   <div class="discount-section" [hidden]="!product.selected || product.discounts.length==0">
     <div><label>Alennus</label></div>
 
     <select name="discount" [ngModel]="selectedDiscount" (ngModelChange)="onChange($event)">
-        <option *ngFor="let d of product.discounts" [ngValue]="d">
-            {{d.name}} ({{d.amount}})
-        </option>
-        <option [ngValue]="null">
-            Valitse alennus.
-        </option>
+      <option *ngFor="let d of product.discounts" [ngValue]="d">
+        {{d.name}} ({{d.amount}}€)
+      </option>
+      <option [ngValue]="null">
+        Valitse alennus.
+      </option>
     </select>
   </div>
 </div>

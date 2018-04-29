@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,, Output, EventEmitter } from '@angular/core';
 
 import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
@@ -9,7 +9,7 @@ import { Discount } from "../../events/shared/discount.model";
   styleUrls: ['./product-row.component.css']
 })
 export class ProductRowComponent implements OnInit {
-
+  @Output() removed = new EventEmitter<number>();
   @Input() product: Product;
 
   selectedDiscount: Discount;
@@ -20,6 +20,9 @@ export class ProductRowComponent implements OnInit {
     console.log("Selected disc:" + this.product.discounts.find(d => d.selected === true));
     let selected = this.product.discounts.find(d => d.selected === true);
     this.selectedDiscount = selected ? selected : null;
+  }
+  deselect() {
+    this.removed.emit(this.product.id);
   }
 
   onChange(newValue: Discount) {
