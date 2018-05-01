@@ -20,7 +20,7 @@ export class CheckoutComponent implements OnInit {
     private groupModerationService: GroupModerationService) { }
 
   ngOnInit() {
-    this.route.params
+    this.route.parent.params
       .switchMap((params: Params) => this.groupModerationService.getGroupCheckoutDetails(+params["groupId"]))
       .subscribe((checkoutDetails: CheckoutDetails) => {
         console.log(JSON.stringify(checkoutDetails));

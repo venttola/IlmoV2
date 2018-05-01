@@ -6,6 +6,9 @@ import { CheckoutComponent } from "./checkout/checkout.component";
 import { GroupDetailsComponent } from "./group-details/group-details.component";
 import { GroupListingComponent } from "./group-listing/group-listing.component";
 import { GroupModerationComponent } from "./group-moderation.component"; 
+import { GroupOverviewComponent } from "./group-overview/group-overview.component";
+import { GroupSignupsComponent } from "./group-signups/group-signups.component";
+import { ParticipantAddingComponent } from "./participant-adding/participant-adding.component";
 
 import { AuthGuard } from "../authentication/auth-guard.service";
 
@@ -26,10 +29,27 @@ const groupsRoutes: Routes = [
         // If you add new group, you'll be a moderator in backend but the JWT token doesn't refresh
         // and so you won't be able to moderate the group until you log out and back in
         canActivate: [AuthGuard/*, GroupModeratorGuard*/],
+        children: [
+          {
+           path: "",
+           component: GroupOverviewComponent
+          },
+          {
+            path: "checkout",
+            component: CheckoutComponent
+          },
+          {
+            path: "newparticipant",
+            component: ParticipantAddingComponent
+          },
+          {
+            path: "signups",
+            component: GroupSignupsComponent
+          }
+
+
+        ]
       },
-      { path: "groups/:groupId/checkout",
-        component: CheckoutComponent 
-      }
     ]
   },
 

@@ -5,10 +5,13 @@ import { FormsModule } from "@angular/forms";
 import { GroupModerationRouterModule } from "./group-moderation-router.module";
 import { SharedModule } from "../shared/shared.module";
 
-import { GroupModerationComponent } from "./group-moderation.component"; 
-import { GroupListingComponent } from "./group-listing/group-listing.component";
-import { GroupDetailsComponent } from "./group-details/group-details.component";
 import { CheckoutComponent } from "./checkout/checkout.component";
+import { GroupModerationComponent } from "./group-moderation.component";
+import { GroupListingComponent } from "./group-listing/group-listing.component";
+import { GroupOverviewComponent } from "./group-overview/group-overview.component";
+import { GroupDetailsComponent } from "./group-details/group-details.component";
+import { GroupSignupsComponent } from "./group-signups/group-signups.component";
+import { ParticipantAddingComponent } from "./participant-adding/participant-adding.component";
 
 
 import { GroupModerationService } from "./shared/group-moderation.service";
@@ -25,7 +28,10 @@ import { GroupModerationService } from "./shared/group-moderation.service";
     CheckoutComponent,
     GroupDetailsComponent,
     GroupListingComponent,
-    GroupModerationComponent
+    GroupModerationComponent,
+    GroupOverviewComponent,
+    GroupSignupsComponent,
+    ParticipantAddingComponent
   ],
   providers:[
     GroupModerationService

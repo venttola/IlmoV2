@@ -1,0 +1,60 @@
+h4 {
+    text-align: center;
+}
+.group-moderation {
+    text-align: center;
+    width: 50%
+}
+
+.remove-member-button {
+    display: inline-block;
+}
+
+.save-button {
+    float: right;
+    margin-right: 1%;
+}
+
+.cancel-button {
+    float: right;
+}
+
+.paid {
+    background-color: grey;
+}
+
+.not-paid {
+
+}
+
+.product {
+    display: inline-block;
+    width: 50%;
+}
+
+.discount {
+    display: inline-block;
+}
+
+.final-price {
+    display: inline-block;
+    float: right;
+}
+
+.productlist-header {
+    font-weight: bold;
+}
+
+.participantgroup-section, .product-sections {
+    text-align: left;
+}
+
+.product-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.paid-payment-section {
+    margin-bottom: 5%;
+}
+
