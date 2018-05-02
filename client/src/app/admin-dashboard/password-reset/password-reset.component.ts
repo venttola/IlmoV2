@@ -19,12 +19,12 @@ import { AdminService } from "../shared/admin.service";
 	styleUrls: ['./password-reset.component.css']
 })
 export class PasswordResetComponent implements OnInit {
-	private userEmail: string;
-	private password: string;
-	private rePassword: string;
-	private error: any;
-	private searchTermStream = new Subject<string>();
-	private users: Observable <any[]>;
+	userEmail: string;
+	password: string;
+	rePassword: string;
+	error: any;
+	searchTermStream = new Subject<string>();
+	users: Observable <any[]>;
 	constructor( private adminService: AdminService  ) {
 	 }
 
@@ -40,7 +40,7 @@ export class PasswordResetComponent implements OnInit {
 	searchUsers(query: string) {
 		this.searchTermStream.next(query);
 	}
-	private resetUserPassword() {
+	resetUserPassword() {
 		this.adminService.resetUserPassword(this.userEmail, this.password, this.rePassword).
 		subscribe(function(result){
 			console.log("In AdminPageComponent" + result);
