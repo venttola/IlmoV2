@@ -8,6 +8,7 @@ export class CheckoutDetails {
   totalSum: number;
   refNumber: string;
   organizationBankAccount: string;
+  barcode: number;
 
   static fromJSON(json: any): CheckoutDetails {
     let checkout = Object.create(CheckoutDetails.prototype);
