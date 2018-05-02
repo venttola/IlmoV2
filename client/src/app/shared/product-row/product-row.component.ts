@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
