@@ -16,6 +16,7 @@ import { UserPayment } from "../shared/userpayment.model";
 })
 export class ParticipantAddingComponent implements OnInit {
   availableProducts: Product[] = [];
+  selectedProducts: Product[] = [];
 
   newParticipant: Participant;
   participantGroup: ParticipantGroup;
@@ -35,12 +36,10 @@ export class ParticipantAddingComponent implements OnInit {
   	this.route.parent.params
       .switchMap((params: Params) => this.groupModerationService.getAvailableProducts(+params["groupId"]))
       .subscribe((products: Product[]) => this.availableProducts = products);
-    console.log(this.availableProducts);
   }
   addParticipant() {
     this.infoMessage = "";
     this.errorMessage = "";
-    console.log("Adding participant");
     let selectedProducts = this.availableProducts.filter((p: Product) => p.selected === true);
 
     let prodIds = selectedProducts.map((p: Product) => {
@@ -52,11 +51,19 @@ export class ParticipantAddingComponent implements OnInit {
 
     this.groupModerationService.createParticipant(this.participantGroup.id, this.newParticipant, selectedProducts)
       .subscribe((participant: any) => {
-        console.log("Participant added succesfully");
         this.infoMessage = "Osallistuja " + participant.firstname + " " + participant.lastname + " lisätty onnistuneesti";
       }, error => {
         this.errorMessage = "Tapahtui virhe";
       });
+  }
+  selectProduct(productId: number) {
+    let prods = this.availableProducts
+      .filter((p: Product) => p.id == productId);
+    prods.map((p: Product) => p.selected = true);
+    this.selectedProducts = this.selectedProducts.concat(prods);
+  }
+  deselectProduct(productId: number) {
+    this.selectedProducts = this.selectedProducts.filter((p: Product) => p.id != productId);
   }
 
 }
