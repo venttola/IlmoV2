@@ -1,0 +1,52 @@
+<form (ngSubmit)="addParticipant()" #loginForm="ngForm">
+  <h4>Syötä ryhmäläisen tiedot</h4>
+  <div class="form-group">
+    <label for="firstname" class="sr-only">Etunimi:</label>
+    <input type="text" class="form-control" placeholder="Etunimi" id="firstname" [(ngModel)]="newParticipant.firstname" name="firstname"
+    required />
+  </div>
+  <div class="form-group">
+    <label for="lastname" class="sr-only">Sukunimi:</label>
+    <input type="text" class="form-control" placeholder="Sukunimi" id="lastname" [(ngModel)]="newParticipant.lastname" name="lastname"
+    required />
+  </div>
+  <div class="form-group">
+    <label for="age" class="sr-only">Ikä:</label>
+    <input class="form-control" placeholder="Osallistujan ikä" id="dob" [(ngModel)]="newParticipant.age" name="age"
+    required />
+  </div>
+  <div class="form-group">
+    <label for="allergies" class="sr-only">Ruoka-aineallergiat:</label>
+    <input type="text" class="form-control" placeholder="Ruoka-aineallergiat" id="allergies" [(ngModel)]="newParticipant.allergies"
+    name="allergies" />
+  </div>
+
+
+  <div class="product-sections">
+    <h4>Tuotteet</h4>
+    <select class="form-control" #product (change)="selectProduct(product.value)">
+      <option disabled>Valitse tuote</option>
+      <option  *ngFor="let p of availableProducts" [value]="p.id">
+        {{p.name}} {{p.price}}€
+      </option>
+    </select>
+  </div>
+
+  <div class="product-sections">
+    <h4>Valitut tuotteet </h4>
+    <ul class="product-list">
+      <li *ngFor="let p of selectedProducts">
+        <product-row [product]="p" (removed)="deselectProduct(p.id)"></product-row>
+      </li>
+    </ul>
+  </div>
+  <button type="submit" class="btn btn-success">Lisää osallistuja</button>
+</form>
+<div class="product-sections">
+  <div [hidden]="!errorMessage" class="alert alert-danger">
+    {{errorMessage}}
+  </div>
+  <div [hidden]="!infoMessage" class="alert alert-success">
+    {{infoMessage}}
+  </div>
+</div>
