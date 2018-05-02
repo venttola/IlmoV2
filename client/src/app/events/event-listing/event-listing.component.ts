@@ -11,7 +11,7 @@ import { Event } from "../shared/event.model";
 })
 
 export class EventListingComponent implements OnInit {
-  private events: Event[];
+  events: Event[];
   error: any;
   constructor(private eventService: EventService,
               private authService: AuthService) {
