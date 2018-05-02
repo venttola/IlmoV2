@@ -17,15 +17,15 @@ import { SignupData } from "./signup-data.model";
 })
 export class EventSignupComponent implements OnInit {
 
-  private participantGroup: ParticipantGroup;
+  participantGroup: ParticipantGroup;
 
-  private products: Product[] = [];
-  private selectedProducts: Product[] = [];
+  products: Product[] = [];
+  selectedProducts: Product[] = [];
 
-  private signedUp: boolean = false;
-  private signupSuccessful: boolean;
-  private updateSuccessful: boolean;
-  private isRegistrationOpen: boolean;
+  signedUp: boolean = false;
+  signupSuccessful: boolean;
+  updateSuccessful: boolean;
+  isRegistrationOpen: boolean;
 
   constructor(private route: ActivatedRoute,
     private eventSignupService: EventSignupService,
