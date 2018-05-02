@@ -16,14 +16,12 @@ module Service {
     constructor(private userService: UserService) {
 
     // create reusable transporter object using the default SMTP transport
+      let authOptions = config.get("email_auth");
       this.transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: config.get("email"), // generated ethereal user
-          pass: config.get("email_password") // generated ethereal password
-        }
+        host: config.get("email_host"),
+        port: config.get("email_port"),
+        secure: config.get("email_secure"), // true for 465, false for other ports
+        auth: authOptions
       });
       this.handlebarsOptions = {
         viewEngine: "handlebars",
@@ -63,6 +61,7 @@ module Service {
                 if (!error) {
                   return resolve();
                 } else {
+                  console.log(error);
                   let errorMsg = "Reset mail sending failed!";
                   return reject(new APIError(500, errorMsg));
                 }

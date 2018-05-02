@@ -1,8 +1,18 @@
 {
-    "database": {
-        "host": "localhost",
-        "user": "productionuser",
-        "password": "asdasd",
-        "schema": "ILMOV2"
-    }
+	"corsOrigin": "http://localhost:4200",
+
+	"database": {
+		"host": "localhost",
+		"user": "devuser",
+		"password": "",
+		"schema": "ilmov2"
+	},
+
+	"email_host": "smtp.gmail.com",
+	"email_port": "465",
+	"email_secure": true,
+	"email_auth": {
+		"user": "example@gmail.com",
+		"pass": "password"
+	}
 }

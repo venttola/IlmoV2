@@ -6,5 +6,15 @@
         "user": "devuser",
         "password": "",
         "schema": "ilmov2"
+    },
+
+    "email_host": "smtp.ethereal.email",
+    "email_port": "587",
+    "email_secure": false,
+    "email_auth": {
+    	"user": "example@ethereal.email",
+    	"pass": "password"
     }
+  
+
 }
