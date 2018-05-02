@@ -1,7 +1,8 @@
 {
 	"domain": "domain_url",
-    "api_prefix": "/api",
-    "salt_rounds": 10,
-    "secret": "testisalaisuus",
-    "port": 8080
+  "ref_number_initial": "10000",
+  "api_prefix": "/api",
+  "salt_rounds": 10,
+  "secret": "testisalaisuus",
+  "port": 8080
 }

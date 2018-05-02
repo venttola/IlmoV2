@@ -3,7 +3,7 @@ import * as express from "express";
 import { UserService } from "../services/userservice";
 import { OrganizationService } from "../services/organizationservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
-
+import * as config from "config";
 const bankUtils = require("finnish-bank-utils");
 
 module Route {
@@ -432,7 +432,7 @@ module Route {
             return new Promise((resolve, reject) => {
                 this.groupPaymentModel.create({
                     paidOn: null,
-                    referenceNumber: bankUtils.generateFinnishRefNumber()
+                    referenceNumber: bankUtils.generateFinnishRefNumber(config.get("ref_number_initial"))
                 }, (err: Error, payment: any) => {
                     err ? reject(err) : resolve(payment);
                 });
