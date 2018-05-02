@@ -25,7 +25,7 @@ module Service {
       });
       this.handlebarsOptions = {
         viewEngine: "handlebars",
-        viewPath: path.resolve("./src/services/mailtemplates/"),
+        viewPath: path.resolve("./mailtemplates/"),
         extName: ".html"
       };
       this.transporter.use("compile", hbs(this.handlebarsOptions));
