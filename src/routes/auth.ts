@@ -59,6 +59,7 @@ module Route {
                                     let options: any =  {"expiresIn": "2h"};
 
                                     let userInfo: any = {
+                                        "id": result.id,
                                         "email": email,
                                         "admin": isAdmin,
                                         "moderatedGroups": JSON.stringify(moderatedGroups),

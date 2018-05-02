@@ -33,7 +33,7 @@ module Service {
 							 let organizationIds = organizations.map((o: any) => {
 							 	return {id: o.id};
 							 });
-							return resolve(organizations);
+							return resolve(organizationIds);
 						}
 					});
 				});
