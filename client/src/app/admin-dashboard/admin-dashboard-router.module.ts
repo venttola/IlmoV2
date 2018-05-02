@@ -25,16 +25,16 @@ const adminRoutes: Routes = [
         canActivateChild: [AdminGuard],
         children: [
           {
-           path: 'events/:eventId',
-           component: EventManagementComponent
-          },
-          {
             path: 'events',
             component: SimpleEventListingComponent
           },
           {
             path: 'events/new',
             component: EventCreatorComponent
+          },
+          {
+           path: 'events/:eventId',
+           component: EventManagementComponent
           },
           {
             path: 'organization',
