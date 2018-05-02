@@ -5,6 +5,7 @@ import { FormsModule } from "@angular/forms";
 import { UsersRouterModule } from "./users.router.module";
 
 import { UsersComponent } from "./users.component";
+import { UserDetailsComponent } from "./user-details/user-details.component";
 import { UserSettingsComponent } from "./user-settings/user-settings.component";
 import { PasswordChangeComponent } from "./password-change/password-change.component";
 import { SignupListingComponent } from "./signup-listing/signup-listing.component";
@@ -25,6 +26,7 @@ import { UserSettingsService } from "./user-settings/user-settings.service"
   	PasswordChangeComponent,
     SignupListingComponent,
   	UsersComponent,
+    UserDetailsComponent,
     UserSettingsComponent
   ],
   providers: [
