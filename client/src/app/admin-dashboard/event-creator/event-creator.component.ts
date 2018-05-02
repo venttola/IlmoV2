@@ -15,7 +15,7 @@ import { EventCreatorService } from "./event-creator.service";
 })
 export class EventCreatorComponent implements OnInit {
 
-  	@Input() newEvent: Event;
+  @Input() newEvent: Event;
 	@Input() platoons: Platoon[];
 	@Input() organization: Organization;
 	@Input () products: Product[];
