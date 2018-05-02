@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from "rxjs/Observable";
+import { of } from 'rxjs/observable/of';
+
+import {
+   debounceTime, distinctUntilChanged, switchMap
+ } from 'rxjs/operators';
 
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/debounceTime";
@@ -24,10 +29,11 @@ export class PasswordResetComponent implements OnInit {
 	 }
 
 	ngOnInit() {
-		this.users = this.searchTermStream
-			.debounceTime(300)
-			.distinctUntilChanged()
-			.switchMap((query: string) => this.adminService.getUsers(query));
+		this.users = this.searchTermStream.pipe(
+			debounceTime(300),
+			distinctUntilChanged(),
+			switchMap((query: string) => this.adminService.getUsers(query)),
+			);
 		//For debugging
 		//this.getUsers(undefined);
 	}
