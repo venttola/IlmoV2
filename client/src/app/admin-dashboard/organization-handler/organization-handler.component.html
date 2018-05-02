@@ -9,8 +9,8 @@
 		<input type="text" class="form-control" placeholder="FI4250001510000023" id="bankAccount" [(ngModel)]="newOrganization.bankAccount" name="bankAccount"/>
 	</div>
 	<h5>Jäsenet</h5>
-	<button class="btn btn-success" (click) ="addInputForMember()">+</button>
-	<button class="btn btn-success" (click) ="removeInputForMember()">-</button>
+	<button type="button" class="btn btn-success" (click) ="addInputForMember()">+</button>
+	<button type="button" class="btn btn-success" (click) ="removeInputForMember()">-</button>
 	<div *ngFor="let member of organizationMembers; let i = index; trackBy: trackMember" class="form-group">
 		<input type="text" class="form-control" placeholder="Nimi" id="member{{i}}"  [(ngModel)]="member.name" name="member{{i}}"/>
 	</div>
