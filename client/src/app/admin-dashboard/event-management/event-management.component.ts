@@ -82,13 +82,6 @@ export class EventManagementComponent implements OnInit {
 		error => this.error =<any>error);
 
 	}
-	//DO NOT use this for any other thing than updatinf ref numbers for Sotahuuto 2017
-	generateReferenceNumbers(){
-		this.eventManagementService.generateReferenceNumbers().
-		subscribe((result: any) => {
-			console.log(result);
-		}, error =>this.error =<any>error);
-	}
 
 	updateEvent(){
 		console.log(this.eventDetails);
