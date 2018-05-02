@@ -21,10 +21,10 @@ export class EventDetailsComponent implements OnInit {
   eventDetails: EventDetails;
   error: any;
 
-  private groupsByPlatoon: Map<number, ParticipantGroup[]> = new Map<number, ParticipantGroup[]>();
-  private selectedPlatoon: number;
-  private showableGroups: ParticipantGroup[];
-  private group: ParticipantGroup = new ParticipantGroup();
+  groupsByPlatoon: Map<number, ParticipantGroup[]> = new Map<number, ParticipantGroup[]>();
+  selectedPlatoon: number;
+  showableGroups: ParticipantGroup[];
+  group: ParticipantGroup = new ParticipantGroup();
 
   @ViewChild(GroupModalComponent)
   modal: GroupModalComponent;
