@@ -5,7 +5,6 @@ import { Observable } from "rxjs/Observable";
 import { EventDetailsService } from "../event-details/event-details.service";
 import { EventSignupService } from "./event-signup.service";
 import { ParticipantGroupService } from "../event-details/participant-group.service";
-import { EventDetailsService } from "../event-details/event-details.service";
 import { ParticipantGroup } from "../shared/participantgroup.model";
 import { Product } from "../shared/product.model";
 import { Discount } from "../shared/discount.model";
