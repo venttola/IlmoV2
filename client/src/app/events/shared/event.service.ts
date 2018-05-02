@@ -29,7 +29,7 @@ export class EventService extends AuthorizedHttpService {
       group: group
     };
 
-    return this.http.post(`${this.eventsUrl}/${eventId}/group`, JSON.stringify(data), { headers: this.headers })
+    return this.http.post("/api/events/" + eventId + "/group", JSON.stringify(data), { headers: this.headers })
       .map((r: Response) => ParticipantGroup.fromJSON(r.json()))
       .catch(this.handleError);
   }
