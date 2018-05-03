@@ -510,6 +510,39 @@ module Route {
                 return res.status(err.statusCode).send(err.message);
             });
         }
+        public updatePlatoon = (req: express.Request, res: express.Response) => {
+            let eventId = req.params.event;
+            let platoonId = req.body.id;
+            let platoonName = req.body.name;
+            let self = this;
+
+            self.getEvent(eventId).then((event: any) => {
+                return new Promise((resolve, reject) => {
+                    this.platoonModel.one({
+                    id: platoonId,
+                }, function (err: Error, platoon: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+                        return res.status(500).send(errorMsg);
+                    } else {
+                        platoon.name = platoonName;
+                        platoon.save(function(err: Error) {
+                            if (err) {
+                                let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                                return res.status(500).send(err.message);
+                            } else {
+                                return res.status(200).json(JSON.stringify(platoon));
+                            }
+                        });
+                    }
+                });
+            });
+            }).then((platoon: any) => {
+                return res.status(200).json(platoon);
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
 
         private getProduct = (productId: Number) => {
             return new Promise((resolve, reject) => {
