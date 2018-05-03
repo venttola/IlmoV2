@@ -19,11 +19,16 @@
 		<input type="text" class="form-control" placeholder="Lyhytkuvaus" id="description" [(ngModel)]="event.description" name="description"/>                  
 	</div>
 	<h5>Osapuolet</h5>
+	<div *ngFor="let platoon of eventPlatoons; let i = index;" class="form-group">
+		<label  for="platoon{{i}}" class="sr-only">Osapuoli:</label>
+		<input type="text" class="form-control" placeholder="Osapuoli" id="platoon{{i}}"  [(ngModel)]="platoon.name" name="platoon{{i}}"/>
+	</div>
+	<h5>Lisää osapuolia</h5>
 	<button class="btn btn-success" type="button" (click) ="addInputForPlatoon()">+</button>
 	<button class="btn btn-success" type="button" (click) ="removeInputForPlatoon()">-</button>
-	<div *ngFor="let platoon of eventPlatoons; let i = index;" class="form-group">
-		<label  for="platoon{{i}}" class="sr-only">Osapuoli1:</label>
-		<input type="text" class="form-control" placeholder="Osapuoli" id="platoon{{i}}"  [(ngModel)]="platoon.name" name="platoon{{i}}"/>
+	<div *ngFor="let platoon of newPlatoons; let i = index;" class="form-group">
+		<label  for="newPlatoon{{i}}" class="sr-only">Osapuoli:</label>
+		<input type="text" class="form-control" placeholder="Osapuoli" id="newPlatoon{{i}}"  [(ngModel)]="platoon.name" name="newPlatoon{{i}}"/>
 	</div>
 	<h5>Tuotteet</h5>
 	<p>Lisää tuote</p>
