@@ -37,7 +37,7 @@ export class EventManagementService extends AuthorizedHttpService {
 	}
 	//
 	public updateEvent(event: Event, platoons: Platoon[], products: Product[]): Observable<any> {
-		return  Observable.forkJoin(
+		let updatedProducts = Observable.forkJoin(
 				 products.map(product => {
 				 	if (product.id){
 				 		console.log("Old product" + product);
@@ -47,10 +47,20 @@ export class EventManagementService extends AuthorizedHttpService {
 						return this.updateProduct(event.id, product);
 					}
 				}));
+		let updatedPlatoons = Observable.forkJoin(
+				 platoons.map(platoon => {
+						return this.updatePlatoon(event.id, platoon);
+				}));
+		return Observable.forkJoin(updatedProducts, updatedPlatoons);
 	}
 	public updateProduct(eventId: number, product: Product): Observable<Product> {
 		console.log("Updating product " + product);
 		return this.http.patch(this.eventsUrl + eventId +"/product", JSON.stringify(product), {headers: this.headers}).catch(this.handleError);
+	}
+	public updatePlatoon(eventId: number, platoon: Platoon): Observable<Platoon> {
+		console.log("Updading platoon" + platoon){
+			return this.http.patch(this.eventsUrl + eventId + "/platoon", JSON.stringify(platoon), {headers: this.headers}).catch(this.handleError);
+		}
 	}
 
 }
