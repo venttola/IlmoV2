@@ -54,12 +54,19 @@ export class GroupSignupsComponent implements OnInit {
 
     this.route.parent.params
       .switchMap((params: Params) => this.groupModerationService.getGroupMembers(+params["groupId"]))
-      .subscribe((members: Member[]) => this.members = members);
+      .subscribe((members: Member[]) => {
+        this.members = members;
+        this.members.map((m: Member) => {
+          this.groupModerationService.getMemberPayments(this.participantGroup.id, m.id)
+          .subscribe((memberPayments: UserPayment[]) => {
+            console.log(memberPayments);
+            m.payments = memberPayments;
+          },
+            (error: any) => console.log(error));
 
+        });
+      });
     this.getParticipants();
-    
-
-
   }
 
   onSelectMember(member: Member) {
@@ -150,7 +157,18 @@ export class GroupSignupsComponent implements OnInit {
   getParticipants() {
     this.route.parent.params
       .switchMap((params: Params) => this.groupModerationService.getParticipants(+params["groupId"]))
-      .subscribe((participants: Participant[]) => this.participants = participants);
+      .subscribe((participants: Participant[]) => {
+        this.participants = participants;
+        this.participants.map((p: Participant) => {
+          this.groupModerationService.getParticipantPayments(this.participantGroup.id, p.id)
+            .subscribe((participantPayments: UserPayment[]) => {
+              console.log(participantPayments);
+              p.payments = participantPayments;
+          },
+          (error: any) => console.log(error));
+
+        });
+      });
   }
 
   removeParticipant() {
