@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/Observable";
-import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 import { Http, Response } from "@angular/http";
+
+import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
+
 import { Member } from "./member.model";
 import { Participant } from "./participant.model";
-import { UserPayment } from "./userpayment.model";
+import { Payment } from "./payment.model";
 import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
 import { CheckoutDetails } from "../checkout/checkout-details.model";
@@ -34,11 +36,11 @@ export class GroupModerationService extends AuthorizedHttpService {
       }).catch(this.handleError);
   }
 
-  getMemberPayments(groupId: number, memberId: number): Observable<UserPayment[]> {
+  getMemberPayments(groupId: number, memberId: number): Observable<Payment[]> {
     return this.http.get("/api/group/" + groupId + "/moderator/userpayment/" + memberId, { headers: this.headers })
       .map((res: Response) => {
         console.log(res);
-        return this.extractData(res).map(d => UserPayment.fromJSON(d));
+        return this.extractData(res).map(d => Payment.fromJSON(d));
       }).catch(this.handleError);
   }
 
@@ -49,7 +51,7 @@ export class GroupModerationService extends AuthorizedHttpService {
       }).catch(this.handleError);
   }
 
-  receiptPayment(groupId: number, memberId: number): Observable<UserPayment[]> {
+  receiptPayment(groupId: number, memberId: number): Observable<Payment[]> {
     let data = {
       groupId: groupId,
       memberId: memberId,
@@ -58,11 +60,11 @@ export class GroupModerationService extends AuthorizedHttpService {
     return this.http.post("/api/group/" + groupId + "/moderator/userpayment", data, { headers: this.headers })
       .map((res: Response) => {
         console.log(res);
-        return this.extractData(res).map(d => UserPayment.fromJSON(d));
+        return this.extractData(res).map(d => Payment.fromJSON(d));
       }).catch(this.handleError);
   }
 
-    receiptParticipantPayment(groupId: number, participantId: number): Observable<UserPayment[]> {
+    receiptParticipantPayment(groupId: number, participantId: number): Observable<Payment[]> {
     let data = {
       groupId: groupId,
       participantId: participantId,
@@ -71,7 +73,7 @@ export class GroupModerationService extends AuthorizedHttpService {
     return this.http.post("/api/group/" + groupId + "/moderator/participantpayment", data, { headers: this.headers })
       .map((res: Response) => {
         console.log(res);
-        return this.extractData(res).map(d => UserPayment.fromJSON(d));
+        return this.extractData(res).map(d => Payment.fromJSON(d));
       }).catch(this.handleError);
   }
 
@@ -143,10 +145,10 @@ export class GroupModerationService extends AuthorizedHttpService {
       }).catch(this.handleError);
   }
 
-  getParticipantPayments(groupId: number, participantId: number): Observable<UserPayment[]> {
+  getParticipantPayments(groupId: number, participantId: number): Observable<Payment[]> {
     return this.http.get("/api/group/" + groupId + "/moderator/participantpayment/" + participantId, { headers: this.headers })
       .map((res: Response) => {
-        return this.extractData(res).map(d => UserPayment.fromJSON(d));
+        return this.extractData(res).map(d => Payment.fromJSON(d));
       }).catch(this.handleError);
   }
 

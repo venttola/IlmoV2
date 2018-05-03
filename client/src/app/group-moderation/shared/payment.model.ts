@@ -1,7 +1,7 @@
 import { Product } from "../../events/shared/product.model";
 import { ProductSelection } from "./productselection.model";
 
-export class UserPayment {
+export class Payment {
     products: ProductSelection[];
     isPaid: boolean;
     paidOn: Date;
@@ -17,8 +17,8 @@ export class UserPayment {
     	return sum;
     }
 
-    static fromJSON(json: any): UserPayment {
-        let payment = Object.create(UserPayment.prototype);
+    static fromJSON(json: any): Payment {
+        let payment = Object.create(Payment.prototype);
         Object.assign(payment, json);
         return payment;
     }

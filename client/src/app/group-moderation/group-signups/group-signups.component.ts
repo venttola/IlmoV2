@@ -9,7 +9,7 @@ import { ParticipantGroupService } from "../../events/event-details/participant-
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 import { Member } from "../shared/member.model";
 import { Participant } from "../shared/participant.model";
-import { UserPayment } from "../shared/userpayment.model";
+import { Payment } from "../shared/payment.model";
 import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
 
@@ -21,7 +21,7 @@ import { Discount } from "../../events/shared/discount.model";
 export class GroupSignupsComponent implements OnInit {
 
   selectedMember: Member;
-  selectedMemberPayments: UserPayment[];
+  selectedMemberPayments: Payment[];
 
   participantGroup: ParticipantGroup;
   members: any[] = [];
@@ -29,7 +29,7 @@ export class GroupSignupsComponent implements OnInit {
   participants: any[] = [];
 
   selectedParticipant: Participant;
-  selectedParticipantPayments: UserPayment[];
+  selectedParticipantPayments: Payment[];
 
   @ViewChild('memberModal')
   memberModal: GroupModalComponent;
@@ -58,7 +58,7 @@ export class GroupSignupsComponent implements OnInit {
         this.members = members;
         this.members.map((m: Member) => {
           this.groupModerationService.getMemberPayments(this.participantGroup.id, m.id)
-          .subscribe((memberPayments: UserPayment[]) => {
+          .subscribe((memberPayments: Payment[]) => {
             console.log(memberPayments);
             m.payments = memberPayments;
           },
@@ -72,7 +72,7 @@ export class GroupSignupsComponent implements OnInit {
   onSelectMember(member: Member) {
     this.selectedMember = member;
     this.groupModerationService.getMemberPayments(this.participantGroup.id, this.selectedMember.id)
-      .subscribe((userPayments: UserPayment[]) => {
+      .subscribe((userPayments: Payment[]) => {
         console.log(userPayments);
         this.selectedMemberPayments = userPayments;
       },
@@ -95,7 +95,7 @@ export class GroupSignupsComponent implements OnInit {
   onReceiptPayment() {
     console.log("Updating payment status");
     this.groupModerationService.receiptPayment(this.participantGroup.id, this.selectedMember.id)
-      .subscribe((userPayments: UserPayment[]) => {
+      .subscribe((userPayments: Payment[]) => {
         console.log(userPayments);
         this.selectedMemberPayments = userPayments;
       },
@@ -104,7 +104,7 @@ export class GroupSignupsComponent implements OnInit {
 
   onReceiptParticipantPayment() {
     this.groupModerationService.receiptParticipantPayment(this.participantGroup.id, this.selectedParticipant.id)
-      .subscribe((userPayments: UserPayment[]) => {
+      .subscribe((userPayments: Payment[]) => {
         console.log(userPayments);
         this.selectedParticipantPayments = userPayments;
       },
@@ -161,7 +161,7 @@ export class GroupSignupsComponent implements OnInit {
         this.participants = participants;
         this.participants.map((p: Participant) => {
           this.groupModerationService.getParticipantPayments(this.participantGroup.id, p.id)
-            .subscribe((participantPayments: UserPayment[]) => {
+            .subscribe((participantPayments: Payment[]) => {
               console.log(participantPayments);
               p.payments = participantPayments;
           },
@@ -183,7 +183,7 @@ export class GroupSignupsComponent implements OnInit {
   onSelectParticipant(participant: Participant) {
     this.selectedParticipant = participant;
     this.groupModerationService.getParticipantPayments(this.participantGroup.id, this.selectedParticipant.id)
-      .subscribe((participantPayments: UserPayment[]) => {
+      .subscribe((participantPayments: Payment[]) => {
         console.log(participantPayments);
         this.selectedParticipantPayments = participantPayments;
         this.participantModal.show();
