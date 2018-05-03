@@ -19,7 +19,7 @@ import { Discount } from "../../events/shared/discount.model";
 export class EventManagementService extends AuthorizedHttpService {
 	eventsUrl: string;
 	constructor(protected http: Http,
-				private eventCreatorService: EventCreatorService) {
+							private eventCreatorService: EventCreatorService) {
 		super(http);
 		this.eventsUrl = "/api/events/";
 	}
@@ -36,29 +36,32 @@ export class EventManagementService extends AuthorizedHttpService {
 		catch(this.handleError);
 	}
 	//
-	public updateEvent(event: Event, platoons: Platoon[], products: Product[]): Observable<any> {
+	public updateEvent(event: Event, 
+										 eventPlatoons: Platoon[], 
+										 eventProducts: Product[],
+										 newPlatoons: Platoon[], 
+										 newProducts: Product[]): Observable<any> {
 		let updatedProducts = Observable.forkJoin(
-				 products.map(product => {
-				 	if (product.id){
-				 		console.log("Old product" + product);
+				 eventProducts.map(product => {
 						return this.updateProduct(event.id, product);
-					} else {
-						console.log("New Product" + product);
-						return this.updateProduct(event.id, product);
-					}
 				}));
 		let updatedPlatoons = Observable.forkJoin(
-				 platoons.map(platoon => {
+				 eventPlatoons.map(platoon => {
 						return this.updatePlatoon(event.id, platoon);
 				}));
-		return Observable.forkJoin(updatedProducts, updatedPlatoons);
+		let addedProducts = Observable.forkJoin(
+				newProducts.map(product =>{
+					return this.eventCreatorService.addProduct(event.id, product);
+				}));
+		let addedPlatoons = this.eventCreatorService.addPlatoons(event.id, newPlatoons);
+		return Observable.forkJoin(updatedProducts, updatedPlatoons, addedProducts, addedPlatoons);
 	}
 	public updateProduct(eventId: number, product: Product): Observable<Product> {
-		console.log("Updating product " + product);
+		console.log("Updating product " + product.id + " " + product.name);
 		return this.http.patch(this.eventsUrl + eventId +"/product", JSON.stringify(product), {headers: this.headers}).catch(this.handleError);
 	}
 	public updatePlatoon(eventId: number, platoon: Platoon): Observable<Platoon> {
-		console.log("Updading platoon" + platoon){
+		console.log("Updading platoon" + platoon.name){
 			return this.http.patch(this.eventsUrl + eventId + "/platoon", JSON.stringify(platoon), {headers: this.headers}).catch(this.handleError);
 		}
 	}

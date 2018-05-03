@@ -90,7 +90,11 @@ export class EventManagementComponent implements OnInit {
 		console.log(this.eventDetails);
 		console.log(this.eventProducts);
 		console.log("foo");
-		this.eventManagementService.updateEvent(this.event, this.eventPlatoons, this.eventProducts)
+		this.eventManagementService.updateEvent(this.event, 
+																						this.eventPlatoons, 
+																						this.eventProducts,
+																						this.newPlatoons,
+																						this.newProducts)
 		  .subscribe((result: any) => {
 		  	console.log(result);
 
