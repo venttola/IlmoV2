@@ -108,10 +108,10 @@ export class EventManagementComponent implements OnInit {
 		return platoon.name;
 	}
 	addInputForProduct(){
-		this.eventProducts.push(new Product);
+		this.newProducts.push(new Product);
 	}
 	removeInputForProduct(){
-		this.eventProducts.pop();
+		this.newProducts.pop();
 	}
 	trackProduct(index: number, product: Product): string{
 		return product.name;

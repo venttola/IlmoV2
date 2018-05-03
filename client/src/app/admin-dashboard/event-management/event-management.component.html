@@ -31,9 +31,6 @@
 		<input type="text" class="form-control" placeholder="Osapuoli" id="newPlatoon{{i}}"  [(ngModel)]="platoon.name" name="newPlatoon{{i}}"/>
 	</div>
 	<h5>Tuotteet</h5>
-	<p>Lisää tuote</p>
-	<button class="btn btn-success" type="button" (click) ="addInputForProduct()" >+</button>
-	<button class="btn btn-success" type="button" (click) ="removeInputForProduct()" >-</button>
 	<div *ngFor="let product of eventProducts; let i = index;" class="form-group">
 		<div class="input-group">
 			<label  for="productName{{i}}">Tuote:</label>
@@ -41,7 +38,6 @@
 			<label  for="productPrice{{i}}">Hinta:</label>
 			<input type="text" class="form-control" placeholder="Hinta" id="productPrice{{i}}"  [(ngModel)]="product.price" name="productPrice{{i}}"/>
 		</div>
-		<p>Lisää alennus</p>
 		<button class="btn btn-success btn-sm" type="button" (click) ="addInputForDiscount(product)">+</button>
 		<button class="btn btn-success btn-sm" type="button" (click) ="removeInputForDiscount(product)">-</button>
 		<h6 *ngIf="product.discounts"></h6>
@@ -54,6 +50,30 @@
 			</div>
 		</div>
 	</div>
+	<h5>Lisää uusia tuotteita</h5>
+	<button class="btn btn-success" type="button" (click) ="addInputForProduct()" >+</button>
+	<button class="btn btn-success" type="button" (click) ="removeInputForProduct()" >-</button>
+	<div *ngFor="let product of newProducts; let i = index;" class="form-group">
+		<div class="input-group">
+			<label  for="newProductName{{i}}">Tuote:</label>
+			<input type="text" class="form-control" placeholder="Tuote" id="newProductName{{i}}"  [(ngModel)]="product.name" name="newProductName{{i}}"/>
+			<label  for="newProductPrice{{i}}">Hinta:</label>
+			<input type="text" class="form-control" placeholder="Hinta" id="newProductPrice{{i}}"  [(ngModel)]="product.price" name="newProductPrice{{i}}"/>
+		</div>
+		<p>Lisää alennus</p>
+		<button class="btn btn-success btn-sm" type="button" (click) ="addInputForDiscount(product)">+</button>
+		<button class="btn btn-success btn-sm" type="button" (click) ="removeInputForDiscount(product)">-</button>
+		<h6 *ngIf="product.discounts"></h6>
+		<div *ngFor="let discount of product.discounts; let j = index;" class="form-group">
+			<div class="input-group">
+				<label  for="newDiscountName{{j}}">Alennus:</label>
+				<input type="text" class="form-control" placeholder="Alennuksen syy" id="newDiscountName{{j}}"  [(ngModel)]="product.discounts[j].name" name="newDiscountName{{j}}"/>
+				<label  for="productPrice{{j}}">Määrä:</label>
+				<input type="text" class="form-control" placeholder="Määrä" id="newDiscountAmount{{j}}"  [(ngModel)]="product.discounts[j].amount" name="newDiscountAmount{{j}}"/>
+			</div>
+		</div>
+	</div>
+	<br>
 	<button type="submit" class="btn btn-success" >Päivitä tapahtuma</button>
 	<button type="button" class="btn btn-success" *ngIf=!event.registerationOpen (click)="openSignup()">Avaa ilmoittautuminen</button>
 	<button type="button" class="btn btn-success" *ngIf=event.registerationOpen (click)="closeSignup()">Sulje ilmoittautuminen</button>
