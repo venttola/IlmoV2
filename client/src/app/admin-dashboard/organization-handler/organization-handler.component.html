@@ -11,7 +11,7 @@
 	<h5>Jäsenet</h5>
 	<button type="button" class="btn btn-success" (click) ="addInputForMember()">+</button>
 	<button type="button" class="btn btn-success" (click) ="removeInputForMember()">-</button>
-	<div *ngFor="let member of organizationMembers" class="form-group">
+	<div *ngFor="let member of organizationMembers; let i = index;" class="form-group">
 		<input type="text" class="form-control" placeholder="Nimi" id="member{{i}}"  [(ngModel)]="member.name" name="member{{i}}"/>
 	</div>
 	<button type="submit" class="btn btn-success">Lisää organisaatio</button>
