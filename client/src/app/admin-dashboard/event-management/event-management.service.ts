@@ -5,6 +5,7 @@ import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
+import { merge } from 'rxjs/observable/merge';
 
 import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 import { EventCreatorService } from "../event-creator/event-creator.service";
@@ -54,14 +55,14 @@ export class EventManagementService extends AuthorizedHttpService {
 					return this.eventCreatorService.addProduct(event.id, product);
 				}));
 		let addedPlatoons = this.eventCreatorService.addPlatoons(event.id, newPlatoons);
-		return Observable.forkJoin(updatedProducts, updatedPlatoons, addedProducts, addedPlatoons);
+		return merge(updatedProducts, updatedPlatoons, addedProducts, addedPlatoons);
 	}
 	public updateProduct(eventId: number, product: Product): Observable<Product> {
-		console.log("Updating product " + product.id + " " + product.name);
+		//console.log("Updating product " + product.id + " " + product.name);
 		return this.http.patch(this.eventsUrl + eventId +"/product", JSON.stringify(product), {headers: this.headers}).catch(this.handleError);
 	}
 	public updatePlatoon(eventId: number, platoon: Platoon): Observable<Platoon> {
-		console.log("Updading platoon" + platoon.name){
+		//console.log("Updading platoon" + platoon.name);
 			return this.http.patch(this.eventsUrl + eventId + "/platoon", JSON.stringify(platoon), {headers: this.headers}).catch(this.handleError);
 		}
 	}
