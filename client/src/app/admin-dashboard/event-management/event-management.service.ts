@@ -65,6 +65,4 @@ export class EventManagementService extends AuthorizedHttpService {
 		//console.log("Updading platoon" + platoon.name);
 			return this.http.patch(this.eventsUrl + eventId + "/platoon", JSON.stringify(platoon), {headers: this.headers}).catch(this.handleError);
 		}
-	}
-
 }
