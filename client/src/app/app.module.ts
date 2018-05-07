@@ -9,6 +9,7 @@ import { BootstrapModalModule } from "ng2-bootstrap-modal";
 import { AdminDashboardModule } from "./admin-dashboard/admin-dashboard.module";
 import { EventsModule } from "./events/events.module";
 import { GroupModerationModule } from "./group-moderation/group-moderation.module";
+import { OrganizerModule } from "./organizer/organizer.module";
 import { PublicModule } from "./public/public.module";
 import { SharedModule } from './shared/shared.module';
 import { UsersModule } from "./users/users.module";
@@ -35,6 +36,7 @@ import { GroupModeratorGuard } from "./authentication/group-moderator-guard.serv
     AdminDashboardModule,
     EventsModule,
     GroupModerationModule,
+    OrganizerModule,
     PublicModule,
     SharedModule,
     UsersModule,
