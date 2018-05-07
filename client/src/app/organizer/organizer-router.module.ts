@@ -1,0 +1,25 @@
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes, CanActivate } from "@angular/router";
+
+import { OrganizerComponent } from "./organizer.component";
+
+import { OrganizerGuard } from "../authentication/organizer-guard.service";
+
+const organizerRoutes: Routes = [
+  {
+    path: "organizer",
+    component: OrganizerComponent,
+    canActivate: [OrganizerGuard]
+     
+  }
+];
+
+@NgModule({
+  imports: [
+    RouterModule.forChild(organizerRoutes)
+  ],
+  exports: [
+    RouterModule
+  ]
+})
+export class OrganizerRouterModule { }
