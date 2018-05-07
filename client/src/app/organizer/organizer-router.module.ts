@@ -3,9 +3,10 @@ import { RouterModule, Routes, CanActivate } from "@angular/router";
 
 import { OrganizerComponent } from "./organizer.component";
 
-import { OrganizerGuard } from "../authentication/organizer-guard.service";
+import { OrganizationDetailsComponent } from '../organizer/organization-details/organization-details.component';
 import { OrganizationListingComponent } from './organization-listing/organization-listing.component';
 
+import { OrganizerGuard } from "../authentication/organizer-guard.service";
 const organizerRoutes: Routes = [
   {
     path: "organizer",
@@ -16,6 +17,10 @@ const organizerRoutes: Routes = [
       {
         path: "",
         component: OrganizationListingComponent 
+      },
+      {
+        path: ":id",
+        component: OrganizationDetailsComponent
       }
     ]
   }

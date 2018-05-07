@@ -5,6 +5,7 @@ import { OrganizerRouterModule } from "./organizer-router.module";
 
 import { OrganizerComponent } from './organizer.component';
 import { OrganizationListingComponent } from './organization-listing/organization-listing.component';
+import { OrganizationDetailsComponent } from '../organizer/organization-details/organization-details.component';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { OrganizationListingComponent } from './organization-listing/organizatio
   declarations: [
     OrganizerComponent,
     OrganizationListingComponent,
+    OrganizationDetailsComponent,
   ]
 })
 export class OrganizerModule { }
