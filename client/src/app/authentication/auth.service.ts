@@ -65,7 +65,10 @@ export class AuthService {
   public isModerator(groupId: number): boolean {
     return this.getModeratedGroups().some(group => group.id == groupId);
   }
-  public isOrganizer(organizationId: number): boolean {
+  public isOrganizer() {
+      return this.getOrganizationMemberships() !== [];
+  }
+  public isOrganizationMember(organizationId: number): boolean {
      return this.getOrganizationMemberships().some(organization => organization.id == organizationId);
   }
 }
