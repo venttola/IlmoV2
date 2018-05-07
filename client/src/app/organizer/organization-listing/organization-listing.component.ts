@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-organization-listing',
+  selector: 'organizer-organization-listing',
   templateUrl: './organization-listing.component.html',
   styleUrls: ['./organization-listing.component.css']
 })
 export class OrganizationListingComponent implements OnInit {
-
-  constructor() { }
+  organizations: any[];
+  constructor() {
+    this.organizations = [];
+  }
 
   ngOnInit() {
   }

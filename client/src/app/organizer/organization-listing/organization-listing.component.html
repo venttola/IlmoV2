@@ -1,3 +1,9 @@
-<p>
-  organization-listing works!
-</p>
+<ul *ngIf="organizations.length > 0" class="common-list">
+  <li *ngFor="let o of organizations">
+    <div class="group-item unselectable clickable" [routerLink]="[o.id]"><a class="group-link">{{ o.name }}</a></div>
+  </li>
+</ul>
+
+<div *ngIf="organizations.length === 0">
+  <p>Et kuulu yhteenkään organisaatioon</p>
+</div>
