@@ -22,7 +22,7 @@ import { AuthService } from "./authentication/auth.service";
 import { AuthGuard } from "./authentication/auth-guard.service";
 import { AdminGuard } from "./authentication/admin-guard.service";
 import { GroupModeratorGuard } from "./authentication/group-moderator-guard.service";
-
+import { OrganizerGuard } from "./authentication/organizer-guard.service";
 
 
 
@@ -49,7 +49,8 @@ import { GroupModeratorGuard } from "./authentication/group-moderator-guard.serv
     AuthService,
     AuthGuard,
     AdminGuard,
-    GroupModeratorGuard
+    GroupModeratorGuard,
+    OrganizerGuard
   ],
   bootstrap: [AppComponent]
 })
