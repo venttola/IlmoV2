@@ -13,6 +13,9 @@ export class AuthService {
     console.log(user, token);
     localStorage.setItem("id_token", token);
     localStorage.setItem("user", user);
+    let userID = JSON.parse(this.jwtHelper.decodeToken(localStorage.getItem("id_token")).id);
+    console.log(userID)
+    localStorage.setItem("user_id", userID)
     console.log(this.jwtHelper.decodeToken(localStorage.getItem("id_token")));
   }
   public login(): void {
@@ -26,6 +29,7 @@ export class AuthService {
     // from local storage
     localStorage.removeItem("user");
     localStorage.removeItem("id_token");
+    localStorage.removeItem("user_id")
 
     // Send the user back to the dashboard after logout
     this.router.navigateByUrl("");
@@ -66,7 +70,8 @@ export class AuthService {
     return this.getModeratedGroups().some(group => group.id == groupId);
   }
   public isOrganizer() {
-      return this.getOrganizationMemberships() !== [];
+    return true;
+//      return this.getOrganizationMemberships().length !== 0;
   }
   public isOrganizationMember(organizationId: number): boolean {
      return this.getOrganizationMemberships().some(organization => organization.id == organizationId);
