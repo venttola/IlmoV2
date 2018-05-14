@@ -177,6 +177,7 @@ class Server {
 		router.delete(this.API_PREFIX + "/events/:event", eventRoute.deleteEvent);
 		router.post(this.API_PREFIX + "/events/:event/group", eventRoute.addParticipantGroup);
 		router.post(this.API_PREFIX + "/events/:event/platoons", eventRoute.addPlatoons);
+		router.patch(this.API_PREFIX + "/events/:event/platoon", eventRoute.updatePlatoon);
 		router.get(this.API_PREFIX + "/events/:event", eventRoute.getEventDetails);
 		router.post(this.API_PREFIX + "/events/:event/opensignup", eventRoute.openRegisteration);
 		router.post(this.API_PREFIX + "/events/:event/closesignup", eventRoute.closeRegisteration);

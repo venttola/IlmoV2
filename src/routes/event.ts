@@ -234,19 +234,28 @@ module Route {
                         let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
                         return res.status(500).send(errorMsg);
                     } else {
-                        let discountPromises: any = discounts.map((discount: any) => {
-                            if (!discount.id) {
-                                return self.createDiscount(product, discount);
-                            } else {
-                                return self.updateDiscount(product, discount);
-                            }
-
-                        });
-                        Promise.all(discountPromises).then((promises: any) => {
-                            return res.status(204).send();
-                        }).catch((err: APIError) => {
-                            return res.status(err.statusCode).send(err.message);
-                        });
+                        product.name = productName;
+                        product.price = productPrice;
+                        product.save(function(err: any) {
+                        if (err) {
+                            let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+                            return res.status(500).send(errorMsg);
+                        } else {
+                            let discountPromises: any = discounts.map((discount: any) => {
+                                if (!discount.id) {
+                                    return self.createDiscount(product, discount);
+                                } else {
+                                    return self.updateDiscount(product, discount);
+                                }
+                            });
+                            Promise.all(discountPromises).then((promises: any) => {
+                                return res.status(204).send();
+                            }).catch((err: APIError) => {
+                                return res.status(err.statusCode).send(err.message);
+                            });
+                        }
+                       });
+                    }
                         /* event.addProducts(prod, function (err: Error) {
                              if (err) {
                                  return res.status(500).send("ERROR: Adding product to event failed");
@@ -254,7 +263,6 @@ module Route {
                                  return res.status(204).send();
                              }
                          });*/
-                    }
                 });
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
@@ -506,6 +514,39 @@ module Route {
                 });
             }).then((platoonList: any) => {
                 return res.status(200).json(platoonList);
+            }).catch((err: APIError) => {
+                return res.status(err.statusCode).send(err.message);
+            });
+        }
+        public updatePlatoon = (req: express.Request, res: express.Response) => {
+            let eventId = req.params.event;
+            let platoonId = req.body.id;
+            let platoonName = req.body.name;
+            let self = this;
+
+            self.getEvent(eventId).then((event: any) => {
+                return new Promise((resolve, reject) => {
+                    this.platoonModel.one({
+                    id: platoonId,
+                }, function (err: Error, platoon: any) {
+                    if (err) {
+                        let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+                        return res.status(500).send(errorMsg);
+                    } else {
+                        platoon.name = platoonName;
+                        platoon.save(function(err: Error) {
+                            if (err) {
+                                let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                                return res.status(500).send(err.message);
+                            } else {
+                                return res.status(200).json(JSON.stringify(platoon));
+                            }
+                        });
+                    }
+                });
+            });
+            }).then((platoon: any) => {
+                return res.status(200).json(platoon);
             }).catch((err: APIError) => {
                 return res.status(err.statusCode).send(err.message);
             });

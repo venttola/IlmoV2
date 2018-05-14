@@ -5,6 +5,7 @@ import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
 import "rxjs/add/observable/forkJoin";
+import { merge } from 'rxjs/observable/merge';
 
 import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 import { EventCreatorService } from "../event-creator/event-creator.service";
@@ -19,7 +20,7 @@ import { Discount } from "../../events/shared/discount.model";
 export class EventManagementService extends AuthorizedHttpService {
 	eventsUrl: string;
 	constructor(protected http: Http,
-				private eventCreatorService: EventCreatorService) {
+							private eventCreatorService: EventCreatorService) {
 		super(http);
 		this.eventsUrl = "/api/events/";
 	}
@@ -36,21 +37,32 @@ export class EventManagementService extends AuthorizedHttpService {
 		catch(this.handleError);
 	}
 	//
-	public updateEvent(event: Event, platoons: Platoon[], products: Product[]): Observable<any> {
-		return  Observable.forkJoin(
-				 products.map(product => {
-				 	if (product.id){
-				 		console.log("Old product" + product);
+	public updateEvent(event: Event, 
+										 eventPlatoons: Platoon[], 
+										 eventProducts: Product[],
+										 newPlatoons: Platoon[], 
+										 newProducts: Product[]): Observable<any> {
+		let updatedProducts = Observable.forkJoin(
+				 eventProducts.map(product => {
 						return this.updateProduct(event.id, product);
-					} else {
-						console.log("New Product" + product);
-						return this.updateProduct(event.id, product);
-					}
 				}));
+		let updatedPlatoons = Observable.forkJoin(
+				 eventPlatoons.map(platoon => {
+						return this.updatePlatoon(event.id, platoon);
+				}));
+		let addedProducts = Observable.forkJoin(
+				newProducts.map(product =>{
+					return this.eventCreatorService.addProduct(event.id, product);
+				}));
+		let addedPlatoons = this.eventCreatorService.addPlatoons(event.id, newPlatoons);
+		return merge(updatedProducts, updatedPlatoons, addedProducts, addedPlatoons);
 	}
 	public updateProduct(eventId: number, product: Product): Observable<Product> {
-		console.log("Updating product " + product);
+		//console.log("Updating product " + product.id + " " + product.name);
 		return this.http.patch(this.eventsUrl + eventId +"/product", JSON.stringify(product), {headers: this.headers}).catch(this.handleError);
 	}
-
+	public updatePlatoon(eventId: number, platoon: Platoon): Observable<Platoon> {
+		//console.log("Updading platoon" + platoon.name);
+			return this.http.patch(this.eventsUrl + eventId + "/platoon", JSON.stringify(platoon), {headers: this.headers}).catch(this.handleError);
+		}
 }

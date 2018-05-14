@@ -22,8 +22,9 @@ export class EventManagementComponent implements OnInit {
 	event: Event;
 	eventDetails: EventDetails;
 	eventPlatoons: Platoon[];
+	newPlatoons: Platoon[];
 	eventProducts: Product[];
-
+	newProducts: Product[];
 	private groupsByPlatoon: Map<number, ParticipantGroup[]> = new Map<number, ParticipantGroup[]>();
 	error: any;
 	constructor( private route: ActivatedRoute,
@@ -31,7 +32,9 @@ export class EventManagementComponent implements OnInit {
 				 private eventDetailsService: EventDetailsService ) {
 		this.event = new Event();
 		this.eventPlatoons = new Array<Platoon>();
+		this.newPlatoons = new Array<Platoon>();
 		this.eventProducts = new Array<Product>();
+		this.newProducts = new Array<Product>();
 	}
 
 	ngOnInit() {
@@ -87,28 +90,32 @@ export class EventManagementComponent implements OnInit {
 		console.log(this.eventDetails);
 		console.log(this.eventProducts);
 		console.log("foo");
-		this.eventManagementService.updateEvent(this.event, this.eventPlatoons, this.eventProducts)
+		this.eventManagementService.updateEvent(this.event, 
+																						this.eventPlatoons, 
+																						this.eventProducts,
+																						this.newPlatoons,
+																						this.newProducts)
 		  .subscribe((result: any) => {
 		  	console.log(result);
 
 		  }, error => this.error = <any>error);
 	}
 	addInputForPlatoon(){
-		this.eventDetails.platoonList.push(new Platoon);
-		console.log(JSON.stringify(this.eventPlatoons));
+		this.newPlatoons.push(new Platoon);
+		//console.log(JSON.stringify(this.eventPlatoons));
 	}
 	removeInputForPlatoon(){
-		this.eventDetails.platoonList.pop();
-		console.log(JSON.stringify(this.eventDetails.platoonList));
+		this.newPlatoons.pop();
+		//console.log(JSON.stringify(this.eventDetails.platoonList));
 	}
 	trackPlatoon(index: number, platoon: Platoon): string{
 		return platoon.name;
 	}
 	addInputForProduct(){
-		this.eventProducts.push(new Product);
+		this.newProducts.push(new Product);
 	}
 	removeInputForProduct(){
-		this.eventProducts.pop();
+		this.newProducts.pop();
 	}
 	trackProduct(index: number, product: Product): string{
 		return product.name;
