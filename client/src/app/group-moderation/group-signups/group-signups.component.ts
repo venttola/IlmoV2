@@ -24,9 +24,9 @@ export class GroupSignupsComponent implements OnInit {
   selectedMemberPayments: Payment[];
 
   participantGroup: ParticipantGroup;
-  members: any[] = [];
+  members: Member[] = [];
 
-  participants: any[] = [];
+  participants: Participant[] = [];
 
   selectedParticipant: Participant;
   selectedParticipantPayments: Payment[];
