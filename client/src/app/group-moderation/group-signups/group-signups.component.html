@@ -10,6 +10,8 @@
             <li *ngFor="let payment of m.payments; index as i">
               Maksu {{i+1}}/{{m.payments.length}}
               <div *ngIf="payment.isPaid;then paidPayment else nonPaidPayment"></div>
+              <input [hidden]="payment.isPaid" type="checkbox" name="{{i}}markPayment"
+                [(ngModel)]="payment.marked">
             </li>
           </div>
         </div>
@@ -30,6 +32,8 @@
             <li *ngFor="let payment of p.payments; index as i">
               Maksu {{i+1}}/{{p.payments.length}}
               <div *ngIf="payment.isPaid;then paidPayment else nonPaidPayment"></div>
+                <input [hidden]="payment.isPaid" type="checkbox" name="{{i}}markPayment"
+                [(ngModel)]="payment.marked">
             </li>
           </div>
         </div>
@@ -40,12 +44,14 @@
       <p>Ei rekisteröitymättömiä jäseniä.</p>
     </div>
   </div>
+  <button type="button" class="btn btn-primary" (click)="receiptBatch()">Kuittaa valitut maksut</button>
 
   <ng-template #paidPayment>
     Maksettu.
   </ng-template>
    <ng-template #nonPaidPayment>
-    Ei maksettu. <input type="checkbox" name="{{i}}markPayment">
+    Ei maksettu.
+
   </ng-template>
 
   <shared-group-modal #memberModal>

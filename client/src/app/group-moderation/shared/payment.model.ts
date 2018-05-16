@@ -5,6 +5,13 @@ export class Payment {
     products: ProductSelection[];
     isPaid: boolean;
     paidOn: Date;
+    marked: boolean;
+    constructor() {
+        this.products = [];
+        this.isPaid = false;
+        this.paidOn = null;
+        this.marked = false;
+    }
     public sum(): number{
     	let sum: number = 0;
     	 this.products.forEach((p: ProductSelection) => {
@@ -20,6 +27,7 @@ export class Payment {
     static fromJSON(json: any): Payment {
         let payment = Object.create(Payment.prototype);
         Object.assign(payment, json);
+        payment.marked = false;
         return payment;
     }
 }

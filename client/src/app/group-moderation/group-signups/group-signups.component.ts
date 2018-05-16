@@ -188,12 +188,38 @@ export class GroupSignupsComponent implements OnInit {
     this.selectedParticipant = participant;
     this.groupModerationService.getParticipantPayments(this.participantGroup.id, this.selectedParticipant.id)
       .subscribe((participantPayments: Payment[]) => {
-        console.log(participantPayments);
+        //console.log(participantPayments);
         this.selectedParticipantPayments = participantPayments;
         this.participantModal.show();
       },
       (error: any) => console.log(error));
 
+  }
+  receiptBatch(){
+    console.log("Receipt multiple");
+    let markedMembers = this.members.filter(m => {
+       let marked = m.payments.filter(p => p.marked && !p.isPaid);
+       return marked.length > 0;
+    });
+    let markedParticipants = this.participants.filter(p => {
+      let marked = p.payments.filter(p => p.marked && !p.isPaid);
+       return marked.length > 0;
+    });
+    markedMembers.map(m => {
+      console.log(m.name);
+      this.groupModerationService.receiptPayment(this.participantGroup.id, m.id).subscribe((userPayments: Payment[]) => {
+        m.payments = userPayments;
+      },
+      (error: any) => console.log(error));
+
+    });
+    markedParticipants.map(p => {
+      console.log(p.firstname + p.lastname)
+      this.groupModerationService.receiptParticipantPayment(this.participantGroup.id, p.id).subscribe((participantPayments: Payment[]) => {
+        p.payments = participantPayments;
+      },
+      (error: any) => console.log(error));
+    });
   }
 
 }
