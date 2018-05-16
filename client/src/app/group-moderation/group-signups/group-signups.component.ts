@@ -52,20 +52,7 @@ export class GroupSignupsComponent implements OnInit {
       .switchMap((params: Params) => this.participantGroupService.getGroup(+params["groupId"]))
       .subscribe((group: ParticipantGroup) => this.participantGroup = group);
 
-    this.route.parent.params
-      .switchMap((params: Params) => this.groupModerationService.getGroupMembers(+params["groupId"]))
-      .subscribe((members: Member[]) => {
-        this.members = members;
-        this.members.map((m: Member) => {
-          this.groupModerationService.getMemberPayments(this.participantGroup.id, m.id)
-          .subscribe((memberPayments: Payment[]) => {
-            console.log(memberPayments);
-            m.payments = memberPayments;
-          },
-            (error: any) => console.log(error));
-
-        });
-      });
+    this.getMembers();
     this.getParticipants();
   }
 
@@ -152,6 +139,23 @@ export class GroupSignupsComponent implements OnInit {
   }
   onCloseParticipantModal() {
     this.participantModal.hide();
+  }
+
+  getMembers() {
+    this.route.parent.params
+      .switchMap((params: Params) => this.groupModerationService.getGroupMembers(+params["groupId"]))
+      .subscribe((members: Member[]) => {
+        this.members = members;
+        this.members.map((m: Member) => {
+          this.groupModerationService.getMemberPayments(this.participantGroup.id, m.id)
+          .subscribe((memberPayments: Payment[]) => {
+            console.log(memberPayments);
+            m.payments = memberPayments;
+          },
+            (error: any) => console.log(error));
+
+        });
+      });
   }
 
   getParticipants() {
