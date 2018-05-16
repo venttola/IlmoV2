@@ -37,6 +37,8 @@ export class GroupSignupsComponent implements OnInit {
   @ViewChild('participantModal')
   participantModal: GroupModalComponent;
 
+  allMarked: boolean;
+
   errorMessage: string;
   infoMessage: string;
 
@@ -194,6 +196,32 @@ export class GroupSignupsComponent implements OnInit {
       },
       (error: any) => console.log(error));
 
+  }
+  markAll() {
+    this.members.map(m => {
+      m.payments.map( p => {
+        p.isPaid ? [] : p.marked = true;
+      })
+    });
+     this.participants.map(p => {
+      p.payments.map( p => {
+        p.isPaid ? [] : p.marked = true;
+      })
+    });
+    this.allMarked = true;
+  }
+  cleanAllMarks() {
+    this.members.map(m => {
+      m.payments.map( p => {
+        p.isPaid ? [] : p.marked = false;
+      })
+    });
+     this.participants.map(p => {
+      p.payments.map( p => {
+        p.isPaid ? [] : p.marked = false;
+      })
+    });
+    this.allMarked = false;
   }
   receiptBatch(){
     console.log("Receipt multiple");

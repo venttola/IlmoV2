@@ -45,6 +45,8 @@
     </div>
   </div>
   <button type="button" class="btn btn-primary" (click)="receiptBatch()">Kuittaa valitut maksut</button>
+  <button type="button" class="btn btn-primary" (click)="markAll()">Merkkaa kaikki</button>
+  <button type="button" class="btn btn-primary" (click)="cleanAllMarks()">Poista kaikki merkinnät</button>
 
   <ng-template #paidPayment>
     Maksettu.
