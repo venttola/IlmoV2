@@ -3,8 +3,15 @@
     <h5>Rekisteröityneet jäsenet</h5>
     <ul class="common-list">
       <li *ngFor="let m of members">
-        <div class="group-item unselectable clickable" (click)="onSelectMember(m)">
-          <p>{{ m.name }}</p>
+        <div class="payment-list-item unselectable" >
+          <div class="clickable highlightable" (click)="onSelectMember(m)">{{ m.name }}</div>
+          <div class="payment-list">
+            Maksut
+            <li *ngFor="let payment of m.payments; index as i">
+              Maksu {{i+1}}/{{m.payments.length}}
+              <div *ngIf="payment.isPaid;then paidPayment else nonPaidPayment"></div>
+            </li>
+          </div>
         </div>
       </li>
     </ul>
@@ -16,8 +23,15 @@
     <h5>Rekisteröitymättömät jäsenet</h5>
     <ul class="common-list">
       <li *ngFor="let p of participants">
-        <div class="group-item participant unselectable clickable" (click)="onSelectParticipant(p)">
-          <p>{{ p.firstname }} {{p.lastname}} </p>
+        <div class="payment-list-item unselectable">
+          <div class="clickable highlightable" (click)="onSelectParticipant(p)">{{ p.firstname }} {{p.lastname}} </div>
+          <div class="payment-list">
+            Maksut
+            <li *ngFor="let payment of p.payments; index as i">
+              Maksu {{i+1}}/{{p.payments.length}}
+              <div *ngIf="payment.isPaid;then paidPayment else nonPaidPayment"></div>
+            </li>
+          </div>
         </div>
       </li>
     </ul>
@@ -27,6 +41,12 @@
     </div>
   </div>
 
+  <ng-template #paidPayment>
+    Maksettu.
+  </ng-template>
+   <ng-template #nonPaidPayment>
+    Ei maksettu. <input type="checkbox" name="{{i}}markPayment">
+  </ng-template>
 
   <shared-group-modal #memberModal>
     <div class="group-modal-header">

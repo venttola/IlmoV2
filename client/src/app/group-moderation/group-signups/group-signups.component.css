@@ -3,7 +3,7 @@ h4 {
 }
 .group-moderation {
     text-align: center;
-    width: 50%
+    width: 75%
 }
 
 .remove-member-button {
@@ -57,4 +57,22 @@ h4 {
 .paid-payment-section {
     margin-bottom: 5%;
 }
+.highlightable {
+    text-align: left;
+}
 
+.highlightable:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+.payment-list{
+    text-align: right;
+}
+
+.payment-list-item {
+    margin: 0 auto;
+    width: 75%;
+    background-color: #5D5C5C;
+    text-align: center;
+}
