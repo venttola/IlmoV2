@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable } from "rxjs/Observable";
 import { Http, Response } from "@angular/http";
+import { Observable } from "rxjs/Observable";
 
 import { AuthorizedHttpService } from "../../shared/authorizedhttp.service";
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 
+import { Payment } from "./payment.model";
+import { CheckoutDetails } from "../checkout/checkout-details.model";
+import { Discount } from "../../events/shared/discount.model";
+import { Event } from "../../events/shared/event.model";
 import { Member } from "./member.model";
 import { Participant } from "./participant.model";
-import { Payment } from "./payment.model";
 import { Product } from "../../events/shared/product.model";
-import { Discount } from "../../events/shared/discount.model";
-import { CheckoutDetails } from "../checkout/checkout-details.model";
 
 @Injectable()
 export class GroupModerationService extends AuthorizedHttpService {
@@ -163,6 +164,12 @@ export class GroupModerationService extends AuthorizedHttpService {
         return this.http.get("/api/group/" + groupId + "/receipt", { headers: this.headers })
       .map((res: Response) => {
         return CheckoutDetails.fromJSON(res.json());
+      });
+  }
+  getGroupEvent(groupId: number): Observable<Event> {
+        return this.http.get("/api/group/" + groupId + "/event", { headers: this.headers })
+      .map((res: Response) => {
+        return Event.fromJSON(res.json());
       });
   }
 }
