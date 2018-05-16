@@ -32,7 +32,7 @@ export class GroupModerationService extends AuthorizedHttpService {
     console.log("GroupId: " + groupId);
     return this.http.get("/api/group/" + groupId + "/moderator/members", { headers: this.headers })
       .map((res: Response) => {
-        console.log(res);
+        //console.log(res);
         return this.extractData(res).map(d => Member.fromJSON(d));
       }).catch(this.handleError);
   }
@@ -40,7 +40,7 @@ export class GroupModerationService extends AuthorizedHttpService {
   getMemberPayments(groupId: number, memberId: number): Observable<Payment[]> {
     return this.http.get("/api/group/" + groupId + "/moderator/userpayment/" + memberId, { headers: this.headers })
       .map((res: Response) => {
-        console.log(res);
+        //console.log(res);
         return this.extractData(res).map(d => Payment.fromJSON(d));
       }).catch(this.handleError);
   }
@@ -60,7 +60,7 @@ export class GroupModerationService extends AuthorizedHttpService {
 
     return this.http.post("/api/group/" + groupId + "/moderator/userpayment", data, { headers: this.headers })
       .map((res: Response) => {
-        console.log(res);
+        //console.log(res);
         return this.extractData(res).map(d => Payment.fromJSON(d));
       }).catch(this.handleError);
   }
@@ -73,7 +73,7 @@ export class GroupModerationService extends AuthorizedHttpService {
 
     return this.http.post("/api/group/" + groupId + "/moderator/participantpayment", data, { headers: this.headers })
       .map((res: Response) => {
-        console.log(res);
+        //console.log(res);
         return this.extractData(res).map(d => Payment.fromJSON(d));
       }).catch(this.handleError);
   }
@@ -86,7 +86,7 @@ export class GroupModerationService extends AuthorizedHttpService {
 
     return this.http.patch("/api/group/" + groupId + "/moderator", data, { headers: this.headers })
       .map((res: Response) => {
-        console.log(res);
+        //console.log(res);
         return this.extractData(res).map(d => Member.fromJSON(d));
       }).catch(this.handleError);
   }
@@ -94,7 +94,7 @@ export class GroupModerationService extends AuthorizedHttpService {
   removeModerator(groupId: number, memberId: number): Observable<Member[]> {
     return this.http.delete("/api/group/" + groupId + "/moderator/" + memberId + "/moderator", { headers: this.headers })
       .map((res: Response) => {
-        console.log(res);
+        //console.log(res);
         return this.extractData(res).map(d => Member.fromJSON(d));
       }).catch(this.handleError);
   }

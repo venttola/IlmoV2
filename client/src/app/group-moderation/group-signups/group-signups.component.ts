@@ -60,7 +60,7 @@ export class GroupSignupsComponent implements OnInit {
     this.selectedMember = member;
     this.groupModerationService.getMemberPayments(this.participantGroup.id, this.selectedMember.id)
       .subscribe((userPayments: Payment[]) => {
-        console.log(userPayments);
+        //console.log(userPayments);
         this.selectedMemberPayments = userPayments;
       },
       (error: any) => console.log(error));
@@ -149,7 +149,7 @@ export class GroupSignupsComponent implements OnInit {
         this.members.map((m: Member) => {
           this.groupModerationService.getMemberPayments(this.participantGroup.id, m.id)
           .subscribe((memberPayments: Payment[]) => {
-            console.log(memberPayments);
+            //console.log(memberPayments);
             m.payments = memberPayments;
           },
             (error: any) => console.log(error));
@@ -166,7 +166,7 @@ export class GroupSignupsComponent implements OnInit {
         this.participants.map((p: Participant) => {
           this.groupModerationService.getParticipantPayments(this.participantGroup.id, p.id)
             .subscribe((participantPayments: Payment[]) => {
-              console.log(participantPayments);
+              //console.log(participantPayments);
               p.payments = participantPayments;
           },
           (error: any) => console.log(error));
