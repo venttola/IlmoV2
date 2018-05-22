@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers} from "@angular/http";
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ErrorObservable } from "rxjs/observable/ErrorObservable";
 import { Observable } from "rxjs/Observable";
 
 @Injectable()
@@ -15,9 +17,9 @@ export class AuthorizedHttpService {
 		return body || {};
 	}
 
-	protected handleError(error: any): Observable<any> {
+	protected handleError(error: HttpErrorResponse): Observable<any> {
 		console.error("An error occurred", error);
-		return Observable.throw(error.message || error);
+		return new ErrorObservable(error.message);
 	}
 
 }
