@@ -9,7 +9,9 @@ import { OrganizationDetailsComponent } from '../organizer/organization-details/
 import { EventListingComponent } from './event-listing/event-listing.component';
 import { OrganizationMembersComponent } from './organization-members/organization-members.component';
 import { OrganizationOverviewComponent } from './organization-overview/organization-overview.component';
+
 import { EventListingService } from './event-listing/event-listing.service';
+import { OrganizationListingService } from "./organization-listing/organization-listing.service";
 
 @NgModule({
   imports: [
@@ -24,6 +26,9 @@ import { EventListingService } from './event-listing/event-listing.service';
     OrganizationOverviewComponent,
     OrganizationMembersComponent,
   ],
-  providers: [EventListingService]
+  providers: [
+    EventListingService,
+    OrganizationListingService
+  ]
 })
 export class OrganizerModule { }

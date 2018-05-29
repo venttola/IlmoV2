@@ -1,9 +1,6 @@
-<ul *ngIf="organizations.length > 0" class="common-list">
-  <li *ngFor="let o of organizations">
+<ul class="common-list">
+  <li *ngFor="let o of organizations | async as organizations; index as i;">
     <div class="group-item unselectable clickable" [routerLink]="[o.id]"><a class="group-link">{{ o.name }}</a></div>
   </li>
 </ul>
-
-<div *ngIf="organizations.length === 0">
-  <p>Et kuulu yhteenkään organisaatioon</p>
-</div>
+<div *ngIf="(moderatedGroups | async)?.length==0"><p>Et kuulu yhteenkään organisaatioon</p></div>
