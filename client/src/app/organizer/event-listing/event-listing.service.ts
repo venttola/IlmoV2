@@ -14,6 +14,14 @@ export class EventListingService extends AuthorizedHttpService {
     super (http);
   }
   getEvents(organizationId: number): Observable<Event[]> {
-    return this.http.get("/api/organizer/" + organizationId + "/events", { headers: this.headers }).map(this.extractData).catch(this.handleError);
+    return this.http.get("/api/organization/" + organizationId + "/events", { headers: this.headers }).map(this.extractData).catch(this.handleError);
+  }
+  protected extractData(res: Response): Event[] {
+    let body = res.json();
+    let eventList = new Array<Event>();
+    for (let event of body) {
+      eventList.push(Event.fromJSON(event));
+    }
+    return eventList;
   }
 }
