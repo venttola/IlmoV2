@@ -106,22 +106,6 @@ module Route {
 				return res.status(err.statusCode).send(err.message);
 			});
 		}
-
-		private getOrganization = (organizationId: Number) => {
-			return new Promise((resolve, reject) => {
-				this.organizationModel.one({ id: organizationId }, function (err: Error, organization: any) {
-					if (err) {
-						let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.DATABASE_READ);
-						reject(new DatabaseError(500, errorMsg));
-					} else if (!organization) {
-						let errorMsg = ErrorHandler.getErrorMsg("Organization", ErrorType.NOT_FOUND);
-						reject(new DatabaseError(400, errorMsg));
-					} else {
-						return resolve(organization);
-					}
-				});
-			});
-		};
 	}
 }
 
