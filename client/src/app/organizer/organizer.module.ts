@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { EventsModule } from "./events/events.module";
+
 import { OrganizerRouterModule } from "./organizer-router.module";
 
 import { OrganizerComponent } from './organizer.component';
@@ -16,6 +18,7 @@ import { OrganizationListingService } from "./organization-listing/organization-
 @NgModule({
   imports: [
     CommonModule,
+    EventsModule,
     OrganizerRouterModule
   ],
   declarations: [
