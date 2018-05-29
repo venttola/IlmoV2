@@ -108,7 +108,6 @@ module Route {
 				return res.status(err.statusCode).send(err.message);
 			});
 		}
-    
     public getEvents = (req: express.Request, res: express.Response) => {
       let organizationId = req.params.id;
       this.organizationService.getEvents(organizationId).then((events: any) => {
