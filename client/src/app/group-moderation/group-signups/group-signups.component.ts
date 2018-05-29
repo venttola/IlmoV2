@@ -9,7 +9,7 @@ import { ParticipantGroupService } from "../../events/event-details/participant-
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 import { Member } from "../shared/member.model";
 import { Participant } from "../shared/participant.model";
-import { UserPayment } from "../shared/userpayment.model";
+import { Payment } from "../shared/payment.model";
 import { Product } from "../../events/shared/product.model";
 import { Discount } from "../../events/shared/discount.model";
 
@@ -21,21 +21,23 @@ import { Discount } from "../../events/shared/discount.model";
 export class GroupSignupsComponent implements OnInit {
 
   selectedMember: Member;
-  selectedMemberPayments: UserPayment[];
+  selectedMemberPayments: Payment[];
 
   participantGroup: ParticipantGroup;
-  members: any[] = [];
+  members: Member[] = [];
 
-  participants: any[] = [];
+  participants: Participant[] = [];
 
   selectedParticipant: Participant;
-  selectedParticipantPayments: UserPayment[];
+  selectedParticipantPayments: Payment[];
 
   @ViewChild('memberModal')
   memberModal: GroupModalComponent;
 
   @ViewChild('participantModal')
   participantModal: GroupModalComponent;
+
+  allMarked: boolean;
 
   errorMessage: string;
   infoMessage: string;
@@ -52,21 +54,15 @@ export class GroupSignupsComponent implements OnInit {
       .switchMap((params: Params) => this.participantGroupService.getGroup(+params["groupId"]))
       .subscribe((group: ParticipantGroup) => this.participantGroup = group);
 
-    this.route.parent.params
-      .switchMap((params: Params) => this.groupModerationService.getGroupMembers(+params["groupId"]))
-      .subscribe((members: Member[]) => this.members = members);
-
+    this.getMembers();
     this.getParticipants();
-    
-
-
   }
 
   onSelectMember(member: Member) {
     this.selectedMember = member;
     this.groupModerationService.getMemberPayments(this.participantGroup.id, this.selectedMember.id)
-      .subscribe((userPayments: UserPayment[]) => {
-        console.log(userPayments);
+      .subscribe((userPayments: Payment[]) => {
+        //console.log(userPayments);
         this.selectedMemberPayments = userPayments;
       },
       (error: any) => console.log(error));
@@ -88,7 +84,7 @@ export class GroupSignupsComponent implements OnInit {
   onReceiptPayment() {
     console.log("Updating payment status");
     this.groupModerationService.receiptPayment(this.participantGroup.id, this.selectedMember.id)
-      .subscribe((userPayments: UserPayment[]) => {
+      .subscribe((userPayments: Payment[]) => {
         console.log(userPayments);
         this.selectedMemberPayments = userPayments;
       },
@@ -97,7 +93,7 @@ export class GroupSignupsComponent implements OnInit {
 
   onReceiptParticipantPayment() {
     this.groupModerationService.receiptParticipantPayment(this.participantGroup.id, this.selectedParticipant.id)
-      .subscribe((userPayments: UserPayment[]) => {
+      .subscribe((userPayments: Payment[]) => {
         console.log(userPayments);
         this.selectedParticipantPayments = userPayments;
       },
@@ -147,10 +143,38 @@ export class GroupSignupsComponent implements OnInit {
     this.participantModal.hide();
   }
 
+  getMembers() {
+    this.route.parent.params
+      .switchMap((params: Params) => this.groupModerationService.getGroupMembers(+params["groupId"]))
+      .subscribe((members: Member[]) => {
+        this.members = members;
+        this.members.map((m: Member) => {
+          this.groupModerationService.getMemberPayments(this.participantGroup.id, m.id)
+          .subscribe((memberPayments: Payment[]) => {
+            //console.log(memberPayments);
+            m.payments = memberPayments;
+          },
+            (error: any) => console.log(error));
+
+        });
+      });
+  }
+
   getParticipants() {
     this.route.parent.params
       .switchMap((params: Params) => this.groupModerationService.getParticipants(+params["groupId"]))
-      .subscribe((participants: Participant[]) => this.participants = participants);
+      .subscribe((participants: Participant[]) => {
+        this.participants = participants;
+        this.participants.map((p: Participant) => {
+          this.groupModerationService.getParticipantPayments(this.participantGroup.id, p.id)
+            .subscribe((participantPayments: Payment[]) => {
+              //console.log(participantPayments);
+              p.payments = participantPayments;
+          },
+          (error: any) => console.log(error));
+
+        });
+      });
   }
 
   removeParticipant() {
@@ -165,13 +189,65 @@ export class GroupSignupsComponent implements OnInit {
   onSelectParticipant(participant: Participant) {
     this.selectedParticipant = participant;
     this.groupModerationService.getParticipantPayments(this.participantGroup.id, this.selectedParticipant.id)
-      .subscribe((participantPayments: UserPayment[]) => {
-        console.log(participantPayments);
+      .subscribe((participantPayments: Payment[]) => {
+        //console.log(participantPayments);
         this.selectedParticipantPayments = participantPayments;
         this.participantModal.show();
       },
       (error: any) => console.log(error));
 
+  }
+  markAll() {
+    this.members.map(m => {
+      m.payments.map( p => {
+        p.isPaid ? [] : p.marked = true;
+      })
+    });
+     this.participants.map(p => {
+      p.payments.map( p => {
+        p.isPaid ? [] : p.marked = true;
+      })
+    });
+    this.allMarked = true;
+  }
+  cleanAllMarks() {
+    this.members.map(m => {
+      m.payments.map( p => {
+        p.isPaid ? [] : p.marked = false;
+      })
+    });
+     this.participants.map(p => {
+      p.payments.map( p => {
+        p.isPaid ? [] : p.marked = false;
+      })
+    });
+    this.allMarked = false;
+  }
+  receiptBatch(){
+    console.log("Receipt multiple");
+    let markedMembers = this.members.filter(m => {
+       let marked = m.payments.filter(p => p.marked && !p.isPaid);
+       return marked.length > 0;
+    });
+    let markedParticipants = this.participants.filter(p => {
+      let marked = p.payments.filter(p => p.marked && !p.isPaid);
+       return marked.length > 0;
+    });
+    markedMembers.map(m => {
+      console.log(m.name);
+      this.groupModerationService.receiptPayment(this.participantGroup.id, m.id).subscribe((userPayments: Payment[]) => {
+        m.payments = userPayments;
+      },
+      (error: any) => console.log(error));
+
+    });
+    markedParticipants.map(p => {
+      console.log(p.firstname + p.lastname)
+      this.groupModerationService.receiptParticipantPayment(this.participantGroup.id, p.id).subscribe((participantPayments: Payment[]) => {
+        p.payments = participantPayments;
+      },
+      (error: any) => console.log(error));
+    });
   }
 
 }

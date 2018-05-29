@@ -43,10 +43,10 @@
 		<h6 *ngIf="product.discounts"></h6>
 		<div *ngFor="let discount of product.discounts; let j = index;" class="form-group">
 			<div class="input-group">
-				<label  for="discountName{{j}}">Alennus:</label>
-				<input type="text" class="form-control" placeholder="Alennuksen syy" id="discountName{{j}}"  [(ngModel)]="product.discounts[j].name" name="discountName{{j}}"/>
-				<label  for="productPrice{{j}}">Määrä:</label>
-				<input type="text" class="form-control" placeholder="Määrä" id="discountAmount{{j}}"  [(ngModel)]="product.discounts[j].amount" name="discountAmount{{j}}"/>
+				<label  for="discountName{{i}}{{j}}">Alennus:</label>
+				<input type="text" class="form-control" placeholder="Alennuksen syy" id="discountName{{i}}{{j}}"  [(ngModel)]="product.discounts[j].name" name="discountName{{i}}{{j}}"/>
+				<label  for="discountAmount{{i}}{{j}}">Määrä:</label>
+				<input type="text" class="form-control" placeholder="Määrä" id="discountAmount{{i}}{{j}}"  [(ngModel)]="product.discounts[j].amount" name="discountAmount{{i}}{{j}}"/>
 			</div>
 		</div>
 	</div>
@@ -66,10 +66,10 @@
 		<h6 *ngIf="product.discounts"></h6>
 		<div *ngFor="let discount of product.discounts; let j = index;" class="form-group">
 			<div class="input-group">
-				<label  for="newDiscountName{{j}}">Alennus:</label>
-				<input type="text" class="form-control" placeholder="Alennuksen syy" id="newDiscountName{{j}}"  [(ngModel)]="product.discounts[j].name" name="newDiscountName{{j}}"/>
-				<label  for="productPrice{{j}}">Määrä:</label>
-				<input type="text" class="form-control" placeholder="Määrä" id="newDiscountAmount{{j}}"  [(ngModel)]="product.discounts[j].amount" name="newDiscountAmount{{j}}"/>
+				<label  for="newDiscountName{{i}}{{j}}">Alennus:</label>
+				<input type="text" class="form-control" placeholder="Alennuksen syy" id="newDiscountName{{i}}{{j}}"  [(ngModel)]="product.discounts[j].name" name="newDiscountName{{i}}{{j}}"/>
+				<label  for="newDiscountAmount{{j}}">Määrä:</label>
+				<input type="text" class="form-control" placeholder="Määrä" id="newDiscountAmount{{i}}{{j}}"  [(ngModel)]="product.discounts[j].amount" name="newDiscountAmount{{i}}{{j}}"/>
 			</div>
 		</div>
 	</div>

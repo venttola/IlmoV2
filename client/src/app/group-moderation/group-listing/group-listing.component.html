@@ -1,11 +1,9 @@
-<h4>Hallittavat osallistujaryhmät</h4>
+<h4>Valitse ryhmä</h4>
 
-<ul *ngIf="moderatedGroups.length > 0" class="common-list">
-  <li *ngFor="let g of moderatedGroups">
-    <div class="group-item unselectable clickable" [routerLink]="['./groups', g.id]"><a class="group-link">{{ g.name }}</a></div>
+<ul class="common-list">
+  <li *ngFor="let g of moderatedGroups | async as groups; index as i;">
+    <div class="group-item unselectable clickable" [routerLink]="['./groups', g.id]"><a class="group-link"> {{getGroupEvent(g)?.name}} - {{ g?.name }}</a></div>
   </li>
 </ul>
+<div *ngIf="(moderatedGroups | async)?.length==0">Ei hallittavia ryhmiä</div>
 
-<div *ngIf="moderatedGroups.length === 0">
-  <p>Ei hallittavia ryhmiä</p>
-</div>

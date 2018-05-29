@@ -1,10 +1,17 @@
 import { Product } from "../../events/shared/product.model";
 import { ProductSelection } from "./productselection.model";
 
-export class UserPayment {
+export class Payment {
     products: ProductSelection[];
     isPaid: boolean;
     paidOn: Date;
+    marked: boolean;
+    constructor() {
+        this.products = [];
+        this.isPaid = false;
+        this.paidOn = null;
+        this.marked = false;
+    }
     public sum(): number{
     	let sum: number = 0;
     	 this.products.forEach((p: ProductSelection) => {
@@ -17,9 +24,10 @@ export class UserPayment {
     	return sum;
     }
 
-    static fromJSON(json: any): UserPayment {
-        let payment = Object.create(UserPayment.prototype);
+    static fromJSON(json: any): Payment {
+        let payment = Object.create(Payment.prototype);
         Object.assign(payment, json);
+        payment.marked = false;
         return payment;
     }
 }

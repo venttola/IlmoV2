@@ -170,16 +170,16 @@ module Route {
         public addProduct = (req: express.Request, res: express.Response) => {
             console.log("Adding product");
             console.log("Body: " + JSON.stringify(req.body));
-
+            let self = this;
             let eventId = req.params.event;
             let productName = req.body.name;
             let productPrice = req.body.price;
-            let discounts: any[] = [];
+            let discounts: any[] = req.body.discounts;
 
             try {
                 discounts = JSON.parse(req.body.discounts);
             } catch (e) {
-                console.log(e);
+                //console.log(e);
             }
 
             this.getEvent(eventId).then((event: any) => {
@@ -195,7 +195,14 @@ module Route {
                             if (err) {
                                 return res.status(500).send("ERROR: Adding product to event failed");
                             } else {
-                                return res.status(204).send();
+                                let discountPromises: any = discounts.map((discount: any) => {
+                                        return self.createDiscount(prod, discount);
+                                });
+                                Promise.all(discountPromises).then((promises: any) => {
+                                    return res.status(204).send();
+                                }).catch((err: APIError) => {
+                                    return res.status(err.statusCode).send(err.message);
+                                });
                             }
                         });
                     }

@@ -216,6 +216,14 @@ module Route {
                 return res.status(err.statusCode).send(err.message);
             });
         }
+        public getGroupEvent = (req: express.Request, res: express.Response) => {
+            let groupId = req.params.group;
+            this.groupService.getGroupEvent(groupId).then((event: any) =>
+                res.status(200).json(event))
+                .catch((err: APIError) => {
+                    return res.status(err.statusCode).send(err.message);
+                });
+         }
 
         // TODO: ApiDocs
         public getGroupMembers = (req: express.Request, res: express.Response) => {

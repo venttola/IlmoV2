@@ -112,7 +112,9 @@ export class EventManagementComponent implements OnInit {
 		return platoon.name;
 	}
 	addInputForProduct(){
-		this.newProducts.push(new Product);
+		let product = new Product;
+		product.discounts = new Array<Discount>();
+		this.newProducts.push(product);
 	}
 	removeInputForProduct(){
 		this.newProducts.pop();

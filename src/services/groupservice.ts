@@ -501,6 +501,21 @@ module Service {
                 });
             });
         }
+        public getGroupEvent(groupId: number) {
+            return new Promise((resolve, reject) => {
+                this.getGroup(groupId).then((group: any) => {
+                    group.getPlatoon((err: Error, platoon: any) => {
+                        if (err) {
+                            console.log("Platoon not found");
+                            reject(err);
+                        } else {
+                            let event = platoon[0].event[0];
+                            resolve(event);
+                        }
+                    });
+                });
+            });
+        }
 
         private getGroupModerators = (groupId: number) => {
             return new Promise((resolve, reject) => {

@@ -1,4 +1,4 @@
-import { UserPayment } from "./userpayment.model";
+import { Payment } from "./payment.model";
 
 export class Participant {
   id: number;
@@ -7,7 +7,7 @@ export class Participant {
   age: number;
   allergies: string;
 
-  payments: UserPayment[];
+  payments: Payment[];
   static fromJSON(json: any): Participant {
     let participant = Object.create(Participant.prototype);
     Object.assign(participant, json);

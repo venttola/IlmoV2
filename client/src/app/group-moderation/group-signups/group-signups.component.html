@@ -1,10 +1,20 @@
 <div class="group-moderation">
     <h4 *ngIf="participantGroup">Ryhmän {{participantGroup.name}} jäsenet</h4>
+    <p>Voit tarkastella ryhmälisen ilmoittautumistietoja klikkaamalla ryhmän jäsenen nimeä</p>
     <h5>Rekisteröityneet jäsenet</h5>
     <ul class="common-list">
       <li *ngFor="let m of members">
-        <div class="group-item unselectable clickable" (click)="onSelectMember(m)">
-          <p>{{ m.name }}</p>
+        <div class="payment-list-item unselectable" >
+          <div class="clickable highlightable" (click)="onSelectMember(m)">{{ m.name }}</div>
+          <div class="payment-list">
+            Maksut
+            <li *ngFor="let payment of m.payments; index as i">
+              Maksu {{i+1}}/{{m.payments.length}}
+              <div *ngIf="payment.isPaid;then paidPayment else nonPaidPayment"></div>
+              <input [hidden]="payment.isPaid" type="checkbox" name="{{i}}markPayment"
+                [(ngModel)]="payment.marked">
+            </li>
+          </div>
         </div>
       </li>
     </ul>
@@ -16,8 +26,17 @@
     <h5>Rekisteröitymättömät jäsenet</h5>
     <ul class="common-list">
       <li *ngFor="let p of participants">
-        <div class="group-item participant unselectable clickable" (click)="onSelectParticipant(p)">
-          <p>{{ p.firstname }} {{p.lastname}} </p>
+        <div class="payment-list-item unselectable">
+          <div class="clickable highlightable" (click)="onSelectParticipant(p)">{{ p.firstname }} {{p.lastname}} </div>
+          <div class="payment-list">
+            Maksut
+            <li *ngFor="let payment of p.payments; index as i">
+              Maksu {{i+1}}/{{p.payments.length}}
+              <div *ngIf="payment.isPaid;then paidPayment else nonPaidPayment"></div>
+                <input [hidden]="payment.isPaid" type="checkbox" name="{{i}}markPayment"
+                [(ngModel)]="payment.marked">
+            </li>
+          </div>
         </div>
       </li>
     </ul>
@@ -26,7 +45,17 @@
       <p>Ei rekisteröitymättömiä jäseniä.</p>
     </div>
   </div>
+  <button type="button" class="btn btn-primary" (click)="receiptBatch()">Kuittaa valitut maksut</button>
+  <button type="button" class="btn btn-primary" (click)="markAll()">Merkkaa kaikki</button>
+  <button type="button" class="btn btn-primary" (click)="cleanAllMarks()">Poista kaikki merkinnät</button>
 
+  <ng-template #paidPayment>
+    Maksettu.
+  </ng-template>
+   <ng-template #nonPaidPayment>
+    Ei maksettu.
+
+  </ng-template>
 
   <shared-group-modal #memberModal>
     <div class="group-modal-header">

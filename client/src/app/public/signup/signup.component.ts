@@ -38,14 +38,7 @@ export class SignupComponent implements OnInit {
         console.log(!this.createdUser);
         console.log("Signed up");
       }, error => {
-        this.error = error;
-        if(error.status == 400 ){
-          this.errorMessage = "Syöttämissäsi tiedoissa on virhe.";
-        } else if (error.status == 409){
-          this.errorMessage = "Käyttäjänimi on jo käytössä.";
-        } else {
-          this.errorMessage = "Tuntematon virhe.";          
-        }
+        this.errorMessage = error;
       });
     }
   }

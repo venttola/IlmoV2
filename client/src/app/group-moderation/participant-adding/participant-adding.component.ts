@@ -8,7 +8,7 @@ import { Discount } from "../../events/shared/discount.model";
 import { ParticipantGroup } from "../../events/shared/participantgroup.model";
 import { Participant } from "../shared/participant.model";
 import { Product } from "../../events/shared/product.model";
-import { UserPayment } from "../shared/userpayment.model";
+import { Payment } from "../shared/payment.model";
 @Component({
   selector: 'group-moderation-participant-adding',
   templateUrl: './participant-adding.component.html',
