@@ -3,7 +3,7 @@ import { RouterModule, Routes, CanActivate } from "@angular/router";
 
 import { EventsComponent } from "./events.component";
 
-
+import { EventOverviewComponent } from "./event-overview/event-overview.component";
 import { OrganizerGuard } from "../../authentication/organizer-guard.service";
 const eventsRoutes: Routes = [
   // A kind of a crutch to make 
@@ -11,31 +11,13 @@ const eventsRoutes: Routes = [
     path: "organizer/:id/events/:eventId",
     component: EventsComponent,
     canActivate: [OrganizerGuard],
-    canActivateChild: [OrganizerGuard]
-  /*  children: [
+    canActivateChild: [OrganizerGuard],
+    children: [
       {
         path: "",
-        component: OrganizationListingComponent 
+        component: EventOverviewComponent 
       },
-      {
-        path: ":id",
-        component: OrganizationDetailsComponent,
-        children: [ 
-          {
-            path: "",
-            component: OrganizationOverviewComponent 
-          },
-          {
-            path: "members",
-            component: OrganizationMembersComponent
-          },
-          {
-            path: "events",
-            component: EventListingComponent
-          }
-        ]
-      }
-    ]*/
+    ]
   }
 ];
 
