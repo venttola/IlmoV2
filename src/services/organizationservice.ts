@@ -20,6 +20,31 @@ module Service {
                 });
             });
         };
+        public getEvents = (id: number) => {
+            return new Promise((resolve, reject) => {
+                return this.getOrganization(id).then((organization: any) => {
+                    organization.getEvents(function(err: Error, events: any) {
+                        if (err) {
+                            let errorMsg = ErrorHandler.getErrorMsg("Organization event data", ErrorType.DATABASE_READ);
+                            reject(new DatabaseError(500, errorMsg));
+                        } else {
+                            //Prune this because of all the autoFetches
+                            let prunedEvents = events.map(( e: any) => {
+                                return {
+                                    name: e.name,
+                                    startDate: e.startDate,
+                                    endDate: e.endDate,
+                                    description: e.description,
+                                    registerationOpen: e.registerationOpen,
+                                    id: e.id
+                                };
+                            });
+                            resolve(prunedEvents);
+                        }
+                    });
+                });
+            });
+        }
     }
 }
 

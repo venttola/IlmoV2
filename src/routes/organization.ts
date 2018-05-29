@@ -5,6 +5,7 @@ import * as bcrypt from "bcrypt";
 var ibantools = require("ibantools");
 
 import { UserService } from "../services/userservice";
+import { OrganizationService } from "../services/organizationservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
 /*
@@ -15,6 +16,7 @@ module Route {
 	export class OrganizationRoutes {
 		constructor(
 			private userService: UserService,
+      private organizationService: OrganizationService,
 			private organizationModel: any) {
 
 		}
@@ -106,6 +108,15 @@ module Route {
 				return res.status(err.statusCode).send(err.message);
 			});
 		}
+    
+    public getEvents = (req: express.Request, res: express.Response) => {
+      let organizationId = req.params.id;
+      this.organizationService.getEvents(organizationId).then((events: any) => {
+        return res.status(200).json(events);
+      }).catch((err: APIError) => {
+        return res.status(err.statusCode).send(err.message);
+      });
+    }
 	}
 }
 
