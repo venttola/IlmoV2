@@ -142,6 +142,20 @@ module Service {
                 });
             });
         }
+        public getOrganizationMemberships = (userId: number) => {
+            return new Promise((resolve, reject) => {
+                this.getUserById(userId).then((user: any) => {
+                    user.getOrganizations(function(err: any, organizations: any){
+                        if (err) {
+                            return reject(err);
+                        } else {
+                             //console.log("User '" + user.email + "' Organizations: " + JSON.stringify(organizations));
+                            return resolve(organizations);
+                        }
+                    });
+                });
+            });
+        }
     }
 }
 

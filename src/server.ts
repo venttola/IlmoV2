@@ -136,6 +136,7 @@ class Server {
 			);
 
 		const userApiPrefix = this.API_PREFIX + "/user/:username";
+		const newUserApiPrefix = this.API_PREFIX + "/user/:id";
 
 		router.get(userApiPrefix + "/", userRoute.getUserInfo);
 		router.patch(userApiPrefix + "/credentials", userRoute.setUserCredentials);
@@ -148,6 +149,8 @@ class Server {
 		router.delete(userApiPrefix + "/product", userRoute.removeProduct);
 		router.post(userApiPrefix + "/group", userRoute.addGroup);
 		router.delete(userApiPrefix + "/group", userRoute.removeGroup);
+
+		router.get(newUserApiPrefix + "/organizations", userRoute.getOrganizations);
 		console.log("User routes set");
 	}
 

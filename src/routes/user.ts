@@ -516,6 +516,15 @@ module Route {
 				});
 		}
 
+		public getOrganizations = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			let userId = req.params.id;
+			this.userService.getOrganizationMemberships(userId).then((organizations: any) => {
+				return res.status(200).send(organizations);
+			}).catch((err: APIError) => {
+				return res.status(err.statusCode).send(err.message);
+			});
+		}
+
 		private getProduct = (productId: Number) => {
 			return new Promise((resolve, reject) => {
 				this.productModel.one({ id: productId }, function (err: Error, product: any) {
