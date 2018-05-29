@@ -83,7 +83,7 @@ export class DatabaseHandler {
 		db.models.Platoon.hasMany("participantGroups", db.models.ParticipantGroup, {}, { autoFetch: true, reverse: "platoon" });
 
 		db.models.Event.hasMany("products", db.models.Product, {}, { reverse: "events" });
-		db.models.Event.hasOne("organization", db.models.Organization);
+		db.models.Event.hasOne("organization", db.models.Organization, {}, { reverse: "events"});
 		db.models.Event.hasMany("platoons", db.models.Platoon, {}, { autoFetch: true, reverse: "event" });
 
 		db.models.GroupPayment.hasOne("payee", db.models.ParticipantGroup, {}, { reverse: "groupPayment" });
