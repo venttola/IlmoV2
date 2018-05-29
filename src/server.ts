@@ -238,11 +238,13 @@ class Server {
 		let organizationRoute: organizationRoutes.OrganizationRoutes =
 			new organizationRoutes.OrganizationRoutes(
 				this.userService,
+				this.organizationService,
 				models.Organization
 			);
 		router.get(this.API_PREFIX + "/organizations", organizationRoute.getOrganizations);
+		//needs to be chanegd to organization
 		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
-		router.post(this.API_PREFIX + "/organizations/:organization/members", organizationRoute.addOrganizationMembers);
+		router.post(this.API_PREFIX + "/organizations/:id/members", organizationRoute.addOrganizationMembers);
 	}
 	private setAdminRoutes(router: express.Router) {
 		let adminRoute: adminRoutes.AdminRoutes =

@@ -78,7 +78,7 @@ module Route {
 		public addOrganizationMembers = (req: express.Request, res: express.Response) => {
 			console.log("adding members");
 
-			let organizationId = req.params.organization;
+			let organizationId = req.params.id;
 			let newMembers: any = req.body.members;
 			new Promise((resolve, reject) => {
 				let memberList = new Array();
