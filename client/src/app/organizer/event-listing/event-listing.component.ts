@@ -8,7 +8,7 @@ import { Event } from "../../events/shared/event.model";
 @Component({
   selector: 'organizer-event-listing',
   templateUrl: './event-listing.component.html',
-  styleUrls: ['./event-listing.component.css']
+  styleUrls: ['./event-listing.component.css','../../styles/common-list.style.css']
 })
 export class EventListingComponent implements OnInit {
   events$: Observable<Event[]>;
