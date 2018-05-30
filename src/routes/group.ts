@@ -252,7 +252,6 @@ module Route {
                         reject(new APIError(404, msg));
                     } else {
                         member.getUserPayments((err: Error, userPayments: any) => {
-                            console.log(userPayments);
                             return err ? reject(err) : resolve(userPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
                         });
                     }
