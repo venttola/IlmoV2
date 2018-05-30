@@ -28,7 +28,7 @@ module Service {
             });
         }
 
-        private getEvent = (eventId: number) => {
+        public getEvent = (eventId: number) => {
             return new Promise((resolve, reject) => {
                 this.eventModel.one({ id: eventId }, function (err: Error, event: any) {
                     if (err) {
