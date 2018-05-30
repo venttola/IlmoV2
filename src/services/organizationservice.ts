@@ -32,6 +32,7 @@ module Service {
                             let errorMsg = ErrorHandler.getErrorMsg("Organization event data", ErrorType.DATABASE_READ);
                             reject(new DatabaseError(500, errorMsg));
                         } else {
+                           // console.log(JSON.stringify(events));
                             //Prune this because of all the autoFetches
                             let prunedEvents = events.map(( e: any) => {
                                 return {
@@ -43,11 +44,52 @@ module Service {
                                     id: e.id
                                 };
                             });
+                            //console.log(prunedEvents);
                             resolve(prunedEvents);
                         }
                     });
                 }).catch((e: any ) => {
-                    reject (e);
+                    reject(e);
+                });
+            });
+        }
+        public getEventOverview = (organizationId: number, eventId: number ) => {
+            let self = this;
+            return new Promise((resolve, reject) => {
+                this.getOrganization(organizationId).then((organization: any) => {
+                    this.eventService.getEvent(eventId).then((event: any) => {
+                        let platoonPromises = event.platoons.map((platoon: any) => {
+                            return new Promise((resolve, reject) => {
+                                platoon.getParticipantGroups((err: Error, groups: any) => {
+                                    if (err) {
+                                        let errorMsg = ErrorHandler.getErrorMsg("Organization event data", ErrorType.DATABASE_READ);
+                                        reject(new DatabaseError(500, errorMsg));
+                                    }
+                                    let sumPromises = groups.map((group: any) => {
+                                        return new Promise((resolve, reject) => {
+                                            this.groupService.getProductSums(group.id).then((sums: any) => {
+                                                resolve ({name: group.name, products: sums});
+                                            });
+                                        });
+                                    });
+                                    //No idea why this nees the dueal promise unwapping
+                                    Promise.all([sumPromises]).then((result: any) => {
+                                        return Promise.all(result[0]).then((promises: any) => {
+                                            resolve(promises);
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                        //No idea why this nees the dueal promise unwapping
+                        Promise.all([event, platoonPromises]).then((result: any) => {
+                            Promise.all(result[1]).then((groups: any) => {
+                                resolve({event: event, groups: groups});
+                            });
+                        });
+                    }).catch((e: any ) => {
+                        reject(e);
+                    });
                 });
             });
         }

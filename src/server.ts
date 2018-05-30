@@ -246,6 +246,7 @@ class Server {
 		router.post(this.API_PREFIX + "/organizations", organizationRoute.addOrganization);
 		router.post(this.API_PREFIX + "/organizations/:id/members", organizationRoute.addOrganizationMembers);
 		router.get(this.API_PREFIX + "/organization/:id/events", organizationRoute.getEvents);
+		router.get(this.API_PREFIX + "/organization/:id/event/:eventId", organizationRoute.getEventOverview);
 	}
 	private setAdminRoutes(router: express.Router) {
 		let adminRoute: adminRoutes.AdminRoutes =

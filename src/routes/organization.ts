@@ -116,6 +116,15 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
+    public getEventOverview = (req: express.Request, res: express.Response) => {
+      let organizationId = req.params.id;
+      let eventId = req.params.eventId;
+      this.organizationService.getEventOverview(organizationId, eventId).then((overview: any) => {
+        return res.status(200).json(overview);
+      }).catch((err: APIError) => {
+        return res.status(err.statusCode).send(err.message);
+      });
+    }
 	}
 }
 
