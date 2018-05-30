@@ -7,15 +7,15 @@ module Service {
 
         public getOrganization = (id: number) => {
             return new Promise((resolve, reject) => {
-                this.organizationModel.get(id, function (err: Error, organization: any) {
-                    if (err) {
+                this.organizationModel.get(id, function (err: any, organization: any) {
+                    if (!err) {
+                        return resolve(organization);
+                    } else if (err.literalCode === "NOT_FOUND") {
+                        let errorMsg = ErrorHandler.getErrorMsg("organization", ErrorType.NOT_FOUND);
+                        reject(new DatabaseError(404, errorMsg));
+                    } else {
                         let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.DATABASE_READ);
                         reject(new DatabaseError(500, errorMsg));
-                    } else if (!organization) {
-                        let errorMsg = ErrorHandler.getErrorMsg("organization", ErrorType.NOT_FOUND);
-                        reject(new DatabaseError(400, errorMsg));
-                    } else {
-                        return resolve(organization);
                     }
                 });
             });
@@ -42,6 +42,8 @@ module Service {
                             resolve(prunedEvents);
                         }
                     });
+                }).catch((e: any ) => {
+                    reject (e);
                 });
             });
         }
