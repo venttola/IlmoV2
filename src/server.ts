@@ -58,7 +58,6 @@ class Server {
 				models.ProductSelection,
 				models.Product);
 			this.eventService = new EventService(models.Event);
-			this.organizationService = new OrganizationService(models.Organization);
 			this.authService = new AuthService(this.userService);
 			this.groupService = new GroupService(models.ParticipantGroup,
 				this.userService,
@@ -68,6 +67,7 @@ class Server {
 				models.PlatoonModel,
 				this.eventService,
 				);
+			this.organizationService = new OrganizationService(this.eventService, this.groupService, models.Organization);
 			this.adminService = new AdminService(models.User,
 												 models.GroupPayment);
 			this.mailerService = new MailerService(this.userService);

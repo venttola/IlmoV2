@@ -1,9 +1,13 @@
 //import Promise from "ts-promise";
+"use strict";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
-
+import { EventService } from "./eventservice";
+import { GroupService } from "./groupservice";
 module Service {
     export class OrganizationService {
-        constructor(private organizationModel: any) { }
+        constructor(private eventService: EventService,
+                    private groupService: GroupService,
+                    private organizationModel: any) { }
 
         public getOrganization = (id: number) => {
             return new Promise((resolve, reject) => {
