@@ -239,7 +239,7 @@ module Service {
 
             return this.getParticipantGroupPayment(groupId)
                 .then((groupPayment: any) => {
-                    console.log("Grouppayment: " + JSON.stringify(groupPayment[0]));
+                    //console.log("Grouppayment: " + JSON.stringify(groupPayment[0]));
                     groupPayment[0].isPaid = true;
                     groupPayment[0].paidOn = new Date();
 
@@ -513,6 +513,48 @@ module Service {
                             resolve(event);
                         }
                     });
+                });
+            });
+        }
+        public getProductSums(groupId: number) {
+            return new Promise((resolve, reject) => {
+                this.getGroup(groupId).then((group: any) => {
+                   let participantProducts = this.getAllParticipantPayments(groupId).then((payments: any) => {
+                       return payments.map((payment: any) => {
+                            return payment.productSelections.map((selection: any) => {
+                                return(selection.product_id);
+                            });
+                       });
+                   });
+                   let memberProducts = this.getAllMemberPayments(groupId).then((payments: any) => {
+                       return payments.map((payment: any) => {
+                            return payment.productSelections.map((selection: any) => {
+                                return(selection.product_id);
+                            });
+                       });
+                   });
+                   let availableProducts =  this.getAvailableProducts(groupId).then((products: any) => {
+                       return products.map( (product: any) => {
+                           return( {name: product.name, id: product.id});
+                       });
+                   });
+                   Promise.all([availableProducts, participantProducts, memberProducts]).then((results: any) => {
+                        return results[0].map((product: any) => {
+                           product.sum = 0;
+                           let selections = results[1].concat(results[2]);
+                           for (let selection of selections) {
+                               for (let id of selection) {
+                                   if (id === product.id) {
+                                       product.sum++;
+                                   }
+                               }
+                           }
+                           return product;
+                       });
+                   }).then((productSums: any) => {
+                       console.log(productSums);
+                       resolve(productSums);
+                   });
                 });
             });
         }
