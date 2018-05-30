@@ -552,7 +552,7 @@ module Service {
                            return product;
                        });
                    }).then((productSums: any) => {
-                       console.log(productSums);
+                      // console.log(JSON.stringify(productSums));
                        resolve(productSums);
                    });
                 });
