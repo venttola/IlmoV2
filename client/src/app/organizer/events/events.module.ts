@@ -6,6 +6,8 @@ import { EventsRouterModule } from "./events-router.module";
 import { EventsComponent } from './events.component';
 import { EventOverviewComponent } from "./event-overview/event-overview.component";
 
+import { EventsService } from "./events.service";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -14,6 +16,9 @@ import { EventOverviewComponent } from "./event-overview/event-overview.componen
   declarations: [
     EventsComponent,
     EventOverviewComponent
+  ],
+  providers: [
+    EventsService
   ]
 })
 export class EventsModule { }

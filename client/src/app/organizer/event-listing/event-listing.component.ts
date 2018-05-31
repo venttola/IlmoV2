@@ -27,5 +27,4 @@ export class EventListingComponent implements OnInit {
         return this.eventListingService.getEvents(this.organizationId);
       });
   }
-
 }

@@ -1,3 +1,9 @@
-<p>
-  event-overview works!
-</p>
+<h2>{{event.name}}</h2>
+Tuotteiden summat
+  <ul class="common-list list-unstyled">
+    <li  *ngFor="let product of products">
+      <div class="group-item">
+        {{ product.name }} {{product.sum}}
+      </div>
+    </li>
+  </ul>
