@@ -68,14 +68,14 @@ module Service {
                                     let sumPromises = groups.map((group: any) => {
                                         return new Promise((resolve, reject) => {
                                             this.groupService.getProductSums(group.id).then((sums: any) => {
-                                                resolve ({name: group.name, products: sums});
+                                                resolve (sums);
                                             });
                                         });
                                     });
                                     //No idea why this nees the dueal promise unwapping
                                     Promise.all([sumPromises]).then((result: any) => {
-                                        return Promise.all(result[0]).then((promises: any) => {
-                                            resolve(promises);
+                                        return Promise.all(result[0]).then((groups: any) => {
+                                            resolve(groups);
                                         });
                                     });
                                 });
@@ -83,8 +83,23 @@ module Service {
                         });
                         //No idea why this nees the dueal promise unwapping
                         Promise.all([event, platoonPromises]).then((result: any) => {
-                            Promise.all(result[1]).then((groups: any) => {
-                                resolve({event: event, groups: groups});
+                            Promise.all(result[1]).then((platoons: any) => {
+                                //console.log(platoons);
+                                console.log(JSON.stringify(platoons));
+                                let total: { [name: string]: number; } = {};
+                                for (let platoon of platoons) {
+                                    for (let group of platoon){
+                                        console.log(group);
+                                        for (let product of group) {
+                                            if (total[product.name] === undefined) {
+                                                total[product.name] = product.sum;
+                                            } else {
+                                                total[product.name] += product.sum;
+                                            }
+                                        }
+                                    }
+                                }
+                                resolve({event: event, products: total});
                             });
                         });
                     }).catch((e: any ) => {
