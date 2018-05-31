@@ -3,4 +3,4 @@
     <div class="group-item unselectable clickable" [routerLink]="[o.id]"><a class="group-link">{{ o.name }}</a></div>
   </li>
 </ul>
-<div *ngIf="(moderatedGroups | async)?.length==0"><p>Et kuulu yhteenkään organisaatioon</p></div>
+<div *ngIf="(organizations | async)?.length==0"><p>Et kuulu yhteenkään organisaatioon</p></div>
