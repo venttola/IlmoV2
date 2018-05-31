@@ -85,11 +85,9 @@ module Service {
                         Promise.all([event, platoonPromises]).then((result: any) => {
                             Promise.all(result[1]).then((platoons: any) => {
                                 //console.log(platoons);
-                                console.log(JSON.stringify(platoons));
                                 let total: { [name: string]: number; } = {};
                                 for (let platoon of platoons) {
                                     for (let group of platoon){
-                                        console.log(group);
                                         for (let product of group) {
                                             if (total[product.name] === undefined) {
                                                 total[product.name] = product.sum;
@@ -99,7 +97,10 @@ module Service {
                                         }
                                     }
                                 }
-                                resolve({event: event, products: total});
+                                let totalArray = Object.keys(total).map((key: string) => {
+                                    return { name: key, sum: total[key]};
+                                });
+                                resolve({event: event, products: totalArray});
                             });
                         });
                     }).catch((e: any ) => {
