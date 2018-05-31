@@ -4,6 +4,7 @@ import { RouterModule, Routes, CanActivate } from "@angular/router";
 import { EventsComponent } from "./events.component";
 
 import { EventOverviewComponent } from "./event-overview/event-overview.component";
+import { GroupListingComponent } from "./group-listing/group-listing.component";
 import { OrganizerGuard } from "../../authentication/organizer-guard.service";
 const eventsRoutes: Routes = [
   // A kind of a crutch to make 
@@ -17,6 +18,10 @@ const eventsRoutes: Routes = [
         path: "",
         component: EventOverviewComponent 
       },
+      {
+        path: "groups",
+        component: GroupListingComponent
+      }
     ]
   }
 ];
