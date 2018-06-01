@@ -15,5 +15,10 @@ export class EventsService extends AuthorizedHttpService {
     .map(this.extractData)
     .catch(this.handleError);
   }
+  getGroupListing(organizationId: number, eventId: number): Observable<any>{
+    return this.http.get("/api/organization/" + organizationId + "/event/" + eventId + "/groups", { headers: this.headers })
+    .map(this.extractData)
+    .catch(this.handleError);
+  }
  
 }

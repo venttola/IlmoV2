@@ -1,3 +1,22 @@
-<p>
-  group-listing works!
-</p>
+<h2>Ryhmät</h2>
+<ul class="common-list">
+  <li *ngFor="let platoon of platoons$ | async as platoons">
+
+    <h3>{{ platoon.name }}</h3>
+    <div class="d-inline" *ngFor="let product of platoon.products">
+     {{product.name}} {{product.sum}}
+   </div>
+   <br>
+   <ul class="common-list">
+    <li *ngFor="let group of platoon.groups" [class.selected]="group.id === selectedId">
+      <div class="group-info-item unselectable clickable" [routerLink]="[group.id]">
+        {{group.name}}
+        <br>
+        <div class="d-inline" *ngFor="let product of group.products">
+          {{product.name}} {{product.sum}}
+        </div>
+      </div>
+    </li>
+  </ul>
+</li>
+</ul>
