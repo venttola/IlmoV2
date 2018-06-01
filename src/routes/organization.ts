@@ -125,6 +125,15 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
+    public getGroupListing = (req: express.Request, res: express.Response) => {
+      let organizationId = req.params.id;
+      let eventId = req.params.eventId;
+      this.organizationService.getGroups(organizationId, eventId).then((platoons: any) => {
+        return res.status(200).json(platoons);
+      }).catch((err: APIError) => {
+        return res.status(err.statusCode).send(err.message);
+      });
+    }
 	}
 }
 
