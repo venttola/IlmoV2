@@ -12,8 +12,11 @@
       <div class="group-info-item unselectable clickable" [routerLink]="[group.id]">
         {{group.name}}
         <br>
-        <div class="d-inline" *ngFor="let product of group.products">
-          {{product.name}} {{product.sum}}
+        Ryhmämaksun kokonaissumma (alennukset huomioitu): {{group.totalPrice}}
+        <div *ngFor="let product of group.products">
+          <div *ngIf="product.sum !==0">
+            {{product.name}} {{product.sum}}
+          </div>
         </div>
       </div>
     </li>
