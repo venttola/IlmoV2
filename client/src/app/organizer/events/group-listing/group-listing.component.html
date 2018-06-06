@@ -3,8 +3,10 @@
   <li *ngFor="let platoon of platoons$ | async as platoons">
 
     <h3>{{ platoon.name }}</h3>
-    <div class="d-inline" *ngFor="let product of platoon.products">
-     {{product.name}} {{product.sum}}
+    <div *ngFor="let product of platoon.products">
+      <div *ngIf="product.sum !==0">
+       {{product.name}} {{product.sum}}
+     </div>
    </div>
    <br>
    <ul class="common-list">
