@@ -5,7 +5,7 @@
     <h3>{{ platoon.name }}</h3>
     <div *ngFor="let product of platoon.products">
       <div *ngIf="product.sum !==0">
-       {{product.name}} {{product.sum}}
+       {{product.name}} {{product.sum}} 
      </div>
    </div>
    <br>
@@ -14,7 +14,7 @@
       <div class="group-info-item unselectable clickable" [routerLink]="[group.id]">
         {{group.name}}
         <br>
-        Ryhmämaksun kokonaissumma (alennukset huomioitu): {{group.totalPrice}}
+        Ryhmämaksun kokonaissumma (alennukset huomioitu): {{group.totalPrice}} €
         <div *ngFor="let product of group.products">
           <div *ngIf="product.sum !==0">
             {{product.name}} {{product.sum}}
