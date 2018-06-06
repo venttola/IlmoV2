@@ -522,37 +522,45 @@ module Service {
                    let participantProducts = this.getAllParticipantPayments(groupId).then((payments: any) => {
                        return payments.map((payment: any) => {
                             return payment.productSelections.map((selection: any) => {
-                                return(selection.product_id);
+                                return({productId: selection.product_id, discountId: selection.discount_id});
                             });
                        });
                    });
                    let memberProducts = this.getAllMemberPayments(groupId).then((payments: any) => {
                        return payments.map((payment: any) => {
                             return payment.productSelections.map((selection: any) => {
-                                return(selection.product_id);
+                                return({productId: selection.product_id, discountId: selection.discount_id});
                             });
                        });
                    });
                    let availableProducts =  this.getAvailableProducts(groupId).then((products: any) => {
                        return products.map( (product: any) => {
-                           return( {name: product.name, id: product.id});
+                           return( {name: product.name, id: product.id, price: product.price, discounts: product.discounts });
                        });
                    });
                    Promise.all([availableProducts, participantProducts, memberProducts]).then((results: any) => {
                         return results[0].map((product: any) => {
                            product.sum = 0;
+                           product.sumPrice = 0;
                            let selections = results[1].concat(results[2]);
                            for (let selection of selections) {
-                               for (let id of selection) {
-                                   if (id === product.id) {
+                               for (let selectedProduct of selection) {
+                                   if (selectedProduct.productId === product.id) {
                                        product.sum++;
+                                       product.sumPrice += product.price;
+                                       if (selectedProduct.discountId !== null) {
+                                            product.sumPrice -= product.discounts.map((discount: any) => {
+                                                if (discount.id === selectedProduct.discountId) {
+                                                    return discount.amount;
+                                                }
+                                            });
+                                       }
                                    }
                                }
                            }
-                           return product;
+                           return {name: product.name, id: product.id, price: product.price, sum: product.sum, sumPrice: product.sumPrice};
                        });
                    }).then((productSums: any) => {
-                      // console.log(JSON.stringify(productSums));
                        resolve(productSums);
                    });
                 });

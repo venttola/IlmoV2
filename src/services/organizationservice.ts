@@ -144,12 +144,14 @@ module Service {
                                     event.platoons[i].groups = platoon;
                                     let total: { [name: string]: number; } = {};
                                     for (let group of platoon){
+                                        group.totalPrice = 0;
                                         for (let product of group.products) {
                                            if (total[product.name] === undefined) {
                                                 total[product.name] = product.sum;
                                             } else {
                                                 total[product.name] += product.sum;
                                             }
+                                            group.totalPrice += product.sumPrice;
                                         }
                                     }
                                    // event.platoons[i].sums = total;
