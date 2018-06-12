@@ -1,9 +1,19 @@
 <h2>{{event.name}}</h2>
-Tuotteiden summat
-  <ul class="common-list list-unstyled">
-    <li  *ngFor="let product of products">
-      <div class="group-item">
-        {{ product.name }} {{product.sum}}
+<h3>Tuotteiden summat</h3>
+<ul class="common-list list-unstyled">
+  <li  *ngFor="let product of products">
+    <div class="group-item">
+      {{ product.name }} {{product.sum}} kappaletta ({{product.sumPrice}}€)
+      <div *ngIf="product.discounts.length">
+        <h6>Alennukset</h6>
+        <ul>
+          <li *ngFor="let discount of product.discounts">
+            {{discount.name}} {{discount.sum}} kappaletta ({{discount.sumPrice}}€)
+          </li>
+        </ul>
+        Alennukset huomioiden {{product.total}} €
       </div>
-    </li>
-  </ul>
+    </div>
+    <br>
+  </li>
+</ul>
