@@ -542,15 +542,24 @@ module Service {
                         return results[0].map((product: any) => {
                            product.sum = 0;
                            product.sumPrice = 0;
+                           product.total = 0;
+                           product.discounts.map((discount: any) => {
+                               discount.sum = 0;
+                               discount.sumPrice = 0;
+                           });
                            let selections = results[1].concat(results[2]);
                            for (let selection of selections) {
                                for (let selectedProduct of selection) {
                                    if (selectedProduct.productId === product.id) {
                                        product.sum++;
                                        product.sumPrice += product.price;
+                                       product.total += product.price;
                                        if (selectedProduct.discountId !== null) {
-                                            product.sumPrice += +product.discounts.map((discount: any) => {
+                                            product.total += +product.discounts.map((discount: any) => {
                                                 if (discount.id === selectedProduct.discountId) {
+                                                    discount.sum++;
+                                                    discount.sumPrice += discount.amount;
+
                                                     return discount.amount;
                                                 }
                                             });
@@ -558,7 +567,13 @@ module Service {
                                    }
                                }
                            }
-                           return {name: product.name, id: product.id, price: product.price, sum: product.sum, sumPrice: product.sumPrice};
+                           return { name: product.name,
+                                    id: product.id,
+                                    price: product.price,
+                                    sum: product.sum,
+                                    sumPrice: product.sumPrice,
+                                    total: product.total,
+                                    discounts: product.discounts };
                        });
                    }).then((productSums: any) => {
                        resolve(productSums);
