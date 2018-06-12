@@ -81,26 +81,52 @@ module Service {
                                 });
                             });
                         });
+                        let availableProducts =  this.eventService.getEventProducts(eventId).then((products: any) => {
+                            return products.map( (product: any) => {
+                               return( {name: product.name, id: product.id, price: product.price, discounts: product.discounts });
+                            });
+                        });
                         //No idea why this nees the dueal promise unwapping
-                        Promise.all([event, platoonPromises]).then((result: any) => {
-                            Promise.all(result[1]).then((platoons: any) => {
-                                //console.log(platoons);
-                                let total: { [name: string]: number; } = {};
-                                for (let platoon of platoons) {
-                                    for (let group of platoon){
-                                        for (let product of group) {
-                                            if (total[product.name] === undefined) {
-                                                total[product.name] = product.sum;
-                                            } else {
-                                                total[product.name] += product.sum;
-                                            }
-                                        }
-                                    }
-                                }
-                                let totalArray = Object.keys(total).map((key: string) => {
-                                    return { name: key, sum: total[key]};
-                                });
-                                resolve({event: event, products: totalArray});
+                        Promise.all(platoonPromises).then((resolvedPlatoons) => {
+
+                            Promise.all([event, availableProducts, resolvedPlatoons]).then((result: any) => {
+                               return result[1].map((product: any) => {
+                                   product.sum = 0;
+                                   product.sumPrice = 0;
+                                   product.total = 0;
+                                   product.discounts.map((discount: any) => {
+                                       discount.sum = 0;
+                                       discount.sumPrice = 0;
+                                   });
+                                   for (let platoon of result[2]) {
+                                       for (let group of platoon) {
+                                           for (let selectedProduct of group) {
+                                               if (selectedProduct.id === product.id) {
+                                                   product.sum = selectedProduct.sum;
+                                                   product.sumPrice += selectedProduct.sumPrice;
+                                                   product.total += selectedProduct.total;
+                                                   selectedProduct.discounts.map((selectedDiscount: any) => {
+                                                       product.discounts.map((discount: any) => {
+                                                           if (discount.id === selectedDiscount.id) {
+                                                               discount.sum += selectedDiscount.sum;
+                                                               discount.sumPrice += selectedDiscount.sumPrice;
+                                                           }
+                                                       });
+                                                   });
+                                               }
+                                           }
+                                       }
+                                   }
+                                   return { name: product.name,
+                                            id: product.id,
+                                            price: product.price,
+                                            sum: product.sum,
+                                            sumPrice: product.sumPrice,
+                                            total: product.total,
+                                            discounts: product.discounts };
+                               });
+                           }).then((productSums: any) => {
+                               resolve({event: event, products: productSums});
                             });
                         });
                     }).catch((e: any ) => {
