@@ -549,7 +549,7 @@ module Service {
                                        product.sum++;
                                        product.sumPrice += product.price;
                                        if (selectedProduct.discountId !== null) {
-                                            product.sumPrice -= product.discounts.map((discount: any) => {
+                                            product.sumPrice += +product.discounts.map((discount: any) => {
                                                 if (discount.id === selectedProduct.discountId) {
                                                     return discount.amount;
                                                 }
