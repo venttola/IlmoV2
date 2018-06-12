@@ -102,7 +102,7 @@ module Service {
                                        for (let group of platoon) {
                                            for (let selectedProduct of group) {
                                                if (selectedProduct.id === product.id) {
-                                                   product.sum = selectedProduct.sum;
+                                                   product.sum += selectedProduct.sum;
                                                    product.sumPrice += selectedProduct.sumPrice;
                                                    product.total += selectedProduct.total;
                                                    selectedProduct.discounts.map((selectedDiscount: any) => {
