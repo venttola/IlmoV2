@@ -151,7 +151,7 @@ module Service {
                                             } else {
                                                 total[product.name] += product.sum;
                                             }
-                                            group.totalPrice += product.sumPrice;
+                                            group.totalPrice += product.total;
                                         }
                                     }
                                    // event.platoons[i].sums = total;
