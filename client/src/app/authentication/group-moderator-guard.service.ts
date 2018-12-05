@@ -11,7 +11,7 @@ export class GroupModeratorGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot)  {
     if (!this.authService.loggedIn() || !this.authService.isModerator(route.params["groupId"])) {
-      this.router.navigate(["main"]);
+      this.router.navigate([""]);
       return false;
     }
     return true;

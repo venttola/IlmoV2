@@ -17,11 +17,21 @@
         Ryhmämaksun kokonaissumma (alennukset huomioitu): {{group.totalPrice}} €
         <div *ngFor="let product of group.products">
           <div *ngIf="product.sum !==0">
-            {{product.name}} {{product.sum}}
+            {{ product.name }} {{product.sum}} kappaletta ({{product.sumPrice}}€)
+            <div *ngIf="product.discounts.length">
+              <h6>Alennukset</h6>
+              <ul>
+                <li *ngFor="let discount of product.discounts">
+                  {{discount.name}} {{discount.sum}} kappaletta ({{discount.sumPrice}}€)
+                </li>
+              </ul>
+              Alennukset huomioiden {{product.total}} €
+            </div>
           </div>
         </div>
       </div>
-    </li>
-  </ul>
+    </div>
+  </li>
+</ul>
 </li>
 </ul>
