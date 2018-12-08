@@ -445,9 +445,10 @@ module Route {
 
         private createGroupPayment = () => {
             return new Promise((resolve, reject) => {
+                let refBase: string = config.get("ref_number_initial") + (Math.floor((Math.random() * 900) + 100)).toString();
                 this.groupPaymentModel.create({
                     paidOn: null,
-                    referenceNumber: bankUtils.generateFinnishRefNumber(config.get("ref_number_initial"))
+                    referenceNumber: bankUtils.generateFinnishRefNumber( refBase )
                 }, (err: Error, payment: any) => {
                     err ? reject(err) : resolve(payment);
                 });
