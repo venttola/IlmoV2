@@ -121,24 +121,11 @@ module Route {
     */
     public getEventProducts = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
-
-      this.eventModel.one({ id: eventId }, function (err: Error, event: any) {
-        if (err) {
-          let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_READ);
-          return res.status(500).send(errorMsg);
-        } else if (!event) {
-          let errorMsg = ErrorHandler.getErrorMsg("Event", ErrorType.NOT_FOUND);
-          return res.status(404).send(errorMsg);
-        } else {
-          event.getProducts(function (err: Error, prods: any) {
-            if (err) {
-              let errorMsg = ErrorHandler.getErrorMsg("Event product data", ErrorType.DATABASE_READ);
-              return res.status(500).send(errorMsg);
-            } else {
-              return res.status(200).json(prods);
-            }
-          });
-        }
+      this.eventService.getEventProducts(eventId)
+      .then((products: any) => {
+        return res.status(200).json(products);
+      }).catch((err: APIError) => {
+        return res.status(err.statusCode).send(err.message);
       });
     }
 
