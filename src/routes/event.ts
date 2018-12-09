@@ -85,18 +85,10 @@ module Route {
     */
     public deleteEvent = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
-
-      this.eventService.getEvent(eventId).then((event: any) => {
-        event.remove(function (err: Error) {
-          if (err) {
-            let msg = ErrorHandler.getErrorMsg("Event", ErrorType.DATABASE_DELETE);
-            return res.status(500).send(msg);
-          } else {
-            return res.status(204).send();
-          }
-        });
-      })
-      .catch((err: APIError) => {
+      this.eventService.removeEvent(eventId)
+      .then((event: any) => {
+        res.status(200);
+      }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
       });
     }
