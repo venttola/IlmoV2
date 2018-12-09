@@ -97,17 +97,15 @@ module Route {
     * @api {get} api/events Lists all events
     * @apiName List events
     * @apiGroup Event
-    * @apiSuccess {JSON} List of events
+    * @apiSuccess (200) {JSON} List of events
     * @apiError DatabaseReadError ERROR: Event data could not be read from the database
     */
     public getEvents = (req: express.Request, res: express.Response) => {
-      this.eventModel.all(function (err: Error, events: any) {
-        if (err) {
-          let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_READ);
-          return res.status(500).send(errorMsg);
-        } else {
-          return res.status(200).json(events);
-        }
+      this.eventService.getAllEvents()
+      .then((events: any) => {
+        return res.status(200).json(events);
+      }).catch((err: APIError) => {
+         return res.status(err.statusCode).send(err.message);
       });
     }
 
