@@ -15,6 +15,8 @@ module Service {
             } else {
               resolve(prods);
             }
+          }).catch((err: APIError) => {
+            reject(err);
           });
         });
       });
