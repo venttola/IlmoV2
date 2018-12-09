@@ -167,7 +167,8 @@ class Server {
 				models.ParticipantGroup,
 				models.GroupPayment,
 				this.userService,
-				this.organizationService
+				this.organizationService,
+				this.eventService
 			);
 
 		router.get(this.API_PREFIX + "/events", eventRoute.getEvents);

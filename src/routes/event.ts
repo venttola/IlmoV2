@@ -1,10 +1,11 @@
 import * as express from "express";
+import * as config from "config";
+const bankUtils = require("finnish-bank-utils");
 //import Promise from "ts-promise";
 import { UserService } from "../services/userservice";
 import { OrganizationService } from "../services/organizationservice";
+import { EventService } from "../services/eventservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
-import * as config from "config";
-const bankUtils = require("finnish-bank-utils");
 
 module Route {
 
@@ -36,7 +37,8 @@ module Route {
             private participantGroupModel: any,
             private groupPaymentModel: any,
             private userService: UserService,
-            private organizationService: OrganizationService) {
+            private organizationService: OrganizationService,
+            private eventService: EventService) {
         }
 
         /**
