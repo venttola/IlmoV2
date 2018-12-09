@@ -43,6 +43,29 @@ module Service {
                 });
             });
         }
+        public createEvent = (name: string,
+                              startDate: string,
+                              endDate: string,
+                              description: string,
+                              registerationOpen: boolean) => {
+            return new Promise((resolve, reject) => {
+                this.eventModel.create({
+                name: name,
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
+                description: description,
+                registerationOpen: registerationOpen
+            }, function (err: Error, event: any) {
+                if (err) {
+                    let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_INSERTION);
+                    return reject(new DatabaseError(500, errorMsg));
+                } else {
+                    return resolve(event);
+                }
+            });
+            });
+        }
+
     }
 }
 

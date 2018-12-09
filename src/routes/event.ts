@@ -48,23 +48,20 @@ module Route {
         * @apiParam {JSON} name {name: "Event name"}
         * @apiParam {JSON} startDate {startDate: "2017-01-01T12:00:00+0200"}
         * @apiParam {JSON} endDate {endDate: "2017-01-02T12:00:00+0200"}
-        * @apiSuccess (204) -
+        * @apiSuccess (201) -
         * @apiError DatabaseInsertionError ERROR: Event data insertion failed
         */
         public addEvent = (req: express.Request, res: express.Response) => {
-            this.eventModel.create({
-                name: req.body.name,
-                startDate: new Date(req.body.startDate),
-                endDate: new Date(req.body.endDate),
-                description: req.body.description,
-                registerationOpen: req.body.registerationOpen
-            }, function (err: Error, items: any) {
-                if (err) {
-                    let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_INSERTION);
-                    return res.status(500).send(errorMsg);
-                } else {
-                    return res.status(200).json({ data: { event: items } });
-                }
+            this.eventService.createEvent(req.body.name,
+                req.body.startDate,
+                req.body.endDate,
+                req.body.description,
+                req.body.registerationOpen)
+            .then((event: any) => {
+                return res.status(201).json({event: event});
+            })
+            .catch((err: DatabaseError) => {
+                return res.status(err.statusCode).send(err.message);
             });
         }
         /**
