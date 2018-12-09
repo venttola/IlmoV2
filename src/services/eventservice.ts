@@ -43,6 +43,18 @@ module Service {
         });
       });
     }
+    public getAllEvents = () => {
+      return new Promise ((resolve, reject) => {
+        this.eventModel.all(function (err: Error, events: any) {
+          if (err) {
+            let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_READ);
+            reject (new DatabaseError(500, errorMsg));
+          } else {
+            resolve(events);
+          }
+        });
+      });
+    }
     // TODO: Implement Platoon, group and participant removal.
     public removeEvent = (eventId: number ) => {
       return new Promise ((resolve, reject) => {
