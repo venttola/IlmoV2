@@ -137,7 +137,7 @@ module Route {
     * @apiParam {JSON} name {name: "Product name"}
     * @apiParam {JSON} price {price: "Product price"}
     * @apiParam {JSON} discounts [{name: "Free entry"}, amount: 10]
-    * @apiSuccess (200) JSON {id: 1, name: "Product name", price: "Product price"}
+    * @apiSuccess (201) JSON {id: 1, name: "Product name", price: "Product price"}
     * @apiError DatabaseInsertionError ERROR: Product data insertion failed
     * @apiError NotFound ERROR: Event was not found
     * @apiError DatabaseInsertionError ERROR: Adding product to event failed
@@ -146,47 +146,19 @@ module Route {
     public addProduct = (req: express.Request, res: express.Response) => {
       console.log("Adding product");
       console.log("Body: " + JSON.stringify(req.body));
-      let self = this;
       let eventId = req.params.event;
-      let productName = req.body.name;
-      let productPrice = req.body.price;
-      let discounts: any[] = req.body.discounts;
-
-      try {
-        discounts = JSON.parse(req.body.discounts);
-      } catch (e) {
-            //console.log(e);
-          }
-
-          this.eventService.getEvent(eventId).then((event: any) => {
-            this.productModel.create({
-              name: productName,
-              price: productPrice
-            }, function (err: Error, prod: any) {
-              if (err) {
-                let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
-                return res.status(500).send(errorMsg);
-              } else {
-                event.addProducts(prod, function (err: Error) {
-                  if (err) {
-                    return res.status(500).send("ERROR: Adding product to event failed");
-                  } else {
-                    let discountPromises: any = discounts.map((discount: any) => {
-                      return self.createDiscount(prod, discount);
-                    });
-                    Promise.all(discountPromises).then((promises: any) => {
-                      return res.status(204).send();
-                    }).catch((err: APIError) => {
-                      return res.status(err.statusCode).send(err.message);
-                    });
-                  }
-                });
-              }
-            });
-          }).catch((err: APIError) => {
-            return res.status(err.statusCode).send(err.message);
-          });
-        }
+      let productData = {
+        name: req.body.name,
+        price: req.body.price,
+        discounts: req.body.discounts
+      };
+      this.eventService.addProductFor(eventId, productData)
+      .then((product: any) => {
+        res.status(201).send(product);
+      }).catch((err: APIError) => {
+        return res.status(err.statusCode).send(err.message);
+      });
+    }
 
     /**
     * @api {patch} api/events/:event/product Adds event products
