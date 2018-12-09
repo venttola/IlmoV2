@@ -133,6 +133,42 @@ module Service {
         });
     });
     }
+    public updateProduct = (productId: number,
+                            productData: any) => {
+      return new Promise((resolve, reject) => {
+        let self = this;
+        this.productModel.one({
+          id: productId,
+        }, function (err: Error, product: any) {
+          if (err) {
+            let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+            reject( new DatabaseError(500, errorMsg));
+          } else {
+            product.name = productData.name;
+            product.price = productData.price;
+            product.save(function(err: any) {
+              if (err) {
+                let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+                reject( new DatabaseError(500, errorMsg));
+              } else {
+                let discountPromises: any = productData.discounts.map((discount: any) => {
+                  if (!discount.id) {
+                    return self.createDiscount(product, discount);
+                  } else {
+                    return self.updateDiscount(discount);
+                  }
+                });
+                Promise.all(discountPromises).then((promises: any) => {
+                  resolve(product);
+                }).catch((err: APIError) => {
+                  reject( err );
+                });
+              }
+            });
+          }
+        });
+      });
+    }
     private createDiscount = (product: any, discount: any) => {
       return new Promise((resolve, reject) => {
         this.discountModel.create({
@@ -152,6 +188,20 @@ module Service {
                 return resolve(discount);
               }
             });
+          }
+        });
+      });
+    }
+    private updateDiscount = (newDiscount: any) => {
+      return new Promise((resolve, reject) => {
+        this.discountModel.find({
+          id: newDiscount.id
+        }, function (err: Error, discount: any) {
+          if (err || !discount) {
+            let errorMsg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
+            reject(new DatabaseError(500, errorMsg));
+          } else {
+            resolve(discount);
           }
         });
       });
