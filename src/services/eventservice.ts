@@ -3,7 +3,9 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 
 module Service {
   export class EventService {
-    constructor(private eventModel: any) { }
+    constructor(private eventModel: any,
+                private productModel: any,
+                private discountModel: any) { }
 
     public getEventProducts = (eventId: number) => {
       return new Promise((resolve, reject) => {

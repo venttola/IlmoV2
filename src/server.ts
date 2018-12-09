@@ -57,7 +57,7 @@ class Server {
 				models.UserPayment,
 				models.ProductSelection,
 				models.Product);
-			this.eventService = new EventService(models.Event);
+			this.eventService = new EventService(models.Event, models.Product, models.Discount);
 			this.authService = new AuthService(this.userService);
 			this.groupService = new GroupService(models.ParticipantGroup,
 				this.userService,
