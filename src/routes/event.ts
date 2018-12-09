@@ -86,7 +86,7 @@ module Route {
     public deleteEvent = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
 
-      this.getEvent(eventId).then((event: any) => {
+      this.eventService.getEvent(eventId).then((event: any) => {
         event.remove(function (err: Error) {
           if (err) {
             let msg = ErrorHandler.getErrorMsg("Event", ErrorType.DATABASE_DELETE);
@@ -181,7 +181,7 @@ module Route {
             //console.log(e);
           }
 
-          this.getEvent(eventId).then((event: any) => {
+          this.eventService.getEvent(eventId).then((event: any) => {
             this.productModel.create({
               name: productName,
               price: productPrice
@@ -232,7 +232,7 @@ module Route {
       let productName = req.body.name;
       let productPrice = req.body.price;
       let discounts = req.body.discounts;
-      this.getEvent(eventId).then((event: any) => {
+      this.eventService.getEvent(eventId).then((event: any) => {
         this.productModel.one({
           id: productId,
         }, function (err: Error, product: any) {
@@ -292,7 +292,7 @@ module Route {
       let eventId = req.params.event;
       let organizationName = req.body.name;
 
-      this.getEvent(eventId).then((event: any) => {
+      this.eventService.getEvent(eventId).then((event: any) => {
         this.organizationService.getOrganization(organizationName).then((organization: any) => {
           event.setOrganization(organization, function (err: Error) {
             if (err) {
@@ -312,7 +312,7 @@ module Route {
     public openRegisteration = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
 
-      this.getEvent(eventId).then((event: any) => {
+      this.eventService.getEvent(eventId).then((event: any) => {
         event.registerationOpen = true;
         event.save(function (err: Error) {
           if (err) {
@@ -330,7 +330,7 @@ module Route {
     public closeRegisteration = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
 
-      this.getEvent(eventId).then((event: any) => {
+      this.eventService.getEvent(eventId).then((event: any) => {
         event.registerationOpen = false;
         event.save(function (err: Error) {
           if (err) {
@@ -365,7 +365,7 @@ module Route {
       let moderator = req.body.moderator;
       let self = this;
 
-      this.getEvent(eventId).then((event: any) => {
+      this.eventService.getEvent(eventId).then((event: any) => {
         return this.getEventPlatoon(event, platoonId);
       }).then((platoon: any) => {
         if (platoon) {
@@ -474,7 +474,7 @@ module Route {
     */
     public getEventDetails = (req: express.Request, res: express.Response) => {
       let id = req.params.event;
-      this.getEvent(id).then((event: any) => {
+      this.eventService.getEvent(id).then((event: any) => {
         event.getPlatoons(function (err: Error, platoons: any) {
           if (err) {
             let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
@@ -505,7 +505,7 @@ module Route {
       let platoons = req.body.platoons;
       let self = this;
 
-      self.getEvent(eventId).then((event: any) => {
+      this.eventService.getEvent(eventId).then((event: any) => {
         return new Promise((resolve, reject) => {
           let platoonList = new Array();
           for (let platoon of platoons) {
@@ -531,7 +531,7 @@ module Route {
       let platoonName = req.body.name;
       let self = this;
 
-      self.getEvent(eventId).then((event: any) => {
+      this.eventService.getEvent(eventId).then((event: any) => {
         return new Promise((resolve, reject) => {
           this.platoonModel.one({
             id: platoonId,
@@ -575,21 +575,6 @@ module Route {
       });
     }
 
-    private getEvent = (eventId: Number) => {
-      return new Promise((resolve, reject) => {
-        this.eventModel.one({ id: eventId }, function (err: Error, event: any) {
-          if (err) {
-            let errorMsg = ErrorHandler.getErrorMsg("Event data", ErrorType.DATABASE_READ);
-            reject(new DatabaseError(500, errorMsg));
-          } else if (!event) {
-            let errorMsg = ErrorHandler.getErrorMsg("Event", ErrorType.NOT_FOUND);
-            reject(new DatabaseError(400, errorMsg));
-          } else {
-            return resolve(event);
-          }
-        });
-      });
-    };
 
     private createPlatoon = (eventId: number, platoon: Platoon) => {
       let self = this;
@@ -602,7 +587,7 @@ module Route {
             let errorMsg = ErrorHandler.getErrorMsg("Platoon data", ErrorType.DATABASE_INSERTION);
             reject(new DatabaseError(500, errorMsg));
           } else {
-            self.getEvent(eventId).then((event: any) => {
+            this.eventService.getEvent(eventId).then((event: any) => {
               event.addPlatoons([platoon], function (err: Error) {
                 if (err) {
                   let msg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.DATABASE_INSERTION);
