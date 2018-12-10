@@ -169,6 +169,23 @@ module Service {
         });
       });
     }
+    public setRegisterationFor = (eventId: number, isOpen: boolean) => {
+      return new Promise((resolve, reject) => {
+        this.getEvent(eventId).then((event: any) => {
+          event.registerationOpen = isOpen;
+          event.save(function (err: Error) {
+            if (err) {
+              let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+               reject( new DatabaseError(500, errorMsg));
+            } else {
+              resolve(event);
+            }
+          });
+        }).catch((err: APIError) => {
+          reject(err);
+        });
+      });
+    }
     private createDiscount = (product: any, discount: any) => {
       return new Promise((resolve, reject) => {
         this.discountModel.create({
