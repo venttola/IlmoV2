@@ -192,7 +192,7 @@ module Route {
     }
 
     /**
-    * @api {post} api/events/:event/organization Adds organization for event.
+    * @api {post} api/events/:event/organization Sets organization for event.
     * @apiName Add organization for event
     * @apiGroup Event
     * @apiParam {Number} event Events unique ID
@@ -224,38 +224,37 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-    //TODO apidoc
+    /**
+    * @api {post} api/events/:event/opensignup Open signup for event
+    * @apiGroup Event
+    * @apiParam {Number} event Event's unique ID
+    * @apiSuccess (200) -
+    * @apiError DatabaseReadError ERROR: Event data could not be read from the database
+    * @apiError NotFound ERROR: Event was not found
+    */
     public openRegisteration = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
-
-      this.eventService.getEvent(eventId).then((event: any) => {
-        event.registerationOpen = true;
-        event.save(function (err: Error) {
-          if (err) {
-            let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-            return res.status(500).send(err.message);
-          } else {
-            return res.status(200).json(JSON.stringify({ "registerationOpen": event.registerationOpen }));
-          }
-        });
+      this.eventService.setRegisterationFor(eventId, true)
+      .then((event: any) => {
+        return res.status(200).json(event);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
       });
     }
-    //TODO apidoc
+      /**
+    * @api {post} api/events/:event/closesignup Open signup for event
+    * @apiGroup Event
+    * @apiParam {Number} event Event's unique ID
+    * @apiSuccess (200) -
+    * @apiError DatabaseReadError ERROR: Event data could not be read from the database
+    * @apiError NotFound ERROR: Event was not found
+    */
     public closeRegisteration = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
 
-      this.eventService.getEvent(eventId).then((event: any) => {
-        event.registerationOpen = false;
-        event.save(function (err: Error) {
-          if (err) {
-            let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-            return res.status(500).send(err.message);
-          } else {
-            return res.status(200).json(JSON.stringify({ "registerationOpen": event.registerationOpen }));
-          }
-        });
+      this.eventService.setRegisterationFor(eventId, false)
+      .then((event: any) => {
+        return res.status(200).json(event);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
       });
