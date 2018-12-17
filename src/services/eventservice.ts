@@ -1,11 +1,14 @@
 //import Promise from "ts-promise";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
-
+import { UserService } from "../services/userservice";
 module Service {
   export class EventService {
     constructor(private eventModel: any,
                 private productModel: any,
-                private discountModel: any) { }
+                private discountModel: any,
+                private groupPaymentModel: any,
+                private participantGroupModel: any,
+                private userService: UserService) { }
 
     public getEventProducts = (eventId: number) => {
       return new Promise((resolve, reject) => {
