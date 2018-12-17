@@ -1,4 +1,6 @@
 //import Promise from "ts-promise";
+const bankUtils = require("finnish-bank-utils");
+import * as config from "config";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { UserService } from "../services/userservice";
 module Service {
@@ -189,6 +191,45 @@ module Service {
         });
       });
     }
+    // TODO: refactor this mess
+    public createParticipantGroup(eventId: number, groupData: any) {
+      return new Promise((resolve, reject) => {
+        this.getEvent(eventId).then((event: any) => {
+          return this.getEventPlatoon(event, groupData.platoonId);
+        }).then((platoon: any) => {
+          if (platoon) {
+            let createdGroup: any = {};
+            this.createGroup(groupData.name, groupData.description)
+            .then((group: any) => {
+              createdGroup = group;
+              return this.addGroupToPlatoon(platoon, group);
+            })
+            .then((group: any) => {
+              return this.createGroupPayment();
+            })
+            .then((groupPayment: any) => {
+              return this.setPayeeToPayment(groupPayment, createdGroup);
+            })
+            .then((group: any) => {
+              return this.userService.getUser(groupData.moderator);
+            })
+            .then((user: any) => {
+              createdGroup.addModerator(user, (err: Error) => {
+                return err
+                ? reject(new DatabaseError(500, ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_UPDATE)))
+                : resolve(createdGroup);
+              });
+            })
+            .catch((err: APIError) => {
+            reject(err);
+            });
+          } else {
+            reject(new DatabaseError(404, ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND)));
+          }
+        });
+      });
+    }
+
     private createDiscount = (product: any, discount: any) => {
       return new Promise((resolve, reject) => {
         this.discountModel.create({
@@ -223,6 +264,64 @@ module Service {
           } else {
             resolve(discount);
           }
+        });
+      });
+    }
+     private getEventPlatoon = (event: any, platoonId: number) => {
+      return new Promise((resolve, reject) => {
+        event.getPlatoons((err: Error, platoons: Array<any>) => {
+          if (err) {
+            reject(err);
+          } else {
+
+            let platoon = this.findPlatoon(platoons, platoonId);
+            resolve(platoon);
+          }
+        });
+      });
+    }
+
+    private findPlatoon = (platoons: any[], platoonId: number) => {
+      let values = platoons.filter(p => p.id === platoonId);
+      let platoon = values.length > 0 ? values[0] : null;
+      return platoon;
+    }
+
+    private addGroupToPlatoon = (platoon: any, group: any) => {
+      return new Promise((resolve, reject) => {
+        platoon.addParticipantGroups(group, (err: Error) => {
+          err ? reject(err) : resolve(group);
+        });
+      });
+    }
+
+    private createGroup = (name: string, description: string) => {
+      return new Promise((resolve, reject) => {
+        this.participantGroupModel.create({
+          name: name,
+          description: description !== undefined ? description : ""
+        }, (err: Error, group: any) => {
+          err ? reject(err) : resolve(group);
+        });
+      });
+    }
+
+    private createGroupPayment = () => {
+      return new Promise((resolve, reject) => {
+        let refBase: string = config.get("ref_number_initial") + (Math.floor((Math.random() * 900) + 100)).toString();
+        this.groupPaymentModel.create({
+          paidOn: null,
+          referenceNumber: bankUtils.generateFinnishRefNumber( refBase )
+        }, (err: Error, payment: any) => {
+          err ? reject(err) : resolve(payment);
+        });
+      });
+    }
+
+    private setPayeeToPayment = (payment: any, payee: any) => {
+      return new Promise((resolve, reject) => {
+        payment.setPayee(payee, function (err: Error) {
+          err ? reject(err) : resolve(payee);
         });
       });
     }
