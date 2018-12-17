@@ -229,6 +229,20 @@ module Service {
         });
       });
     }
+    public getEventDetails(eventId: number) {
+      return new Promise((resolve, reject) => {
+        this.getEvent(eventId).then((event: any) => {
+          event.getPlatoons(function (err: Error, platoons: any) {
+            if (err) {
+              let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
+              reject (new DatabaseError(500, errorMsg));
+            } else {
+              resolve({ data: { event: event, platoons: platoons } });
+            }
+          });
+        });
+      });
+    }
 
     private createDiscount = (product: any, discount: any) => {
       return new Promise((resolve, reject) => {
