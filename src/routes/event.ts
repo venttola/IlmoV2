@@ -301,16 +301,8 @@ module Route {
     */
     public getEventDetails = (req: express.Request, res: express.Response) => {
       let id = req.params.event;
-      this.eventService.getEvent(id).then((event: any) => {
-        event.getPlatoons(function (err: Error, platoons: any) {
-          if (err) {
-            let errorMsg = ErrorHandler.getErrorMsg("Event platoon data", ErrorType.DATABASE_READ);
-            return res.status(500).send(errorMsg);
-          } else {
-                    //console.log(platoons);
-                    return res.status(200).json({ data: { event: event, platoons: platoons } });
-                  }
-                });
+      this.eventService.getEventDetails(id).then((data: any) => {
+        return res.status(200).json(data);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
       });
