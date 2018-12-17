@@ -176,7 +176,7 @@ module Service {
           event.save(function (err: Error) {
             if (err) {
               let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-               reject( new DatabaseError(500, errorMsg));
+               reject( new DatabaseError(500, msg));
             } else {
               resolve(event);
             }
