@@ -83,10 +83,10 @@ module Service {
       });
     }
     public createEvent = (name: string,
-      startDate: string,
-      endDate: string,
-      description: string,
-      registerationOpen: boolean) => {
+                          startDate: string,
+                          endDate: string,
+                          description: string,
+                          registerationOpen: boolean) => {
       return new Promise((resolve, reject) => {
         this.eventModel.create({
           name: name,
@@ -104,43 +104,41 @@ module Service {
         });
       });
     }
-    public addProductFor = (eventId: number,
-                            productData: any) => {
+    public addProductFor = (eventId: number, productData: any) => {
       return new Promise((resolve, reject) => {
         let self = this;
         this.getEvent(eventId)
         .then( (event: any) => {
           this.productModel.create({
-              name: productData.name,
-              price: productData.price
-            }, function (err: Error, prod: any) {
-              if (err) {
-                let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
-                reject( new DatabaseError(500, errorMsg));
-              } else {
-                event.addProducts(prod, function (err: Error) {
-                  if (err) {
-                    reject( new DatabaseError(500, "ERROR: Adding product to event failed"));
-                  } else {
-                    let discountPromises: any = productData.discounts.map((discount: any) => {
-                      return self.createDiscount(prod, discount);
-                    });
-                    Promise.all(discountPromises).then((promises: any) => {
-                      resolve (prod);
-                    }).catch((err: APIError) => {
-                      reject (err);
-                    });
-                  }
-                });
-              }
-            });
+            name: productData.name,
+            price: productData.price
+          }, function (err: Error, prod: any) {
+            if (err) {
+              let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+              reject( new DatabaseError(500, errorMsg));
+            } else {
+              event.addProducts(prod, function (err: Error) {
+                if (err) {
+                  reject( new DatabaseError(500, "ERROR: Adding product to event failed"));
+                } else {
+                  let discountPromises: any = productData.discounts.map((discount: any) => {
+                    return self.createDiscount(prod, discount);
+                  });
+                  Promise.all(discountPromises).then((promises: any) => {
+                    resolve (prod);
+                  }).catch((err: APIError) => {
+                    reject (err);
+                  });
+                }
+              });
+            }
+          });
         }).catch((err: APIError) => {
           reject(err);
         });
-    });
+      });
     }
-    public updateProduct = (productId: number,
-                            productData: any) => {
+    public updateProduct = (productId: number, productData: any) => {
       return new Promise((resolve, reject) => {
         let self = this;
         this.productModel.one({
@@ -182,7 +180,7 @@ module Service {
           event.save(function (err: Error) {
             if (err) {
               let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-               reject( new DatabaseError(500, msg));
+              reject( new DatabaseError(500, msg));
             } else {
               resolve(event);
             }
@@ -222,7 +220,7 @@ module Service {
               });
             })
             .catch((err: APIError) => {
-            reject(err);
+              reject(err);
             });
           } else {
             reject(new DatabaseError(404, ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND)));
@@ -334,7 +332,6 @@ module Service {
                 let msg = ErrorHandler.getErrorMsg("Discount", ErrorType.DATABASE_INSERTION);
                 return reject(new DatabaseError(500, msg));
               } else {
-                console.log(JSON.stringify(product));
                 return resolve(discount);
               }
             });
@@ -356,7 +353,7 @@ module Service {
         });
       });
     }
-     private getEventPlatoon = (event: any, platoonId: number) => {
+    private getEventPlatoon = (event: any, platoonId: number) => {
       return new Promise((resolve, reject) => {
         event.getPlatoons((err: Error, platoons: Array<any>) => {
           if (err) {
