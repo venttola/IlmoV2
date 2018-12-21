@@ -10,6 +10,7 @@ module Service {
                 private discountModel: any,
                 private groupPaymentModel: any,
                 private participantGroupModel: any,
+                private platoonModel: any,
                 private userService: UserService) { }
 
     public getEventProducts = (eventId: number) => {
