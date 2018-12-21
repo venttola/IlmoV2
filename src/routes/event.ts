@@ -105,7 +105,7 @@ module Route {
       .then((events: any) => {
         return res.status(200).json(events);
       }).catch((err: APIError) => {
-         return res.status(err.statusCode).send(err.message);
+        return res.status(err.statusCode).send(err.message);
       });
     }
 
@@ -224,6 +224,7 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
+    
     /**
     * @api {post} api/events/:event/opensignup Open signup for event
     * @apiGroup Event
@@ -241,7 +242,8 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-      /**
+
+    /**
     * @api {post} api/events/:event/closesignup Open signup for event
     * @apiGroup Event
     * @apiParam {Number} event Event's unique ID
@@ -259,6 +261,7 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
+
     /**
     * @api {post} api/events/:event/group Adds participantgroup to event
     * @apiName Add participantgroup to event
@@ -313,7 +316,7 @@ module Route {
     * @apiGroup Event
     * @apiParam {Number} event Events unique ID
     * @apiParam {JSON} name {name: "Ruotsi"}
-    * @apiSuccess (204) -
+    * @apiSuccess (200) -
     * @apiError DatabaseReadError ERROR: Event data could not be read from the database
     * @apiError NotFound ERROR: Event was not found
     * @apiError DatabaseInsertionError ERROR: Platoon insertion failed
@@ -322,16 +325,15 @@ module Route {
     public addPlatoons = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
       let platoons = req.body.platoons;
-      let self = this;
 
-      self.eventService.createPlatoons(eventId, platoons)
+      this.eventService.createPlatoons(eventId, platoons)
       .then((platoonList: any) => {
         return res.status(200).json(platoonList);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
       });
     }
-    // TODO: APIDOC
+
     /**
     * @api {patch} api/events/:event/platoon Updates a platoon
     * @apiName Update platoon on event
