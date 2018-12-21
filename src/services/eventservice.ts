@@ -286,7 +286,39 @@ module Service {
         });
       });
     }
-
+    // TODO: Refactor this spaghetti
+    public updatePlatoon = (eventId: number, platoonId: number, platoonName: string) => {
+      return new Promise ((resolve, reject) => {
+        this.getEvent(eventId).then((event: any) => {
+          return new Promise((resolve, reject) => {
+            this.platoonModel.one({
+              id: platoonId,
+            }, function (err: Error, platoon: any) {
+              if (err) {
+                let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
+                reject(new DatabaseError(500, errorMsg));
+              } else if (!platoon) {
+                let errorMsg = ErrorHandler.getErrorMsg("Platoon", ErrorType.NOT_FOUND);
+                reject(new DatabaseError(404, errorMsg));
+              } else {
+                platoon.name = platoonName;
+                platoon.save(function(err: Error) {
+                  if (err) {
+                    reject(new DatabaseError(500, err.message));
+                  } else {
+                    resolve(platoon);
+                  }
+                });
+              }
+            });
+          });
+        }).then((platoon: any) => {
+          resolve(platoon);
+        }).catch((err: APIError) => {
+          reject(err);
+        });
+      });
+    }
     private createDiscount = (product: any, discount: any) => {
       return new Promise((resolve, reject) => {
         this.discountModel.create({
