@@ -196,8 +196,8 @@ module Route {
     * @apiName Add organization for event
     * @apiGroup Event
     * @apiParam {Number} event Events unique ID
-    * @apiParam {JSON} name {name: "Sotahuuto-yhdistys Ry"}
-    * @apiSuccess (204) -
+    * @apiParam {JSON} organization Organization's id.
+    * @apiSuccess (204) event The updated event
     * @apiError DatabaseReadError ERROR: Event data could not be read from the database
     * @apiError DatabaseReadError ERROR: Organization data could not be read from the database
     * @apiError NotFound ERROR: Event was not found
@@ -206,25 +206,16 @@ module Route {
     */
     public setOrganization = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
-      let organizationName = req.body.name;
+      let organizationId = req.body.organization;
 
-      this.eventService.getEvent(eventId).then((event: any) => {
-        this.organizationService.getOrganization(organizationName).then((organization: any) => {
-          event.setOrganization(organization, function (err: Error) {
-            if (err) {
-              let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-              return res.status(500).send(err.message);
-            } else {
-              let jsonData = { data: { organization: organization } };
-              return res.status(200).json(jsonData);
-            }
-          });
-        });
+      this.eventService.setEventOrganisation(eventId, organizationId)
+      .then((event: any) => {
+        return res.status(200).json(event);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
       });
     }
-    
+
     /**
     * @api {post} api/events/:event/opensignup Open signup for event
     * @apiGroup Event
