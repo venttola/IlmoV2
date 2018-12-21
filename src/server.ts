@@ -167,12 +167,6 @@ class Server {
 
 		let eventRoute: eventRoutes.EventRoutes =
 			new eventRoutes.EventRoutes(
-				models.Event,
-				models.Product,
-				models.Discount,
-				models.Platoon,
-				models.ParticipantGroup,
-				models.GroupPayment,
 				this.userService,
 				this.organizationService,
 				this.eventService

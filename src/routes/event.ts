@@ -9,33 +9,8 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 
 module Route {
 
-  class Event {
-    constructor(private id: number,
-      private name: string,
-      private startDate: Date,
-      private endDate: Date,
-      private description: string,
-      private registerationOpen: boolean) { }
-  }
-  class Product {
-    name: string;
-    price: string;
-  }
-  class Discount {
-    name: string;
-    amount: string;
-  }
-  class Platoon {
-    constructor(public id: number,
-      public name: string) { }
-  }
   export class EventRoutes {
-    constructor(private eventModel: any,
-      private productModel: any,
-      private discountModel: any,
-      private platoonModel: any,
-      private participantGroupModel: any,
-      private groupPaymentModel: any,
+    constructor(
       private userService: UserService,
       private organizationService: OrganizationService,
       private eventService: EventService) {
