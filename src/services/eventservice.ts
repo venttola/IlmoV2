@@ -3,6 +3,7 @@ const bankUtils = require("finnish-bank-utils");
 import * as config from "config";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { UserService } from "../services/userservice";
+import { OrganizationService } from "../services/organizationservice";
 module Service {
   export class EventService {
     constructor(private eventModel: any,
@@ -11,7 +12,8 @@ module Service {
                 private groupPaymentModel: any,
                 private participantGroupModel: any,
                 private platoonModel: any,
-                private userService: UserService) { }
+                private userService: UserService,
+                private organizationService: OrganizationService) { }
 
     public getEventProducts = (eventId: number) => {
       return new Promise((resolve, reject) => {

@@ -63,7 +63,8 @@ class Server {
 																					 models.GroupPayment,
 																					 models.ParticipantGroup,
 																					 models.Platoon,
-																					 this.userService);
+																					 this.userService,
+																					 this.organizationService);
 			this.authService = new AuthService(this.userService);
 			this.groupService = new GroupService(models.ParticipantGroup,
 				this.userService,
