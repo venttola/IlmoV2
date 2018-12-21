@@ -319,6 +319,25 @@ module Service {
         });
       });
     }
+    public setEventOrganisation = (eventId: number, organizationId: number)  => {
+      return new Promise ((resolve, reject) =>   {
+        this.getEvent(eventId).then((event: any) => {
+          this.organizationService.getOrganization(organizationId).then((organization: any) => {
+            event.setOrganization(organization, function (err: Error) {
+              if (err) {
+                let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
+                reject(new DatabaseError(500, msg));
+              } else {
+                resolve(JSON.stringify(event));
+              }
+            });
+          });
+        }).catch((err: APIError) => {
+          reject(err);
+        });
+      });
+    }
+
     private createDiscount = (product: any, discount: any) => {
       return new Promise((resolve, reject) => {
         this.discountModel.create({
