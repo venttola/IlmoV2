@@ -331,34 +331,28 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
+    // TODO: APIDOC
+    /**
+    * @api {patch} api/events/:event/platoon Updates a platoon
+    * @apiName Update platoon on event
+    * @apiGroup Event
+    * @apiParam {Number} event Event's unique ID
+    * @apiParam {JSON} name {name: "Ruotsi"}
+    * @apiParam {JSON} id {id: "4"}
+    *
+    * @apiSuccess (200) -
+    * @apiError (404) NotFound ERROR: Event was not found
+    * @apiError (404) NotFound ERROR: Platoon was not found
+    * @apiError (500) DatabaseInsertionError ERROR: Platoon insertion failed
+    * @apiError (500) DatabaseReadError ERROR: Event data could not be read from the database
+    */
     public updatePlatoon = (req: express.Request, res: express.Response) => {
       let eventId = req.params.event;
       let platoonId = req.body.id;
       let platoonName = req.body.name;
       let self = this;
-
-      this.eventService.getEvent(eventId).then((event: any) => {
-        return new Promise((resolve, reject) => {
-          this.platoonModel.one({
-            id: platoonId,
-          }, function (err: Error, platoon: any) {
-            if (err) {
-              let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_INSERTION);
-              return res.status(500).send(errorMsg);
-            } else {
-              platoon.name = platoonName;
-              platoon.save(function(err: Error) {
-                if (err) {
-                  let msg = ErrorHandler.getErrorMsg("Organizer", ErrorType.DATABASE_INSERTION);
-                  return res.status(500).send(err.message);
-                } else {
-                  return res.status(200).json(JSON.stringify(platoon));
-                }
-              });
-            }
-          });
-        });
-      }).then((platoon: any) => {
+      this.eventService.updatePlatoon(eventId, platoonId, platoonName)
+      .then((platoon: any) => {
         return res.status(200).json(platoon);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
