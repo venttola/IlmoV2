@@ -324,21 +324,8 @@ module Route {
       let platoons = req.body.platoons;
       let self = this;
 
-      this.eventService.getEvent(eventId).then((event: any) => {
-        return new Promise((resolve, reject) => {
-          let platoonList = new Array();
-          for (let platoon of platoons) {
-            self.createPlatoon(eventId, platoon).then(platoon => {
-              platoonList.push(platoon);
-              if (platoonList.length === platoons.length) {
-                return resolve(platoonList);
-              }
-            }).catch((err: APIError) => {
-              return reject(err);
-            });
-          }
-        });
-      }).then((platoonList: any) => {
+      self.eventService.createPlatoons(eventId, platoons)
+      .then((platoonList: any) => {
         return res.status(200).json(platoonList);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
