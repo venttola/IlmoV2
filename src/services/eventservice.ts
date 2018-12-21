@@ -245,6 +245,48 @@ module Service {
       });
     }
 
+    public createPlatoon = (eventId: number, platoon: any) => {
+      let self = this;
+      return new Promise((resolve, reject) => {
+        this.platoonModel.create({
+          name: platoon.name
+        }, function (err: Error, platoon: any) {
+          if (err || !platoon) {
+            console.log(err);
+            let errorMsg = ErrorHandler.getErrorMsg("Platoon data", ErrorType.DATABASE_INSERTION);
+            reject(new DatabaseError(500, errorMsg));
+          } else {
+            self.getEvent(eventId).then((event: any) => {
+              event.addPlatoons([platoon], function (err: Error) {
+                if (err) {
+                  let msg = ErrorHandler.getErrorMsg("ParticipantGroup", ErrorType.DATABASE_INSERTION);
+                  reject(new DatabaseError(500, msg));
+                } else {
+                  resolve(platoon);
+                }
+              });
+            }).catch((err: APIError) => {
+              reject(err);
+            });
+          }
+        });
+      });
+    }
+
+    public createPlatoons = (eventId: number, platoons: any[]) => {
+      return new Promise((resolve, reject) => {
+        let platoonPromises = platoons.map((p: any) => {
+          this.createPlatoon(eventId, p);
+        });
+        Promise.all(platoonPromises)
+        .then((createdPlatoons: any) => {
+          resolve(createdPlatoons);
+        }).catch((error: APIError) => {
+          reject(error);
+        });
+      });
+    }
+
     private createDiscount = (product: any, discount: any) => {
       return new Promise((resolve, reject) => {
         this.discountModel.create({
