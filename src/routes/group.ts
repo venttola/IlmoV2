@@ -105,15 +105,15 @@ module Route {
     * @apiGroup Group
     * @apiParam {Number} group Group unique id
     * @apiParam {String} username Username (email)
-    * @apiSuccess (204) -
-    * @apiError DatabaseReadError ERROR: Group data could not be read from the database
-    * @apiError DatabaseReadError ERROR: Group was not found
-    * @apiError DatabaseReadError ERROR: User data could not be read from the database
-    * @apiError DatabaseReadError ERROR: User was not found
-    * @apiError DatabaseDeleteError ERROR: Member deletion failed
+    * @apiSuccess (200) members list of members after deletion
+    * @apiError (500)  DatabaseReadError ERROR: Group data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: Group was not found
+    * @apiError (500) DatabaseReadError ERROR: User data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: User was not found
+    * @apiError (500) DatabaseDeleteError ERROR: Member deletion failed
     */
     public removeMember = (req: express.Request, res: express.Response) => {
-      let groupId = req.params.group; // Group name or id?
+      let groupId = req.params.group;
       let memberId: number = +req.params.member;
 
       this.groupService.removeMember(groupId, memberId)
