@@ -119,8 +119,6 @@ module Route {
     * @apiError DatabaseReadError ERROR: Event data could not be read from the database
     */
     public addProduct = (req: express.Request, res: express.Response) => {
-      console.log("Adding product");
-      console.log("Body: " + JSON.stringify(req.body));
       let eventId = req.params.event;
       let productData = {
         name: req.body.name,

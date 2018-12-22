@@ -252,7 +252,6 @@ module Service {
           name: platoon.name
         }, function (err: Error, platoon: any) {
           if (err || !platoon) {
-            console.log(err);
             let errorMsg = ErrorHandler.getErrorMsg("Platoon data", ErrorType.DATABASE_INSERTION);
             reject(new DatabaseError(500, errorMsg));
           } else {
