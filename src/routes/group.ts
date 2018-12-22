@@ -79,6 +79,15 @@ module Route {
 
     }
     // TODO: APIDOC
+    /**
+    * @api {get} /group/:group
+    * @apiName Get group info
+    * @apiGroup Group
+    * @apiParam {Number} group Group's id
+    * @apiSuccess (200) group Group info
+    * @apiError (500) DatabaseReadError ERROR: Group data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: Group was not found
+    */
     public getParticipantGroup = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
 
