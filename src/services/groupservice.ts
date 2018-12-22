@@ -199,13 +199,13 @@ module Service {
           });
 
           Promise.all(promises).then((payees: any) => {
-                            // Get only unique users, there can be multiple userpayments per user
-                            let uniquePayees = payees.filter((value: any, index: any, self: any) => {
-                              return self.indexOf(value) === index;
-                            });
+            // Get only unique users, there can be multiple userpayments per user
+            let uniquePayees = payees.filter((value: any, index: any, self: any) => {
+              return self.indexOf(value) === index;
+            });
 
-                            resolve(uniquePayees);
-                          });
+            resolve(uniquePayees);
+          });
         }).catch((error: APIError) => {
           console.log(error);
           reject(error);
@@ -361,10 +361,10 @@ module Service {
         this.getAllMemberPayments(groupId).then((res: any) => {
           let memberPayments = res.filter((p: any) => p.payeeId === memberId);
           let removePromises = memberPayments.map((mp: any) => new Promise((resolve, reject) => {
-          // Remove payment's product selections
-          let psRemovePromises = mp.productSelections.map((ps: any) => new Promise((resolve, reject) => {
-            ps.remove((err: Error) => err ? reject(err) : resolve(true));
-          }));
+            // Remove payment's product selections
+            let psRemovePromises = mp.productSelections.map((ps: any) => new Promise((resolve, reject) => {
+              ps.remove((err: Error) => err ? reject(err) : resolve(true));
+            }));
 
             // Remove member payments
             Promise.all(psRemovePromises).then((result: any) => {
@@ -481,10 +481,10 @@ module Service {
         this.getAllParticipantPayments(groupId).then((res: any) => {
           let participantPayments = res.filter((p: any) => p.payeeId === participantId);
           let removePromises = participantPayments.map((payment: any) => new Promise((resolve, reject) => {
-          // Remove payment's product selections
-          let psRemovePromises = payment.productSelections.map((ps: any) => new Promise((resolve, reject) => {
-            ps.remove((err: Error) => err ? reject(err) : resolve(true));
-          }));
+            // Remove payment's product selections
+            let psRemovePromises = payment.productSelections.map((ps: any) => new Promise((resolve, reject) => {
+              ps.remove((err: Error) => err ? reject(err) : resolve(true));
+            }));
 
             // Remove participant payments
             Promise.all(psRemovePromises).then((result: any) => {
