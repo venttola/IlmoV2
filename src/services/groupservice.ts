@@ -624,6 +624,31 @@ module Service {
         });
       });
     }
+    public findMemberInGroup = (userId: number, groupId: number) => {
+      return new Promise ((resolve, reject) => {
+        this.getParticipantGroupMembers(groupId)
+        .then((members: any) => {
+          let member = members.find((m: any) => m.id === userId);
+          if (member == null) {
+            let msg = ErrorHandler.getErrorMsg("User is not a member of the group", null);
+            reject(new APIError(404, msg));
+          } else {
+            resolve(member);
+          }
+        });
+      });
+    }
+    public filterUserPaymentsForGroup = (memberId: number, groupId: number) => {
+      return new Promise((resolve, reject) => {
+        this.findMemberInGroup(memberId, groupId)
+        .then((member: any) => {
+          member.getUserPayments((err: Error, userPayments: any) => {
+            return err ? reject(err) : resolve(userPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
+          });
+        });
+      });
+    }
+
     private getGroupModerators = (groupId: number) => {
       return new Promise((resolve, reject) => {
         this.getGroup(groupId).then((group: any) => {
