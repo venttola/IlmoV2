@@ -608,7 +608,7 @@ module Service {
         });
       });
     }
-    private getMemberInfo = (groupId: number) => {
+    public getMemberInfo = (groupId: number) => {
       return new Promise((resolve, reject) => {
         this.getParticipantGroupMembers(groupId).then((members: any) => {
           let memberInfos = members.map((payee: any) => {
