@@ -224,7 +224,7 @@ module Route {
     public getGroupMembers = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
 
-      this.getMembers(groupId).then((memberInfos: any) =>
+      this.groupService.getMemberInfo(groupId).then((memberInfos: any) =>
         res.status(200).json(memberInfos))
       .catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
