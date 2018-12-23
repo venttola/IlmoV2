@@ -173,7 +173,7 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-
+    // TODO: ApiDoc
     public receiptPayment = (req: express.Request, res: express.Response) => {
       console.log("Receipting Payment");
       this.groupService.receiptMemberPayment(req.body.groupId, req.body.memberId)
@@ -183,7 +183,7 @@ module Route {
         return res.status(200).json(this.mapPaymentProducts(payments));
       });
     }
-
+    // TODO: ApiDoc
     public receiptParticipantPayment = (req: express.Request, res: express.Response) => {
       console.log("Receipting Participant Payment");
       this.groupService.receiptParticipantPayment(req.body.groupId, req.body.participantId)
@@ -194,7 +194,7 @@ module Route {
       });
     }
 
-    //TODO: Apidocs
+    //TODO: ApiDoc
     public getModeratedGroups = (req: express.Request, res: express.Response) => {
       let username = req.params.username;
 
@@ -204,7 +204,6 @@ module Route {
             let msg = ErrorHandler.getErrorMsg("Moderated groups", null);
             return res.status(500).send(msg);
           }
-
           return res.status(200).json(groups);
         });
       }).catch((err: APIError) => {
