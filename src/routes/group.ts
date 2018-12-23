@@ -259,8 +259,7 @@ module Route {
       });
     }
 
-    // Req is marked as type of any because Typescript compiler refuses to admit the existence of req.user attribute
-    public checkModerator = (req: any, res: express.Response, next: express.NextFunction) => {
+    public checkModerator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
       let groupId = req.params.group;
       let username = req.user.email;
 
