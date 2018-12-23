@@ -587,7 +587,43 @@ module Service {
         });
       });
     }
+    public addModerator = (groupId: number, userId: number) => {
+      return new Promise ((resolve, reject) => {
+        Promise.all([this.getGroup(groupId), this.userService.getUserById(userId)]).then(values => {
+          let group: any = values[0];
+          let user: any = values[1];
 
+          group.addModerator(user, function (err: Error) {
+            if (err) {
+              let msg = ErrorHandler.getErrorMsg("Moderator", ErrorType.DATABASE_INSERTION);
+              reject (new DatabaseError(500, msg));
+            } else {
+              this.getMemberInfo(groupId).then((memberInfos: any) =>
+                resolve(memberInfos))
+              .catch((err: APIError) => {
+                reject(err);
+              });
+            }
+          });
+        });
+      });
+    }
+    private getMemberInfo = (groupId: number) => {
+      return new Promise((resolve, reject) => {
+        this.getParticipantGroupMembers(groupId).then((members: any) => {
+          let memberInfos = members.map((payee: any) => {
+            return {
+              id: payee.id,
+              name: payee.firstname + " " + payee.lastname,
+              isModerator: payee.isModerator
+            };
+          });
+          resolve(memberInfos);
+        }).catch((err: APIError) => {
+          reject(err.message);
+        });
+      });
+    }
     private getGroupModerators = (groupId: number) => {
       return new Promise((resolve, reject) => {
         this.getGroup(groupId).then((group: any) => {
