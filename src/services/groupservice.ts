@@ -1,9 +1,21 @@
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 // var _ = require("underscore-node");
 // import * as _ from "underscore-node";
-import { UserService } from "./userservice";
+var bankUtils = require("finnish-bank-utils");
+var dateFormat = require("dateformat");
 import { groupBy, flatten, reduce, uniq } from "underscore";
+
+import { UserService } from "./userservice";
 module Service {
+  class CheckoutData {
+    group: any;
+    payments: any[];
+    totalSum: number;
+    refNumber: string;
+    organizationBankAccount: string;
+    isPaid: boolean;
+    barcode: string;
+  }
   export class GroupService {
 
     constructor(private groupModel: any,
@@ -648,7 +660,58 @@ module Service {
         });
       });
     }
+    public getParticipantGroupCheckout = (groupId: number) => {
+      let checkoutData: CheckoutData = new CheckoutData();
 
+      return this.getGroup(groupId)
+      .then((group: any) => {
+        checkoutData.group = group;
+        return this.getParticipantGroupPayment(groupId);
+      }).then((groupPayment: any) => {
+        checkoutData.isPaid = groupPayment[0].isPaid;
+        return this.getPaidUserPayments(groupId);
+      }).then((paymentsByUser: any) => {
+        checkoutData.payments = paymentsByUser;
+
+        return this.getPaidParticipantPayments(groupId);
+      }).then((paymentsByParticipant: any) => {
+
+        checkoutData.payments = checkoutData.payments.concat(paymentsByParticipant);
+
+        checkoutData.totalSum =
+        reduce(checkoutData.payments.map((p: any) =>
+          (p.productSum + p.discountSum) as number),
+        (currentSum: number, userSum: number) => (currentSum + userSum)
+        , 0);
+
+        return this.getGroupRefNumber(checkoutData.group);
+      }).then((refNumber: string) => {
+        checkoutData.refNumber = refNumber;
+        delete checkoutData.group.groupPayment; // Do not send all the payment info
+        return new Promise((resolve, reject) => {
+          this.getEventByGroup(checkoutData.group.id)
+          .then((event: any) => {
+            event.getOrganization((err: Error, organization: any) => {
+              err ? reject(err) : resolve(organization.bankAccount);
+            });
+          });
+        });
+      }).then((organizationBankAccount: string) => {
+        checkoutData.organizationBankAccount = organizationBankAccount;
+
+        let barcode = bankUtils.formatFinnishVirtualBarCode({
+          iban: bankUtils.formatFinnishIBAN(organizationBankAccount),
+          sum: checkoutData.totalSum,
+          reference: bankUtils.formatFinnishRefNumber(checkoutData.refNumber),
+          date: dateFormat(new Date(), "dd.mm.yyyy")
+        });
+
+        checkoutData.barcode = barcode;
+        return checkoutData;
+      }).catch((err: APIError) => {
+        return err;
+      });
+    }
     private getGroupModerators = (groupId: number) => {
       return new Promise((resolve, reject) => {
         this.getGroup(groupId).then((group: any) => {

@@ -56,16 +56,6 @@ module Route {
     }
   }
 
-  class CheckoutData {
-    group: any;
-    payments: any[];
-    totalSum: number;
-    refNumber: string;
-    organizationBankAccount: string;
-    isPaid: boolean;
-    barcode: string;
-  }
-
   export class GroupRoutes {
     constructor(private groupModel: any,
       private productModel: any,
@@ -249,7 +239,7 @@ module Route {
     public getGroupCheckout = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
 
-      this.getParticipantgroupCheckout(groupId)
+      this.groupService.getParticipantGroupCheckout(groupId)
       .then((checkout: any) => {
         return res.status(200).json(checkout);
       }).catch((err: APIError) => {
@@ -257,64 +247,11 @@ module Route {
       });
     }
 
-    private getParticipantgroupCheckout = (groupId: number) => {
-      let checkoutData: CheckoutData = new CheckoutData();
-
-      return this.groupService.getGroup(groupId)
-      .then((group: any) => {
-        checkoutData.group = group;
-        return this.groupService.getParticipantGroupPayment(groupId);
-      }).then((groupPayment: any) => {
-        checkoutData.isPaid = groupPayment[0].isPaid;
-        return this.groupService.getPaidUserPayments(groupId);
-      }).then((paymentsByUser: any) => {
-        checkoutData.payments = paymentsByUser;
-
-        return this.groupService.getPaidParticipantPayments(groupId);
-      }).then((paymentsByParticipant: any) => {
-
-        checkoutData.payments = checkoutData.payments.concat(paymentsByParticipant);
-
-        checkoutData.totalSum =
-        reduce(checkoutData.payments.map((p: any) =>
-          (p.productSum + p.discountSum) as number),
-        (currentSum: number, userSum: number) => (currentSum + userSum)
-        , 0);
-
-        return this.groupService.getGroupRefNumber(checkoutData.group);
-      }).then((refNumber: string) => {
-        checkoutData.refNumber = refNumber;
-        delete checkoutData.group.groupPayment; // Do not send all the payment info
-        return new Promise((resolve, reject) => {
-          this.groupService.getEventByGroup(checkoutData.group.id)
-          .then((event: any) => {
-            event.getOrganization((err: Error, organization: any) => {
-              err ? reject(err) : resolve(organization.bankAccount);
-            });
-          });
-        });
-      }).then((organizationBankAccount: string) => {
-        checkoutData.organizationBankAccount = organizationBankAccount;
-
-        let barcode = bankUtils.formatFinnishVirtualBarCode({
-          iban: bankUtils.formatFinnishIBAN(organizationBankAccount),
-          sum: checkoutData.totalSum,
-          reference: bankUtils.formatFinnishRefNumber(checkoutData.refNumber),
-          date: dateFormat(new Date(), "dd.mm.yyyy")
-        });
-
-        checkoutData.barcode = barcode;
-        return checkoutData;
-      }).catch((err: APIError) => {
-        return err;
-      });
-    }
-
     public receiptGroupPayment = (req: any, res: express.Response) => {
       let groupId = req.params.group;
       this.groupService.receiptGroupPayment(groupId)
       .then((groupPayment: any) => {
-        return this.getParticipantgroupCheckout(groupId);
+        return this.groupService.getParticipantGroupCheckout(groupId);
       }).then((checkout: any) => {
         return res.status(200).json(checkout);
       }).catch((err: APIError) => {
