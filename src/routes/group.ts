@@ -234,26 +234,12 @@ module Route {
     // TODO: ApiDocs
     // TODO: Error checking
     public getMemberPayments = (req: express.Request, res: express.Response) => {
-      console.log("Getting member payments");
-      let groupId = +req.params.group;
+      let groupId: number = +req.params.group;
       let memberId: number = +req.params.member;
 
-      this.groupService.getParticipantGroupMembers(groupId).then((members: any) => {
-        let member = members.find((m: any) => m.id === memberId);
-
-        return new Promise((resolve, reject) => {
-          if (member == null) {
-            let msg = ErrorHandler.getErrorMsg("User is not a member of the group", null);
-            reject(new APIError(404, msg));
-          } else {
-            member.getUserPayments((err: Error, userPayments: any) => {
-              return err ? reject(err) : resolve(userPayments.filter((p: any) => p.groupPayment[0].payee_id === groupId));
-            });
-          }
-        });
-      }).then((userPayments: any) => {
-        return this.groupService.getPaymentProducts(userPayments);
-      }).then((finalPayments: any[]) => {
+      this.groupService.filterUserPaymentsForGroup(memberId, groupId)
+      .then(this.groupService.getPaymentProducts)
+      .then((finalPayments: any[]) => {
         return res.status(200).json(this.mapPaymentProducts(finalPayments));
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
