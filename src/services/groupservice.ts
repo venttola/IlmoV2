@@ -1,12 +1,13 @@
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 // var _ = require("underscore-node");
 // import * as _ from "underscore-node";
+import { UserService } from "./userservice";
 import { groupBy, flatten, reduce, uniq } from "underscore";
 module Service {
   export class GroupService {
 
     constructor(private groupModel: any,
-      private userService: any,
+      private userService: UserService,
       private productModel: any,
       private discountModel: any,
       private participantModel: any,
