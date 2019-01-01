@@ -79,6 +79,7 @@ class Server {
 				models.Product,
 				models.Discount,
 				models.Participant,
+				models.ParticipantPayment,
 				models.PlatoonModel,
 				this.eventService,
 				);

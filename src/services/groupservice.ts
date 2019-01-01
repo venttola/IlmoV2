@@ -24,6 +24,7 @@ module Service {
       private productModel: any,
       private discountModel: any,
       private participantModel: any,
+      private participantPaymentModel: any,
       private platoonModel: any,
       private eventService: any) { }
 
