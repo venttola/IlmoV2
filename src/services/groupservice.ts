@@ -714,6 +714,73 @@ module Service {
         return err;
       });
     }
+    public createParticipant = (participant: any) => {
+      return new Promise((resolve, reject) => {
+        this.participantModel.create({
+          firstname: participant.firstname,
+          lastname: participant.lastname,
+          age: participant.age,
+          allergies: participant.allergies
+        }, function (error: any, newParticipant: any) {
+          if (error) {
+            let errorMsg = ErrorHandler.getErrorMsg("Participant data", ErrorType.DATABASE_INSERTION);
+            reject(new DatabaseError(500, error));
+          } else if (!newParticipant) {
+            let errorMsg = ErrorHandler.getErrorMsg("Participant data", ErrorType.DATABASE_INSERTION);
+            reject(new DatabaseError(400, errorMsg));
+          } else {
+            return resolve(newParticipant);
+          }
+        });
+      });
+    }
+    //TODO: Refactor this spaghetti.
+    public createParticipantPayment = (groupId: number, participant: any, products: any, discountIds: any) => {
+      return new Promise((resolve, reject) => {
+        let self = this;
+        this.participantPaymentModel.create({
+          isPaid: false
+        }, function (err: Error, payment: any) {
+          if (err) {
+            let errorMsg = ErrorHandler.getErrorMsg("User Payment data", ErrorType.DATABASE_INSERTION);
+            reject(new DatabaseError(500, errorMsg));
+          } else {
+            // Add products to newly created user payment
+            self.paymentService.addPaymentProducts(payment, products, discountIds)
+            .then((result: any) => {
+              self.getGroup(groupId)
+              .then((group: any) => {
+                group.getGroupPayment(function (err: Error, groupPayment: any) {
+                  if (err) {
+                    let errorMsg = ErrorHandler.getErrorMsg("Group payment", ErrorType.NOT_FOUND);
+                    reject(new DatabaseError(404, errorMsg));
+                  }
+                  // Link user payment to group payment
+                  groupPayment[0].addParticipantPayments(payment, function (err: Error) {
+                    if (err) {
+                      let errorMsg = ErrorHandler.getErrorMsg("Group Payment data", ErrorType.DATABASE_UPDATE);
+                      reject(new DatabaseError(500, errorMsg));
+                    } else {
+                      // Link user payment to user
+                      participant.addPayments(payment, function (err: Error) {
+                        if (err) {
+                          let errorMsg = ErrorHandler.getErrorMsg("Participant Payment data",
+                            ErrorType.DATABASE_UPDATE);
+                          reject(new DatabaseError(500, errorMsg));
+                        }
+                        resolve(participant);
+                      });
+                    }
+                  });
+                });
+              }).catch((err: APIError) => {
+                reject (err);
+              });
+            });
+          }
+        });
+      });
+    }
     private getGroupModerators = (groupId: number) => {
       return new Promise((resolve, reject) => {
         this.getGroup(groupId).then((group: any) => {
