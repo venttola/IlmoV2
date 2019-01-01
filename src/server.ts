@@ -15,6 +15,7 @@ import { AuthService } from "./services/authservice";
 import { GroupService } from "./services/groupservice";
 import { AdminService } from "./services/adminservice";
 import { MailerService } from "./services/mailerservice";
+import { PaymentService } from "./services/paymentservice";
 import * as authRoutes from "./routes/auth";
 import * as userRoutes from "./routes/user";
 import * as eventRoutes from "./routes/event";
@@ -39,6 +40,7 @@ class Server {
 	private groupService: GroupService;
 	private adminService: AdminService;
 	private mailerService: MailerService;
+	private paymentService: PaymentService;
 
 	constructor() {
 		const corsOptions: any = {
@@ -53,6 +55,11 @@ class Server {
 
 		connection.then((conn: any) => {
 			let models = this.handler.getModels();
+			this.paymentService = new PaymentService(models.Product,
+																							 models.Discount,
+																							 models.ProductSelection,
+																							 models.Participant,
+																							 models.ParticipantPayment);
 			this.userService = new UserService(models.User,
 				models.UserPayment,
 				models.ProductSelection,
@@ -68,6 +75,7 @@ class Server {
 			this.authService = new AuthService(this.userService);
 			this.groupService = new GroupService(models.ParticipantGroup,
 				this.userService,
+				this.paymentService,
 				models.Product,
 				models.Discount,
 				models.Participant,

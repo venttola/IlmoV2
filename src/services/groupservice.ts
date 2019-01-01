@@ -4,7 +4,7 @@ import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/error
 var bankUtils = require("finnish-bank-utils");
 var dateFormat = require("dateformat");
 import { groupBy, flatten, reduce, uniq } from "underscore";
-
+import { PaymentService } from "./paymentservice";
 import { UserService } from "./userservice";
 module Service {
   class CheckoutData {
@@ -20,6 +20,7 @@ module Service {
 
     constructor(private groupModel: any,
       private userService: UserService,
+      private paymentService: PaymentService,
       private productModel: any,
       private discountModel: any,
       private participantModel: any,
