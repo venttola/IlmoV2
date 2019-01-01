@@ -9,7 +9,34 @@ module Service {
       private participantModel: any,
       private participantPaymentModel: any,
       ) { }
-
+    //TODO: Needs refactoring
+    public addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
+      let selectionPromises: any = [];
+      products.forEach((p: any) => {
+        selectionPromises.push(new Promise((resolve, reject) => {
+          this.productSelectionModel.create({}, function (err: Error, ps: any) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            } else {
+              ps.setProduct(p, function (err: Error) {
+                let disc = p.discounts.find((d: any) => discountIds.some((di: any) => di === d.id));
+                if (disc) {
+                  ps.setDiscount(disc, (err: Error) =>
+                    err ? reject(err)
+                    : payment.addProductSelections(ps, (err: Error) =>
+                      err ? reject(err)
+                      : resolve(true)));
+                } else {
+                  payment.addProductSelections(ps, (err: Error) => err ? reject(err) : resolve(true));
+                }
+              });
+            }
+          });
+        }));
+      });
+      return Promise.all(selectionPromises);
+    }
   }
 }
 export = Service;
