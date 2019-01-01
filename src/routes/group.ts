@@ -326,28 +326,6 @@ module Route {
       });
     }
     //TODO: This is a middleware function, move this out of this class.
-    public checkModerator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      let groupId = req.params.group;
-      let username = req.user.email;
-
-      Promise.all([this.userService.getUser(username), this.groupService.getGroup(groupId)]).then((results: any) => {
-        let user = results[0];
-        let group = results[1];
-
-        group.hasModerator(user, (err: Error, isModerator: boolean) => {
-          if (err) {
-            let msg = ErrorHandler.getErrorMsg("Moderation status", ErrorType.DATABASE_READ);
-            return res.status(500).send(msg);
-          } else if (!isModerator) {
-            return res.status(403).send("You are not a moderator of this group");
-          } else {
-            next();
-          }
-        });
-      }).catch((err: APIError) => {
-        return res.status(err.statusCode).send(err.message);
-      });
-    }
     /**
     * @api api/group/:group/moderator/participants Creates a new participant and adds it to a group
     * @apiName addParticipant

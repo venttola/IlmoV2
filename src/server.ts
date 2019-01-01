@@ -78,8 +78,9 @@ class Server {
 			this.adminService = new AdminService(models.User,
 												 models.GroupPayment);
 			this.mailerService = new MailerService(this.userService);
+			this.priviledgeChecker = new PriviledgeChecker(this.userService,
+																										 this.groupService);
 			this.setRoutes();
-			this.priviledgeChecker = new PriviledgeChecker();
 		}).catch((err: Error) => {
 			console.log(err);
 		});
@@ -211,7 +212,7 @@ class Server {
 		router.get(this.API_PREFIX + "/group/:username/moderation", groupRoute.getModeratedGroups);
 
 		// Moderator routes
-		router.use(this.API_PREFIX + "/group/:group/moderator/*", groupRoute.checkModerator);
+		router.use(this.API_PREFIX + "/group/:group/moderator/*", this.priviledgeChecker.checkModerator);
 		router.get(this.API_PREFIX + "/group/:group/moderator/members", groupRoute.getGroupMembers);
 		router.get(this.API_PREFIX + "/group/:group/moderator/userpayment/:member", groupRoute.getMemberPayments);
 		router.delete(this.API_PREFIX + "/group/:group/moderator/:member", groupRoute.removeMember);
