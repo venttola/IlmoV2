@@ -68,10 +68,9 @@ module Route {
       private groupService: GroupService) {
 
     }
-    // TODO: APIDOC
     /**
-    * @api {get} /group/:group
-    * @apiName Get group info
+    * @api {get} api/group/:group Get group info
+    * @apiName getParticipantGroup
     * @apiGroup Group
     * @apiParam {Number} group Group's id
     * @apiSuccess (200) group Group info
@@ -90,8 +89,8 @@ module Route {
     }
 
     /**
-    * @api {delete} api/group/:group/:username
-    * @apiName Remove a group member
+    * @api {delete} api/group/:group/:username Remove a group member
+    * @apiName removeMember
     * @apiGroup Group
     * @apiParam {Number} group Group unique id
     * @apiParam {String} username Username (email)
@@ -115,8 +114,8 @@ module Route {
     }
 
     /**
-    * @api {patch} api/group/:group/moderator
-    * @apiName Add a group moderator
+    * @api {patch} api/group/:group/moderator  Add a group moderation rights
+    * @apiName addModerator
     * @apiGroup Group
     * @apiParam {Number} group Group unique id
     * @apiParam {JSON} memberId Member id
@@ -140,17 +139,17 @@ module Route {
     }
 
     /**
-    * @api {delete} api/group/:group/:username/moderator
-    * @apiName Remove a group moderator
+    * @api {delete} api/group/:group/:username/moderator Remove a group moderation rights
+    * @apiName removeModerator
     * @apiGroup Group
-    * @apiParam {Number} group Group unique id
+    * @apiParam {Number} groupId Group unique id
     * @apiParam {String} username Username (email)
-    * @apiSuccess (204) -
-    * @apiError DatabaseReadError ERROR: Group data could not be read from the database
-    * @apiError DatabaseReadError ERROR: Group was not found
-    * @apiError DatabaseReadError ERROR: User data could not be read from the database
-    * @apiError DatabaseReadError ERROR: User was not found
-    * @apiError DatabaseUpdateError ERROR: Moderator deletion failed
+    * @apiSuccess (200) -
+    * @apiError (500) DatabaseReadError ERROR: Group data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: Group was not found
+    * @apiError (500) DatabaseReadError ERROR: User data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: User was not found
+    * @apiError (500) DatabaseUpdateError ERROR: Moderator deletion failed
     */
     public removeModerator = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
@@ -163,7 +162,19 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-    // TODO: ApiDoc
+    /**
+    * @api {post} api/group/:group/moderator/userpayment Mark a user payment as paid
+    * @apiName receiptPayment
+    * @apiGroup Group
+    * @apiParam {Number} groupId Group's unique id
+    * @apiParam {Number} memberId Member user's unique id
+    * @apiSuccess (200) payments Payments which the user has 
+    * @apiError (500) DatabaseReadError ERROR: Group data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: Group was not found
+    * @apiError (500) DatabaseReadError ERROR: User data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: User was not found
+    * @apiError (500) DatabaseUpdateError ERROR: Payment reciping failed
+    */
     public receiptPayment = (req: express.Request, res: express.Response) => {
       console.log("Receipting Payment");
       this.groupService.receiptMemberPayment(req.body.groupId, req.body.memberId)
@@ -173,7 +184,19 @@ module Route {
         return res.status(200).json(this.mapPaymentProducts(payments));
       });
     }
-    // TODO: ApiDoc
+    /**
+    * @api {post} api/group/:group/moderator/participantpayment Mark a participant payment as paid
+    * @apiName receiptParticipantPayment
+    * @apiGroup Group
+    * @apiParam {Number} groupId Group's unique id
+    * @apiParam {Number} participantId Participant's unique id
+    * @apiSuccess (200) payments Payments which the participant has 
+    * @apiError (500) DatabaseReadError ERROR: Group data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: Group was not found
+    * @apiError (500) DatabaseReadError ERROR: Participant data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: Participant was not found
+    * @apiError (500) DatabaseUpdateError ERROR: Payment reciping failed
+    */
     public receiptParticipantPayment = (req: express.Request, res: express.Response) => {
       console.log("Receipting Participant Payment");
       this.groupService.receiptParticipantPayment(req.body.groupId, req.body.participantId)
@@ -183,8 +206,15 @@ module Route {
         return res.status(200).json(this.mapPaymentProducts(payments));
       });
     }
-
-    //TODO: ApiDoc
+    /**
+    * @api {get} api/group/:username/moderation Get groups moderated by user
+    * @apiName getModeratedGroups
+    * @apiGroup Group
+    * @apiParam {String} username user's username
+    * @apiSuccess (200) groups groups moderated by the user
+    * @apiError (404) DatabaseReadError ERROR: User not found
+    * @apiError (500) DatabaseReadError ERROR: Could not read moderation data
+    */
     public getModeratedGroups = (req: express.Request, res: express.Response) => {
       let username = req.params.username;
 
@@ -200,7 +230,15 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-    //TODO: ApiDocs
+    /**
+    * @api {get} api/group/:group/event Get event associated with the group
+    * @apiName getGroupEvent
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiSuccess (200) event Event associated with the group
+    * @apiError (404) DatabaseReadError ERROR: Group not found
+    * @apiError (500) DatabaseReadError ERROR: Could not read data
+    */
     public getGroupEvent = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
       this.groupService.getGroupEvent(groupId).then((event: any) =>
@@ -209,8 +247,15 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
      }
-
-    // TODO: ApiDocs
+    /**
+    * @api {get} api/group/:group/moderator/members Get list of group members
+    * @apiName getGroupMembers
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiSuccess (200) members List of group members
+    * @apiError (404) DatabaseReadError ERROR: Group not found
+    * @apiError (500) DatabaseReadError ERROR: Could not read data
+    */
     public getGroupMembers = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
 
@@ -220,8 +265,16 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-
-    // TODO: ApiDocs
+    /**
+    * @api {get} api/group/:group/moderator/userpayment/:member Get list of member's payments associated with the group
+    * @apiName getMemberPayments
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiParam {Number} member Member's unique id
+    * @apiSuccess (200) payments List of users's payments
+    * @apiError (404) DatabaseReadError ERROR: Group not found
+    * @apiError (500) DatabaseReadError ERROR: Could not read data
+    */
     // TODO: Error checking
     public getMemberPayments = (req: express.Request, res: express.Response) => {
       let groupId: number = +req.params.group;
@@ -235,7 +288,14 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-
+    /**
+    * @api {get} api/group/:group/checkout Get checkout data for group's payments
+    * @apiName getGroupCheckout
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiSuccess (200) checkout Checkout data for the group
+    * @apiError (500) DatabaseUpdateError ERROR: Internal error
+    */
     public getGroupCheckout = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
 
@@ -246,7 +306,14 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-
+    /**
+    * @api {post} api/group/:group/receipt Mark the group's payment as paid
+    * @apiName receiptGroupPayment
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiSuccess (200) checkout Checkout data for the payment marked as paid
+    * @apiError (500) DatabaseUpdateError ERROR: Internal error
+    */
     public receiptGroupPayment = (req: any, res: express.Response) => {
       let groupId = req.params.group;
       this.groupService.receiptGroupPayment(groupId)
@@ -258,7 +325,7 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-
+    //TODO: This is a middleware function, move this out of this class.
     public checkModerator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
       let groupId = req.params.group;
       let username = req.user.email;
@@ -281,9 +348,17 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-    //TODO APidocs
-    //Adds a nonregistered participant to group
-
+    /**
+    * @api api/group/:group/moderator/participants Creates a new participant and adds it to a group
+    * @apiName addParticipant
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiParam {json} participant Participant's info
+    * @apiParam {json[]} products List containing info about the products for the participant
+    * @apiSuccess (200) participant The created participant
+    * @apiError (404) DatabaseReadError ERROR: Group not found
+    * @apiError (500) DatabaseReadError ERROR: Could not read data
+    */
     public addParticipant = (req: express.Request, res: express.Response, next: express.NextFunction) => {
       let groupId = +req.body.groupId;
       let products = req.body.products;
@@ -366,7 +441,15 @@ module Route {
           });
       });
     }
-    //TODO: ApiDoc
+    /**
+    * @api {get} /group/:group/moderator/participants Get list of group's participant info's 
+    * @apiName getParticipants
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiSuccess (200) participants List of group's participant
+    * @apiError (404) DatabaseReadError ERROR: Group not found
+    * @apiError (500) DatabaseReadError ERROR: Could not read data
+    */
     public getParticipants = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
       this.findParticipants(groupId).then((participantInfos: any) => {
@@ -375,7 +458,17 @@ module Route {
         return res.status(err.statusCode).send(err.message);
       });
     }
-    //TODO: ApiDoc
+    /**
+    * @api {get} /group/:group/moderator/products List products available for group
+    * @apiName getAvailableProducts
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiSuccess (200) {JSON} List of event products
+    * @apiError (500) DatabaseReadError ERROR: Event data could not be read from the database
+    * @apiError (404) NotFound ERROR: Event was not found
+    * @apiError (500) DatabaseReadError ERROR: Event product data could not be read from the database
+    * @apiDeprecated use now (#Event:getProducts).
+    */
     public getAvailableProducts = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
       this.groupService.getAvailableProducts(groupId).
@@ -386,7 +479,17 @@ module Route {
         return res.status(error.statusCode).send(error.message);
       });
     }
-    //TODO: ApiDoc
+    /**
+    * @api {get} /group/:group/moderator/participantpayment/:participant Get list of member's payments associated with the group
+    * @apiName getParticipantPayments
+    * @apiGroup Group
+    * @apiParam {Number} group Group's unique id
+    * @apiParam {Number} participant Participant's unique id
+    * @apiSuccess (200) payments List of participant's payments
+    * @apiError (404) DatabaseReadError ERROR: Group not found
+    * @apiError (500) DatabaseReadError ERROR: Could not read data
+    */
+    // TODO: Error checking
     public getParticipantPayments = (req: express.Request, res: express.Response) => {
       let groupId = +req.params.group;
       let participantId: number = +req.params.participant;
@@ -435,7 +538,19 @@ module Route {
           });
         });
     }
-    //TODO: ApiDoc
+    /**
+    * @api {delete} "/group/:group/moderator/participants/:participant Remove a participant from group
+    * @apiName removeParticipant
+    * @apiGroup Group
+    * @apiParam {Number} group Group unique id
+    * @apiParam {String} participant participant's unque ID
+    * @apiSuccess (200) participants list of participants after deletion
+    * @apiError (500)  DatabaseReadError ERROR: Group data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: Group was not found
+    * @apiError (500) DatabaseReadError ERROR: Participant data could not be read from the database
+    * @apiError (404) DatabaseReadError ERROR: Participant was not found
+    * @apiError (500) DatabaseDeleteError ERROR: Participant deletion failed
+    */
     public removeParticipant = (req: express.Request, res: express.Response) => {
       // Group name or id?
       let groupId = req.params.group;
