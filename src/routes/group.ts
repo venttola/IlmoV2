@@ -367,7 +367,7 @@ module Route {
     */
     public getParticipants = (req: express.Request, res: express.Response) => {
       let groupId = req.params.group;
-      this.findParticipants(groupId).then((participantInfos: any) => {
+      this.groupService.getParticipants(groupId).then((participantInfos: any) => {
         return res.status(200).json(participantInfos);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
@@ -434,25 +434,6 @@ module Route {
       });
     }
 
-    private findParticipants = (groupId: number) => {
-      return new Promise((resolve, reject) => {
-        this.groupService.getParticipants(groupId).then((participants: any) => {
-          resolve(participants);
-            /*
-            let participantInfos = participants.map((payee: any) => {
-              return {
-               id: payee.id,
-               name: payee.firstname + " " + payee.lastname,
-                };
-            });
-            console.log("Got memberinfos");
-            resolve(participantInfos);
-            */
-          }).catch((err: APIError) => {
-            reject(err);
-          });
-        });
-    }
     /**
     * @api {delete} "/group/:group/moderator/participants/:participant Remove a participant from group
     * @apiName removeParticipant
@@ -476,23 +457,6 @@ module Route {
         return res.status(200).json(updatedParticipants);
       }).catch((err: APIError) => {
         return res.status(err.statusCode).send(err.message);
-      });
-    }
-
-    private getMembers = (groupId: number) => {
-      return new Promise((resolve, reject) => {
-        this.groupService.getParticipantGroupMembers(groupId).then((members: any) => {
-          let memberInfos = members.map((payee: any) => {
-            return {
-              id: payee.id,
-              name: payee.firstname + " " + payee.lastname,
-              isModerator: payee.isModerator
-            };
-          });
-          resolve(memberInfos);
-        }).catch((err: APIError) => {
-          reject(err.message);
-        });
       });
     }
 
