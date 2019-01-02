@@ -781,6 +781,22 @@ module Service {
         });
       });
     }
+    public getPaymentsForParticipant = (participantId: number) => {
+      return new Promise((resolve, reject) => {
+        this.participantModel.one({ id: participantId }, function (err: Error, participant: any) {
+          if (participant == null) {
+            let msg = ErrorHandler.getErrorMsg("Participant not found in group", null);
+            reject(new APIError(404, msg));
+          } else {
+            participant.getPayments((err: Error, participantPayments: any) => {
+              return err ?
+              reject(err) :
+              resolve(participantPayments);
+            });
+          }
+        });
+      });
+    }
     private getGroupModerators = (groupId: number) => {
       return new Promise((resolve, reject) => {
         this.getGroup(groupId).then((group: any) => {
