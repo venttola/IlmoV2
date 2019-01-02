@@ -37,6 +37,21 @@ module Service {
       });
       return Promise.all(selectionPromises);
     }
+    public getProductsByIds = async (products: Number[]): Promise<any[]> => {
+      return new Promise<any[]>((resolve, reject) => {
+        this.productModel.find({ id: products }, function (err: Error, products: any) {
+          if (err) {
+            let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
+            reject(new DatabaseError(500, errorMsg));
+          } else if (!products) {
+            let errorMsg = ErrorHandler.getErrorMsg("Product", ErrorType.NOT_FOUND);
+            reject(new DatabaseError(404, errorMsg));
+          } else {
+            resolve(products);
+          }
+        });
+      });
+    }
   }
 }
 export = Service;
