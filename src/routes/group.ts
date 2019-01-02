@@ -343,20 +343,17 @@ module Route {
       let participant = req.body.participant;
       let productIds = products.map((p: any) => p[0]);
       let discountIds = products.map((p: any) => p[1]);
-      Promise.all([
-        this.getProductsFromDb(productIds),
-        this.groupService.createParticipant(participant),
-        ])
-      .then((results: any) => {
-        let products = results[0];
-        let participant = results[1];
+      this.groupService.createParticipant(participant)
+      .then((participant: any) => {
         let self = this;
-        this.groupService.createParticipantPayment(groupId, participant, products, discountIds)
+        this.groupService.createParticipantPayment(groupId, participant, productIds, discountIds)
         .then((participant: any) => {
           return  res.status(200).json(participant);
         }).catch((err: APIError) => {
           return res.status(err.statusCode).send(err.message);
         });
+      }).catch((err: APIError) => {
+          return res.status(err.statusCode).send(err.message);
       });
     }
     /**
@@ -509,22 +506,6 @@ module Route {
         });
 
         return new PaymentInfo(fp.id, prodSelectionInfos, fp.isPaid, fp.paidOn);
-      });
-    }
-    //This has been copypasted from group route, refactor to a service at some point
-    private getProductsFromDb = (products: Number[]) => {
-      return new Promise((resolve, reject) => {
-        this.productModel.find({ id: products }, function (err: Error, products: any) {
-          if (err) {
-            let errorMsg = ErrorHandler.getErrorMsg("Product data", ErrorType.DATABASE_READ);
-            reject(new DatabaseError(500, errorMsg));
-          } else if (!products) {
-            let errorMsg = ErrorHandler.getErrorMsg("Product", ErrorType.NOT_FOUND);
-            reject(new DatabaseError(400, errorMsg));
-          } else {
-            return resolve(products);
-          }
-        });
       });
     }
 

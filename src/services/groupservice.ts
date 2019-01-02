@@ -735,7 +735,7 @@ module Service {
       });
     }
     //TODO: Refactor this spaghetti.
-    public createParticipantPayment = (groupId: number, participant: any, products: any, discountIds: any) => {
+    public createParticipantPayment = (groupId: number, participant: any, productIds: any, discountIds: any) => {
       return new Promise((resolve, reject) => {
         let self = this;
         this.participantPaymentModel.create({
@@ -746,7 +746,7 @@ module Service {
             reject(new DatabaseError(500, errorMsg));
           } else {
             // Add products to newly created user payment
-            self.paymentService.addPaymentProducts(payment, products, discountIds)
+            self.paymentService.addPaymentProducts(payment, productIds, discountIds)
             .then((result: any) => {
               self.getGroup(groupId)
               .then((group: any) => {

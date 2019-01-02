@@ -10,8 +10,9 @@ module Service {
       private participantPaymentModel: any,
       ) { }
     //TODO: Needs refactoring
-    public addPaymentProducts = (payment: any, products: any[], discountIds: number[]) => {
+    public addPaymentProducts = async (payment: any, productIds: any[], discountIds: number[]) => {
       let selectionPromises: any = [];
+      let products = await this.getProductsByIds(productIds);
       products.forEach((p: any) => {
         selectionPromises.push(new Promise((resolve, reject) => {
           this.productSelectionModel.create({}, function (err: Error, ps: any) {
