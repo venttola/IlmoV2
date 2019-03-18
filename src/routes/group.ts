@@ -57,13 +57,7 @@ module Route {
   }
 
   export class GroupRoutes {
-    constructor(private groupModel: any,
-      private productModel: any,
-      private discountModel: any,
-      private participantModel: any,
-      private participantPaymentModel: any,
-      private productSelectionModel: any,
-      private groupPaymentModel: any,
+    constructor(
       private userService: UserService,
       private groupService: GroupService) {
 
