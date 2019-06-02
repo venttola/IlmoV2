@@ -1,12 +1,11 @@
 {
-    "files": [
-        "src/**/*.ts"
-    ],
+    
     "compilerOptions": {
+        "baseUrl": ".",
         "noImplicitAny": true,
         "target": "es6",
         "rootDir": "src",
-        "outDir": ".",
+        "outDir": "dist",
         "module":"commonjs",
         "moduleResolution":"node",
         "types": [
@@ -16,5 +15,8 @@
         "typeRoots": [ "node_modules/@types" ],
         "lib": ["DOM","ES6","ScriptHost", "ES2015.Promise"]
 
-    }
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
 }
