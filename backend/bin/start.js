@@ -7,7 +7,7 @@ server.app.set("port", port);
 
 var httpServer = http.createServer(server.app);
 
-httpServer.listen(port);
+httpServer.listen(port , "0.0.0.0");
 console.log("Listening port " + port);
 
 function normalizePort(val) {
