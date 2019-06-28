@@ -62,6 +62,7 @@
     "@types/underscore": "^1.8.18",
     "faker": "^4.1.0",
     "migrate-orm2": "^4.0.5",
+    "nodemon": "^1.19.1",
     "promise": "^7.1.1",
     "rollup": "^0.41.6",
     "rollup-plugin-commonjs": "^8.0.2",
