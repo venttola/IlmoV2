@@ -1,0 +1,55 @@
+# Use root/example as user/password credentials
+version: '3.7'
+
+services:
+
+  frontend:
+    env_file: dev.env
+    image: node:10.16-alpine
+    working_dir: /home/node/app
+    init: true
+    user: node
+    volumes:
+      - ./frontend:/home/node/app
+    environment:
+      - NODE_ENV=development
+    ports:
+      - 4200:4200
+    command: "npm run docker-start"
+    networks:
+      - frontend
+
+  backend:
+    env_file: dev.env
+    image: node:10.16-alpine 
+    working_dir: /home/node/app
+    expose:
+      - 8080
+    volumes: 
+      - ./backend/:/home/node/app
+    environment:
+      - NODE_ENV=development      
+    command: "npm run watch-node"
+    networks: 
+      - frontend
+      - backend
+
+  mysql:
+    image: mysql:8
+    env_file: dev.env
+    user: mysql
+    ports: 
+      - 3306:3306
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+
+networks:
+  backend:
+  frontend:
+
+volumes: 
+  mysql_data:
