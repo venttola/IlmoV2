@@ -8,10 +8,6 @@ import { UserService } from "../services/userservice";
 import { OrganizationService } from "../services/organizationservice";
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 
-/*
-	
-	POST /api/organization
-	*/
 module Route {
 	export class OrganizationRoutes {
 		constructor(
@@ -22,14 +18,14 @@ module Route {
 		}
 
 		/**
-        * @api {post} api/organizations/ Adds new organization to the database
-        * @apiName signup
-        * @apiGroup Login
-        * @apiParam {JSON} name {name: "Sotahuuto-yhdistys Ry"}
-        * @apiParam {JSON} dob {bankAccount: "FI4250001510000023"}
-        * @apiSuccess -
-        * @apiError {JSON} Missing fields or erroneus IBAN account number
-        */
+    * @api {post} api/organizations/ Adds new organization to the database
+    * @apiName signup
+    * @apiGroup Login
+    * @apiParam {JSON} name {name: "Sotahuuto-yhdistys Ry"}
+    * @apiParam {JSON} dob {bankAccount: "FI4250001510000023"}
+    * @apiSuccess -
+    * @apiError {JSON} Missing fields or erroneus IBAN account number
+    */
 		public addOrganization = (req: express.Request, res: express.Response) => {
 			console.log(req.body);
 
@@ -51,13 +47,13 @@ module Route {
 				}
 			});
 		}
-        /**
-        * @api {get} api/organizations Lists all organizations
-        * @apiName List organizations
-        * @apiGroup Organization
-        * @apiSuccess {JSON} List of organization
-        * @apiError DatabaseReadError ERROR: Organization data could not be read from the database
-        */
+    /**
+    * @api {get} api/organizations Lists all organizations
+    * @apiName List organizations
+    * @apiGroup Organization
+    * @apiSuccess {JSON} List of organization
+    * @apiError DatabaseReadError ERROR: Organization data could not be read from the database
+    */
 		public getOrganizations = (req: express.Request, res: express.Response) => {
 			this.organizationModel.all(function (err: Error, organizations: any) {
 				if (err) {
@@ -68,15 +64,15 @@ module Route {
 				}
 			});
 		}
-        /**
-        * @api {post} api/organizations/organization/members Adds new user to the database
-        * @apiName signup
-        * @apiGroup Login
-        * @apiParam {JSON} name {name: "Sotahuuto-yhdistys Ry"}
-        * @apiParam {JSON} dob {bankAccount: "FI4250001510000023"}
-        * @apiSuccess -
-        * @apiError {JSON} Missing fields or erroneus IBAN account number
-        */
+    /**
+    * @api {post} api/organizations/organization/members Adds new user to the database
+    * @apiName signup
+    * @apiGroup Login
+    * @apiParam {JSON} name {name: "Sotahuuto-yhdistys Ry"}
+    * @apiParam {JSON} dob {bankAccount: "FI4250001510000023"}
+    * @apiSuccess -
+    * @apiError {JSON} Missing fields or erroneus IBAN account number
+    */
 		public addOrganizationMembers = (req: express.Request, res: express.Response) => {
 			console.log("adding members");
 
