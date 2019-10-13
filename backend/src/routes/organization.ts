@@ -28,23 +28,11 @@ module Route {
     */
 		public addOrganization = (req: express.Request, res: express.Response) => {
 			console.log(req.body);
-
-			if (!ibantools.isValidIBAN(req.body.bankAccount)) {
-				let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.DATABASE_INSERTION);
-				return res.status(500).send(errorMsg);
-			}
-			this.organizationModel.create({
-				name: req.body.name,
-				bankAccount: req.body.bankAccount,
-			}, function (err: Error, organization: any) {
-				console.log("organization: " + organization);
-
-				if (err) {
-					let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.DATABASE_INSERTION);
-					return res.status(500).send(errorMsg);
-				} else {
-					return res.status(200).json({ data: { organization: organization } });
-				}
+			this.organizationService.createOrganization(req.body.name, req.body.bankAccount)
+			.then((organization: any) => {
+				return res.status(200).json(organization);
+			}).catch((err: any)=> {
+				return res.status(500).send(err);
 			});
 		}
     /**
@@ -78,27 +66,8 @@ module Route {
 
 			let organizationId = req.params.id;
 			let newMembers: any = req.body.members;
-			new Promise((resolve, reject) => {
-				let memberList = new Array();
-				for (let user of newMembers) {
-					this.userService.getUser(user.id).then((user: any) => {
-						user.addOrganizations(organizationId, function (err: any) {
-							if (err) {
-								let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.NOT_FOUND);
-								reject(new DatabaseError(500, errorMsg));
-							} else {
-								memberList.push(user);
-								if (memberList.length === newMembers.length) {
-									resolve(memberList);
-								}
-							}
-						});
-					}).catch((err: APIError) => {
-						console.log("err: " + err);
-						reject(err);
-					});
-				}
-			}).then((memberList: any) => {
+			this.organizationService.addMembers(organizationId, newMembers)
+			.then((memberList: any) => {
 				return res.status(200).json(JSON.stringify({ data: { members: memberList } }));
 			}).catch((err: APIError) => {
 				return res.status(err.statusCode).send(err.message);
