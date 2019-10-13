@@ -3,6 +3,8 @@
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { EventService } from "./eventservice";
 import { GroupService } from "./groupservice";
+
+var ibantools = require("ibantools");
 module Service {
   export class OrganizationService {
     constructor(private eventService: EventService,
@@ -200,6 +202,26 @@ module Service {
           }).catch((e: any ) => {
             reject(e);
           });
+        });
+      });
+    }
+    public createOrganization(name: String, bankAccount: string) {
+      return new Promise ((resolve, reject) => {
+          if (!ibantools.isValidIBAN(bankAccount)) {
+            let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.DATABASE_INSERTION);
+            return reject(errorMsg);
+          }
+          this.organizationModel.create({
+            name: name,
+            bankAccount: bankAccount,
+          }, function (err: Error, organization: any) {
+          console.log("organization: " + organization);
+            if (err) {
+              let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.DATABASE_INSERTION);
+              return reject(errorMsg);
+            } else {
+              return resolve({ data: { organization: organization } });
+            }
         });
       });
     }
