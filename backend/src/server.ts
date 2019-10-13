@@ -83,7 +83,10 @@ class Server {
 				models.PlatoonModel,
 				this.eventService,
 				);
-			this.organizationService = new OrganizationService(this.eventService, this.groupService, models.Organization);
+			this.organizationService = new OrganizationService(this.eventService,
+															   this.groupService,
+															   this.userService,
+															   models.Organization);
 			this.adminService = new AdminService(models.User,
 												 models.GroupPayment);
 			this.mailerService = new MailerService(this.userService);

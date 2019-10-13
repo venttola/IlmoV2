@@ -3,12 +3,14 @@
 import { ErrorHandler, ErrorType, APIError, DatabaseError } from "../utils/errorhandler";
 import { EventService } from "./eventservice";
 import { GroupService } from "./groupservice";
+import { UserService } from "./userservice";
 
 var ibantools = require("ibantools");
 module Service {
   export class OrganizationService {
     constructor(private eventService: EventService,
                 private groupService: GroupService,
+                private userService: UserService,
                 private organizationModel: any) { }
 
     public getOrganization = (id: number) => {
@@ -223,6 +225,42 @@ module Service {
               return resolve({ data: { organization: organization } });
             }
         });
+      });
+    }
+    public getOrganizations() {
+      return new Promise ((resolve, reject) => {
+        this.organizationModel.all(function (err: Error, organizations: any) {
+          if (err) {
+            let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.DATABASE_READ);
+            return reject(errorMsg);
+          } else {
+            return resolve(organizations);
+          }
+        });
+      });
+    }
+    public addMembers(organizationId: number, newMembers: any) {
+      new Promise((resolve, reject) => {
+        let memberList = new Array();
+        for (let user of newMembers) {
+          this.userService.getUser(user.id)
+          .then((user: any) => {
+            user.addOrganizations(organizationId, function (err: any) {
+              if (err) {
+                let errorMsg = ErrorHandler.getErrorMsg("Organization data", ErrorType.NOT_FOUND);
+                reject(new DatabaseError(500, errorMsg));
+              } else {
+                memberList.push(user);
+                if (memberList.length === newMembers.length) {
+                  resolve(memberList);
+                }
+              }
+            });
+          }).catch((err: APIError) => {
+            console.log("err: " + err);
+            reject(err);
+          });
+        }
       });
     }
   }
