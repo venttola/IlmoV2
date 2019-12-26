@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "npm run serve",
+    "start-typeorm": "ts-node src/index.ts",
     "build": "npm run build-ts && npm run tslint",
     "serve": "node bin/start.js",
     "watch-node": "nodemon bin/start.js --watch src/* -e ts",
@@ -40,13 +41,15 @@
     "ibantools": "^1.3.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
-    "mysql": "^2.17.1",
+    "mysql": "^2.14.1",
     "nodemailer": "^4.6.4",
     "nodemailer-express-handlebars": "^3.0.0",
     "orm": "^5.0.4",
     "postman": "^0.2.0",
     "semver": "^6.1.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "typeorm": "0.2.22",
+    "reflect-metadata": "^0.1.10"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
@@ -56,7 +59,7 @@
     "@types/express": "^4.16.1",
     "@types/express-jwt": "0.0.34",
     "@types/jsonwebtoken": "^7.2.8",
-    "@types/node": "^6.14.6",
+    "@types/node": "^8.0.29",
     "@types/nodemailer": "^4.6.8",
     "@types/serve-static": "^1.7.31",
     "@types/underscore": "^1.8.18",
@@ -75,7 +78,8 @@
     "rollup-plugin-uglify": "^1.0.2",
     "tslib": "^1.7.0",
     "tslint": "^3.15.1",
-    "typescript": "^2.8.3"
+    "typescript": "3.3.3333",
+    "ts-node": "3.3.0"
   },
   "apidoc": {
     "title": "IlmoV2 API V 1",

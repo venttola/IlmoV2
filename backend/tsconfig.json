@@ -13,7 +13,9 @@
             "node"
          ],
         "typeRoots": [ "node_modules/@types" ],
-        "lib": ["DOM","ES6","ScriptHost", "ES2015.Promise"]
+        "lib": ["DOM","ES6","ScriptHost", "ES2015.Promise"],
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
 
     },
     "include": [
