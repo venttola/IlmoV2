@@ -31,7 +31,7 @@ module Route {
 			this.organizationService.createOrganization(req.body.name, req.body.bankAccount)
 			.then((organization: any) => {
 				return res.status(200).json(organization);
-			}).catch((err: any)=> {
+			}).catch((err: any) => {
 				return res.status(500).send(err);
 			});
 		}

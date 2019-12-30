@@ -130,7 +130,7 @@ module Service {
                     sum: product.sum,
                     sumPrice: product.sumPrice,
                     total: product.total,
-                    discounts: product.discounts 
+                    discounts: product.discounts
                   };
                 });
               }).then((productSums: any) => {
@@ -240,7 +240,7 @@ module Service {
       });
     }
     public addMembers(organizationId: number, newMembers: any) {
-      new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         let memberList = new Array();
         for (let user of newMembers) {
           this.userService.getUser(user.id)
