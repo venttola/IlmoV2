@@ -1,4 +1,7 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "typeorm";
+
+import {GroupPayment} from "./GroupPayment";
+import {ProductSelection} from "./ProductSelection";
 
 @Entity()
 export class ParticipantPayment {
@@ -11,4 +14,10 @@ export class ParticipantPayment {
 
   @Column()
   isPaid: boolean;
+
+  @OneToMany(type => ProductSelection, productSelection => productSelection.participantPayment)
+  productSelections: ProductSelection[];
+
+  @ManyToOne(type => GroupPayment, groupPayment => groupPayment.participantPayments)
+  groupPayment: GroupPayment;
 }

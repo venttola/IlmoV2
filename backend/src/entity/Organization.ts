@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany} from "typeorm";
+import {Event} from "./Event";
+import {User} from "./User";
 @Entity()
 export class Organization {
   
@@ -11,5 +12,10 @@ export class Organization {
 
   @Column()
   bankAccount: string;
-  
+
+  @OneToMany(type => Event, event => event.organization)
+  events: Event[];
+
+  @ManyToMany(type => User, user => user.organizations)
+  members: User[];
 }

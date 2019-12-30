@@ -1,5 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable} from "typeorm";
 
+import {ParticipantGroup} from "./ParticipantGroup";
+import {UserPayment} from "./UserPayment";
+import {Organization} from "./Organization";
 @Entity()
 export class User {
 
@@ -32,4 +35,13 @@ export class User {
 
   @Column()
   passwordResetExpires: number;
+
+  @ManyToMany(type => ParticipantGroup, group => group.moderators)
+  @JoinTable()
+  moderatedGroups: ParticipantGroup[];
+
+  @ManyToMany(type => Organization, organization => organization.members)
+  @JoinTable()
+  organizations: Organization[];
+
 }

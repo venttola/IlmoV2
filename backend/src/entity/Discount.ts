@@ -1,4 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn} from "typeorm";
+import {Product} from "./Product";
+
 
 @Entity()
 export class Discount {
@@ -12,4 +14,7 @@ export class Discount {
   @Column()
   amount: number;
 
+  @OneToOne(type => Product)
+  @JoinColumn()
+  product: Product;
 }

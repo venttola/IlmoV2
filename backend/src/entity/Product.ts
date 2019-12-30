@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn} from "typeorm";
+import {Event} from "./Event";
+import {Discount} from "./Discount";
 @Entity()
 export class Product {
  
@@ -8,4 +9,9 @@ export class Product {
   
   @Column()
   name: string;
+
+  @ManyToOne(type => Event, event => event.prodcuts)
+  event: Event;
+  @OneToMany(type => Discount, discount => discount.product)
+  discounts: Discount[];
 }

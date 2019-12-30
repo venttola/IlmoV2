@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
 
+import {ParticipantGroup} from "./ParticipantGroup";
 @Entity()
 export class Platoon {
  
@@ -8,4 +9,7 @@ export class Platoon {
 
   @Column()
   name: string;
+
+  @OneToMany(type => ParticipantGroup, group => group.platoon)
+  participantGroups: ParticipantGroup[];
 }
