@@ -7,20 +7,22 @@ import {Discount} from "./Discount";
 
 @Entity()
 export class ProductSelection {
- 
+
  @PrimaryGeneratedColumn()
   id: number;
+
  @ManyToOne(type => UserPayment, userPayment => userPayment.productSelections)
  userPayment: UserPayment;
+
  @ManyToOne(type => ParticipantPayment, participantPayment => participantPayment.productSelections)
  participantPayment: ParticipantPayment;
 
- @OneToOne(type: Product)
+ @OneToOne(type =>  Product)
  @JoinColumn()
  product: Product;
 
- @OneToOne(type: Discount)
+ @OneToOne(type => Discount)
  @JoinColumn()
- discount: Discount
- 
+ discount: Discount;
+
 }

@@ -20,7 +20,7 @@ export class GroupPayment {
 
   @OneToOne(type => ParticipantGroup)
   @JoinColumn()
-  payee: ParticipantGroup
+  payee: ParticipantGroup;
 
   @OneToMany(type => UserPayment, userPayment => userPayment.groupPayment)
   userPayments: UserPayment[];

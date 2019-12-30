@@ -1,6 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToOne, ManyToMany} from "typeorm";
 
-import {GroupPayment} from "./GroupPayment"
+import {GroupPayment} from "./GroupPayment";
 import {Platoon} from "./Platoon";
 import {User} from "./User";
 @Entity()

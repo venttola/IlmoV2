@@ -19,7 +19,7 @@ export class Event {
   endDate: Date;
 
   @Column()
-  description: String
+  description: string;
 
   @Column()
   registerationOpen: boolean;
@@ -27,8 +27,9 @@ export class Event {
   @OneToMany(type => Product, product => product.event)
   products: Product[];
 
-  @OneToMany(type => Platoon, platoon => platoon.platoon)
+  @OneToMany(type => Platoon, platoon => platoon.event)
   platoons: Platoon[];
 
   @ManyToOne(type => Organization, organization => organization.events)
+  organization: Organization;
 }

@@ -3,7 +3,7 @@ import {Event} from "./Event";
 import {User} from "./User";
 @Entity()
 export class Organization {
-  
+
   @PrimaryGeneratedColumn()
   id: number;
 

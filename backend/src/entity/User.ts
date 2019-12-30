@@ -17,7 +17,7 @@ export class User {
 
   @Column()
   dob: Date;
-  
+
   @Column()
   email: string;
 
@@ -31,7 +31,7 @@ export class User {
   phone: string;
 
   @Column()
-  passwordResetToken: string
+  passwordResetToken: string;
 
   @Column()
   passwordResetExpires: number;
