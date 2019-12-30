@@ -1,8 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
+import {ParticipantPayment} from "./ParticipantPayment";
 @Entity()
 export class Participant {
-  
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,4 +17,8 @@ export class Participant {
 
   @Column()
   allergies: string;
+
+  @OneToMany(type => ParticipantPayment, payment => payment.payee)
+  payments: ParticipantPayment[];
+
 }

@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "type
 
 import {GroupPayment} from "./GroupPayment";
 import {ProductSelection} from "./ProductSelection";
+import {Participant} from "./Participant";
 
 @Entity()
 export class ParticipantPayment {
@@ -20,4 +21,7 @@ export class ParticipantPayment {
 
   @ManyToOne(type => GroupPayment, groupPayment => groupPayment.participantPayments)
   groupPayment: GroupPayment;
+
+  @ManyToOne(type => Participant, participant => participant.payments)
+  payee: Participant;
 }
