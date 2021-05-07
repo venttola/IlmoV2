@@ -46,7 +46,7 @@
     "orm": "^5.0.4",
     "postman": "^0.2.0",
     "semver": "^6.1.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.12.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
